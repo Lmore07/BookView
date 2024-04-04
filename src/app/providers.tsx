@@ -1,8 +1,6 @@
 "use client";
 
-import { NextUIProvider } from "@nextui-org/system";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
-import tailwindConfig from "../../tailwind.config";
 
 import React from "react";
 

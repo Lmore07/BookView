@@ -28,13 +28,12 @@ export default function AccessibilityButton() {
 
   return (
     <div
-      className={`fixed flex right-0 top-1/2 rounded-2xl z-50 bg-bgButtonAccesible`}
+      className={`fixed flex right-2 bottom-2 rounded-full z-50 bg-bgButtonAccesible`}
     >
       <button
         className=" text-textButtonAccesible font-bold py-2 px-4 rounded"
         onClick={() => setIsOpen(!isOpen)}
       >
-        
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 24 24"
@@ -47,6 +46,7 @@ export default function AccessibilityButton() {
       {isOpen && (
         <div className="rounded-lg shadow-lg p-4 mt-2">
           <div className="mb-2">
+            <label className="text-textButtonAccesible">Elige un tema: </label>
             <select
               className="bg-bgSelectTheme text-textSelectTheme rounded-md"
               value={theme}

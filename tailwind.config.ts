@@ -1,4 +1,3 @@
-import { nextui } from "@nextui-org/react";
 import type { Config } from "tailwindcss";
 
 const config: Config = {
@@ -30,9 +29,15 @@ const config: Config = {
         textButtonFill: "var(--text--ButtonFill)",
         bgButtonFillHover: "var(--bg--ButtonFillHover)",
         textButtonFillHover: "var(--text--ButtonFillHover)",
+        bgButtonOutlined: "var(--bg--ButtonOutlined)",
+        textButtonOutlined: "var(--text--ButtonOutlined)",
+        bgButtonOutlinedHover: "var(--bg--ButtonOutlinedHover)",
+        textButtonOutlinedHover: "var(--text--ButtonOutlinedHover)",
         textLabel: "var(--label--Label)",
         textRegisterLabel: "var(--text--RegisterLabel)",
         textForgotPassword: "var(--text-ForgotPassword)",
+        iconBgColor: "var(--icon-bgColor)",
+        textSidebar: "var(--text-SideBar-NS)",
         primary: {
           100: "var(--primary--100)",
           150: "var(--primary--150)",

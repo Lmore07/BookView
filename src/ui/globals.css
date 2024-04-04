@@ -23,7 +23,7 @@
 
     /* Input */
     --label--inputText:#424856;
-    --bg--InputTextColor: rgba(245,250,246,1);
+    --bg--InputTextColor: rgb(239, 248, 241);
 
     /* Focus Input */
     --focus--ColorInput:rgba(189,193,202,1);
@@ -40,10 +40,24 @@
     --bg--ButtonFillHover: #26a107;
     --text--ButtonFillHover: #fff;
 
+    /* Button Outlined */
+    --bg--ButtonOutlined: #fff;
+    --text--ButtonOutlined: #1b7505;
+
+    /* Button Outlined Hover*/
+    --bg--ButtonOutlinedHover: #1b7505;
+    --text--ButtonOutlinedHover: #fff;
+
     /* Register label */
     --text--RegisterLabel: #dba112;
     --text-ForgotPassword: #1b7505;
     --label--Label: #1b7505;
+
+    /* Color Icon */
+    --icon-bgColor: #4c4c4c;
+
+    /*Text sidebar no selected*/
+    --text-SideBar-NS: rgba(86,93,109,1);
 
     --primary--100: #eefee9;
     --primary--150: #cafcbe;
@@ -113,11 +127,25 @@
     --bg--ButtonFillHover: #696969;
     --text--ButtonFillHover: #fff;
 
+    /* Button Outlined */
+    --bg--ButtonOutlined: #000;
+    --text--ButtonOutlined: #fff;
+    
+    /* Button Outlined Hover*/
+    --bg--ButtonOutlinedHover: #696969;
+    --text--ButtonOutlinedHover: #fff;
+
     /* Register label */
     --text--RegisterLabel: #fef9ee;
     --text-ForgotPassword: #fff;
     --label--Label: #fef9ee;
-    
+
+    /* Color Icon */
+    --icon-bgColor: #000;
+
+    /*Text sidebar no selected*/
+    --text-SideBar-NS: rgb(188, 187, 187);
+
     --primary--100: #97c597;
     --primary--150: #1a391a;
     --primary--200: #205020;
@@ -201,4 +229,31 @@
     --tertiary--400: #000000;
     --tertiary--450: #000000;
     --tertiary--500: #000000;
+}
+
+
+/* Estilos para el checkbox */
+.custom-checkbox {
+  @apply w-4 h-4 appearance-none relative bg-white border-2 border-green-600 rounded-sm transition duration-200;
+}
+
+/* Estilos para el checkbox cuando está seleccionado */
+.custom-checkbox:checked {
+  @apply bg-green-600 border-green-600 ;
+}
+
+/* Estilos para el checkbox cuando está enfocado */
+.custom-checkbox:focus {
+  @apply outline-none ring-1 ring-green-600;
+}
+
+/* Ícono de check cuando el checkbox está seleccionado */
+.custom-checkbox:checked::after {
+  @apply content-[''] absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-1 h-2 border-r-2 border-b-2 border-white rotate-45;
+}
+
+@variants checkbox, checked {
+  .custom-checkbox {
+    @apply w-5 h-5 bg-white border-2 border-green-600 rounded-sm transition duration-200 relative;
+  }
 }

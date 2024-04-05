@@ -1,33 +1,46 @@
-import { UserRegister } from "@/libs/interfaces/user.interface";
+import { CreateUserDTO } from "@/libs/dtos/security/createUserDTO";
 import { apiMiddleware } from "@/libs/middleware/apiMiddleware";
-import { PrismaClient } from "@prisma/client";
+import prisma from "@/libs/services/prisma";
+import { withValidation } from "@/libs/utils/validation";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 import { NextRequest, NextResponse } from "next/server";
-const prisma = new PrismaClient();
 const bcrypt = require("bcrypt");
 
 export const POST = apiMiddleware(async (request: NextRequest) => {
   try {
-    const body = (await request.json()) as UserRegister;
-    console.log(body);
-    const birthday = new Date(body.birthday);
-    const hashedPassword = await bcrypt.hash(body.password, 10);
-    const resultPrisma = await prisma.$transaction(async (prisma) => {
+    //const body = (await request.json()) as UserRegister;
+
+    const body = await withValidation(CreateUserDTO, request);
+    if (body instanceof NextResponse) {
+      return body;
+    }
+
+    const email = await prisma.users.findUnique({
+      where: { mail: body.email },
+    });
+
+    if (email) {
+      return NextResponse.json(
+        { error: "El correo ingresado ya existe en el sistema" },
+        { status: 400 }
+      );
+    }
+
+    await prisma.$transaction(async (prisma) => {
       const { idPerson } = await prisma.persons.create({
         data: {
           names: body.names,
-          birthday: birthday,
+          birthday: new Date(body.birthday),
           lastNames: body.lastNames,
         },
       });
-      const result = await prisma.users.create({
+      await prisma.users.create({
         data: {
           mail: body.email,
-          password: hashedPassword,
+          password: await bcrypt.hash(body.password, 10),
           idPerson: idPerson,
         },
       });
-      return result;
     });
     return NextResponse.json(
       { message: "Usuario creado con éxito" },
@@ -36,6 +49,7 @@ export const POST = apiMiddleware(async (request: NextRequest) => {
       }
     );
   } catch (error: any) {
+    console.log(error);
     if (error instanceof PrismaClientKnownRequestError) {
       return NextResponse.json(
         { error: "Los datos ingresados no estan correctos" },

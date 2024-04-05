@@ -1,14 +1,13 @@
 import { LoginI } from "@/libs/interfaces/user.interface";
+import prisma from "@/libs/services/prisma";
 import TokenService from "@/libs/services/TokenService";
-import { PrismaClient } from "@prisma/client";
-import { NextRequest, NextResponse } from "next/server";
-import { apiMiddleware } from "../../../libs/middleware/apiMiddleware";
 import { cookies } from "next/headers";
+import { NextRequest, NextResponse } from "next/server";
+import { apiMiddleware } from "../../../../libs/middleware/apiMiddleware";
 
 const bcrypt = require("bcrypt");
 
 export const POST = apiMiddleware(async (request: NextRequest) => {
-  const prisma = new PrismaClient();
   const body = (await request.json()) as LoginI;
   try {
     const user = await prisma.users.findUnique({

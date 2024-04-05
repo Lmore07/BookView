@@ -2,13 +2,12 @@ import { ResponseData } from "@/libs/interfaces/response.interface";
 import { NextRequest, NextResponse } from "next/server";
 
 export function apiMiddleware(
-  handler: (req: NextRequest) => Promise<NextResponse>
+  handler: (req: NextRequest, params: any) => Promise<NextResponse>
 ) {
-  return async (req: NextRequest) => {
+  return async (req: NextRequest, params: any) => {
     try {
-      const res = await handler(req);
+      const res = await handler(req, params);
       const data: ResponseData = await res.json();
-
       // Si la respuesta es exitosa, da formato a la respuesta
       if (res.status == 200 || res.status == 201) {
         return NextResponse.json(
@@ -28,7 +27,7 @@ export function apiMiddleware(
           message: data.message || "Error",
           statusCode: data.statusCode || res.status,
           error: data.error,
-          data: data.data
+          data: data.data,
         },
         { status: data.statusCode ?? res.status }
       );

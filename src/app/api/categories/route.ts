@@ -1,13 +1,11 @@
+import { createCategoryDTO } from "@/libs/dtos/categories/createCategoryDTO";
 import { apiMiddleware } from "@/libs/middleware/apiMiddleware";
 import { toBoolean } from "@/libs/pipes/toBoolean";
+import prisma from "@/libs/services/prisma";
 import { withAuth } from "@/libs/utils/auth";
-import { PrismaClient } from "@prisma/client";
+import { withValidation } from "@/libs/utils/validation";
 import { NextRequest, NextResponse } from "next/server";
-import { validate } from "class-validator";
-import { plainToClass } from "class-transformer";
-import { createCategoryDTO } from "@/libs/dtos/createCategoryDTO";
 
-const prisma = new PrismaClient();
 
 export const GET = apiMiddleware(async (request: NextRequest) => {
   const authResult = await withAuth(request);
@@ -73,15 +71,22 @@ export const POST = apiMiddleware(async (request: NextRequest) => {
       return authResult;
     }
 
-    const body = plainToClass(createCategoryDTO, await request.json());
-    const errors = await validate(body);
-    const errorMessages = errors
-      .filter((error) => error !== undefined)
-      .map((error) => Object.values(error.constraints ?? {}))
-      .flat();
-    if (errors.length > 0) {
+    const body = await withValidation(createCategoryDTO, request);
+    if (body instanceof NextResponse) {
+      return body;
+    }
+
+    const allCategories = await prisma.categories.findMany();
+
+    const existingCategory = allCategories.find(
+      (category) => category.categoryName.toLowerCase() === body.name.toLowerCase()
+    );
+
+    if (existingCategory) {
       return NextResponse.json(
-        { message: "Campos ingresados no son correctos", error: errorMessages[0] },
+        {
+          error: "La categoría ya existe",
+        },
         { status: 400 }
       );
     }

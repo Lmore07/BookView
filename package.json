@@ -9,14 +9,14 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@hookform/resolvers": "^3.3.4",
     "@nextui-org/react": "^2.2.10",
     "@prisma/client": "^5.11.0",
-    "axios": "^1.6.8",
     "bcrypt": "^5.1.1",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.14.1",
     "cookies": "^0.9.1",
     "framer-motion": "^11.0.23",
-    "jose": "^5.2.3",
-    "js-cookie": "^3.0.5",
     "jsonwebtoken": "^9.0.2",
     "next": "14.1.4",
     "next-cookies": "^2.0.3",

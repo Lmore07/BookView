@@ -16,6 +16,7 @@ export function apiMiddleware(
             message: data.message || "Realizado correctamente",
             statusCode: data.statusCode || res.status,
             data: data.data,
+            pagination: data.pagination,
           },
           { status: res.status }
         );
@@ -26,7 +27,8 @@ export function apiMiddleware(
         {
           message: data.message || "Error",
           statusCode: data.statusCode || res.status,
-          error: data.error || res.statusText,
+          error: data.error,
+          data: data.data
         },
         { status: data.statusCode ?? res.status }
       );

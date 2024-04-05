@@ -1,8 +1,7 @@
-import * as jose from "jose";
 var jwt = require("jsonwebtoken");
 
 class TokenService {
-  private secretKey = "";
+  private secretKey = "token_decode";
 
   public async sign(payload: any) {
     var token = jwt.sign(
@@ -17,7 +16,7 @@ class TokenService {
 
   public verify(token: string): boolean {
     try {
-      jwt.verify(token, this.secretKey);
+      return jwt.verify(token, this.secretKey);
       return true;
     } catch (error) {
       return false;

@@ -1,0 +1,132 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Users {
+  idUser           Int                @id @default(autoincrement()) @map("id_user")
+  idPerson         Int                @unique @map("id_person")
+  password         String             @map("password")
+  mail             String             @unique @map("mail") @db.VarChar(100)
+  profilePicture   String?            @map("profile_picture")
+  createdAt        DateTime?          @default(now()) @map("created_at")
+  updatedAt        DateTime?          @updatedAt @map("updated_at")
+  status           Boolean            @default(true) @map("status")
+  rol              rol                @default(READER) @map("rol")
+  Favorite_Folders Favorite_Folders[]
+  Person           Persons            @relation(fields: [idPerson], references: [idPerson])
+  View_Books       View_Books[]
+
+  @@map("users")
+}
+
+model Persons {
+  idPerson  Int       @id @default(autoincrement()) @map("id_person")
+  names     String    @map("names")
+  lastNames String    @map("last_names")
+  birthday  DateTime  @map("birthday")
+  createdAt DateTime? @default(now()) @map("created_at")
+  updatedAt DateTime? @updatedAt @map("updated_at")
+  User      Users?
+
+  @@map("persons")
+}
+
+model Favorite_Folders {
+  idFolder          Int              @id @default(autoincrement()) @map("id_folder")
+  idUser            Int              @map("id_user")
+  folderName        String           @map("folder_name")
+  folderDescription String           @map("folder_description")
+  createdAt         DateTime?        @default(now()) @map("created_at")
+  updatedAt         DateTime?        @updatedAt @map("updated_at")
+  createdBy         Int?             @map("created_by")
+  updatedBy         Int?             @map("updated_by")
+  status            Boolean          @default(true) @map("status")
+  Favorite_Books    Favorite_Books[]
+  Users             Users            @relation(fields: [idUser], references: [idUser])
+
+  @@map("favorite_folders")
+}
+
+model Favorite_Books {
+  idBook_favorite  Int              @id @default(autoincrement()) @map("id_book_favorite")
+  idBook           Int              @map("id_book")
+  idFolder         Int              @map("id_folder")
+  createdAt        DateTime?        @default(now()) @map("created_at")
+  updatedAt        DateTime?        @updatedAt @map("updated_at")
+  status           Boolean          @default(true) @map("status")
+  Books            Books            @relation(fields: [idBook], references: [idBook])
+  Favorite_Folders Favorite_Folders @relation(fields: [idFolder], references: [idFolder])
+
+  @@map("favorite_books")
+}
+
+model Books {
+  idBook          Int              @id @default(autoincrement()) @map("id_book")
+  bookName        String           @map("book_name")
+  author          String           @map("author")
+  publicationDate DateTime?        @map("publication_date")
+  createdAt       DateTime?        @default(now()) @map("created_at")
+  updatedAt       DateTime?        @updatedAt @map("updated_at")
+  createdBy       Int?             @map("created_by")
+  updatedBy       Int?             @map("updated_by")
+  status          Boolean          @default(true) @map("status")
+  idCategory      Int              @map("id_category")
+  Favorite_Books  Favorite_Books[]
+  Pages           Pages[]
+  View_Books      View_Books[]
+  Categories      Categories?      @relation(fields: [idCategory], references: [idCategory])
+
+  @@map("books")
+}
+
+model Categories {
+  idCategory   Int       @id @default(autoincrement()) @map("id_category")
+  categoryName String    @map("category_name")
+  description  String    @map("description")
+  createdAt    DateTime? @default(now()) @map("created_at")
+  updatedAt    DateTime? @updatedAt @map("updated_at")
+  status       Boolean   @default(true) @map("status")
+  createdBy    Int?      @map("created_by")
+  updatedBy    Int?      @map("updated_by")
+  Books        Books[]
+
+  @@map("categories")
+}
+
+model Pages {
+  idPage     Int       @id @default(autoincrement()) @map("id_page")
+  idBook     Int       @map("id_book")
+  numberPage Int       @map("number_page")
+  typePage   String    @map("type_page")
+  content    String    @map("content")
+  createdAt  DateTime? @default(now()) @map("created_at")
+  updatedAt  DateTime? @updatedAt @map("updated_at")
+  createdBy  Int?      @map("created_by")
+  updatedBy  Int?      @map("updated_by")
+  status     Boolean   @default(true) @map("status")
+  Books      Books     @relation(fields: [idBook], references: [idBook])
+
+  @@map("pages")
+}
+
+model View_Books {
+  idViewBook Int      @id @default(autoincrement()) @map("id_view_book")
+  idBook     Int      @map("id_book")
+  idUser     Int      @map("id_user")
+  dateView   DateTime @default(now()) @map("date_view")
+  Books      Books    @relation(fields: [idBook], references: [idBook])
+  Users      Users    @relation(fields: [idUser], references: [idUser])
+
+  @@map("view_books")
+}
+
+enum rol {
+  READER
+  CREATOR
+  ADMIN
+}

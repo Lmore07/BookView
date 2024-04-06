@@ -1,9 +1,10 @@
+import 'regenerator-runtime/runtime';
+import { LoadingProvider } from "@/libs/contexts/loadingContext";
+import Providers from "@/libs/contexts/providers";
 import { ToastProvider } from "@/libs/contexts/toastContext";
 import AccessibilityButton from "@/ui/components/buttons/AccessibilityButton";
 import type { Metadata } from "next";
 import "../ui/globals.css";
-import Providers from "./providers";
-import { LoadingProvider } from "@/libs/contexts/loadingContext";
 
 export const metadata: Metadata = {
   title: "BookView",

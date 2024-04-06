@@ -1,7 +1,7 @@
-export interface ResponseData {
+export interface ResponseData<T = undefined> {
   message?: string;
   statusCode: number;
-  data?: any[];
+  data?: T | null;
   pagination?: Pagination;
   error?: string;
 }

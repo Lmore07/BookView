@@ -9,7 +9,6 @@ export interface UserRegister {
 
 export interface LoginI {
   email: string;
-  userName?: string;
   password: string;
 }
 

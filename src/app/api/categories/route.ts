@@ -6,7 +6,6 @@ import { withAuth } from "@/libs/utils/auth";
 import { withValidation } from "@/libs/utils/validation";
 import { NextRequest, NextResponse } from "next/server";
 
-
 export const GET = apiMiddleware(async (request: NextRequest) => {
   const authResult = await withAuth(request);
   if (authResult instanceof NextResponse) {
@@ -26,6 +25,7 @@ export const GET = apiMiddleware(async (request: NextRequest) => {
       categoryName: true,
       description: true,
       createdBy: true,
+      status: true,
     },
     where: {
       status: status,
@@ -79,7 +79,8 @@ export const POST = apiMiddleware(async (request: NextRequest) => {
     const allCategories = await prisma.categories.findMany();
 
     const existingCategory = allCategories.find(
-      (category) => category.categoryName.toLowerCase() === body.name.toLowerCase()
+      (category) =>
+        category.categoryName.toLowerCase() === body.name.toLowerCase()
     );
 
     if (existingCategory) {

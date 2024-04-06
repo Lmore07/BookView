@@ -1,3 +1,4 @@
+"use client";
 import React, { useEffect, useState } from "react";
 
 const Input = ({
@@ -8,6 +9,7 @@ const Input = ({
   value,
   type,
   onChange,
+  voiceToText,
   validations = [],
   className = "",
 }: {
@@ -17,6 +19,7 @@ const Input = ({
   placeholder: string;
   value: string;
   type: string;
+  voiceToText?: boolean;
   onChange: (value: string) => void;
   validations?: ((value: string) => string)[];
   className?: string;
@@ -25,6 +28,8 @@ const Input = ({
   const [touched, setTouched] = useState(false);
   const [isValid, setValid] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [isListening, setIsListening] = useState(false);
+
 
   useEffect(() => {
     const handleValidateForm = () => {
@@ -76,7 +81,7 @@ const Input = ({
           onChange={handleChange}
           onBlur={handleBlur}
           placeholder={placeholder}
-          className={`w-full pl-9 font-open-sans bg-bgInputText px-3 py-2 border-0 text-sm font-normal hover:placeholder:text-secondary-400 text-secondary-400 rounded-md outline-none hover:text-secondary-400 hover:border hover:border-black ${
+          className={`w-full pl-9 font-open-sans bg-bgInputText px-3 py-2 border-0 text-sm font-normal placeholder:text-gray-500 hover:placeholder:text-secondary-400 text-secondary-400 rounded-md outline-none hover:text-secondary-400 hover:border hover:border-black ${
             validationErrors.length > 0
               ? "border-red-500 border focus:ring-2 focus:ring-red-500 hover:border-red-500 hover:border-2"
               : "border-0 focus:ring-2 focus:ring-slate-300"
@@ -87,6 +92,39 @@ const Input = ({
           } focus:bg-focusBgInput focus:text-secondary-400`}
         />
         {icon && <div className="absolute left-2">{icon}</div>}
+        {voiceToText && (
+          <div
+            className="absolute right-2 cursor-pointer"
+            onClick={() =>
+              setIsListening((prevIsListening) => !prevIsListening)
+            }
+          >
+            {isListening ? (
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="currentColor text-iconBgColor"
+                className="w-5 h-5"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M4.5 7.5a3 3 0 0 1 3-3h9a3 3 0 0 1 3 3v9a3 3 0 0 1-3 3h-9a3 3 0 0 1-3-3v-9Z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            ) : (
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="currentColor text-iconBgColor"
+                className="w-5 h-5"
+              >
+                <path d="M8 1a2 2 0 0 0-2 2v4a2 2 0 1 0 4 0V3a2 2 0 0 0-2-2Z" />
+                <path d="M4.5 7A.75.75 0 0 0 3 7a5.001 5.001 0 0 0 4.25 4.944V13.5h-1.5a.75.75 0 0 0 0 1.5h4.5a.75.75 0 0 0 0-1.5h-1.5v-1.556A5.001 5.001 0 0 0 13 7a.75.75 0 0 0-1.5 0 3.5 3.5 0 1 1-7 0Z" />
+              </svg>
+            )}
+          </div>
+        )}
         {type == "password" && (
           <div
             className="absolute right-2 cursor-pointer"
@@ -112,9 +150,9 @@ const Input = ({
               >
                 <path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />
                 <path
-                  fill-rule="evenodd"
+                  fillRule="evenodd"
                   d="M1.323 11.447C2.811 6.976 7.028 3.75 12.001 3.75c4.97 0 9.185 3.223 10.675 7.69.12.362.12.752 0 1.113-1.487 4.471-5.705 7.697-10.677 7.697-4.97 0-9.186-3.223-10.675-7.69a1.762 1.762 0 0 1 0-1.113ZM17.25 12a5.25 5.25 0 1 1-10.5 0 5.25 5.25 0 0 1 10.5 0Z"
-                  clip-rule="evenodd"
+                  clipRule="evenodd"
                 />
               </svg>
             )}
@@ -145,9 +183,9 @@ const Input = ({
               className="w-5 h-5 text-green-600"
             >
               <path
-                fill-rule="evenodd"
+                fillRule="evenodd"
                 d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm13.36-1.814a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z"
-                clip-rule="evenodd"
+                clipRule="evenodd"
               />
             </svg>
           </div>

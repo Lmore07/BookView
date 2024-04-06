@@ -6,10 +6,18 @@ import { useTheme } from "next-themes";
 export default function AccessibilityButton() {
   const [isOpen, setIsOpen] = useState(false);
   const { theme, setTheme } = useTheme();
+  const [zoom, setZoom] = useState<number>();
 
   useEffect(() => {
     console.log("La aplicación se ha iniciado");
     const localTheme = localStorage.getItem("theme");
+    const localZoom = parseFloat(localStorage.getItem("zoom") ?? "1");
+    console.log("Zoom guardado en local: ", localZoom);
+    if (localZoom) {
+      const newZoom = Math.min(localZoom, 2);
+      (document.body.style as any).zoom = newZoom.toString();
+      setZoom(localZoom);
+    }
     if (localTheme) {
       setTheme(localTheme);
     }
@@ -21,17 +29,34 @@ export default function AccessibilityButton() {
     setTheme(event.target.value);
   };
 
-  const handleFontSizeChange = (size: "small" | "medium" | "large") => {
-    // Aquí puedes implementar la lógica para cambiar el tamaño de fuente
-    console.log(`Cambiar tamaño de fuente a ${size}`);
+  const increaseZoom = () => {
+    setZoom((prevZoom) => {
+      const newZoom = parseFloat(Math.min(prevZoom! + 0.1, 2).toFixed(1));
+      localStorage.setItem("zoom", newZoom.toString());
+      (document.body.style as any).zoom = newZoom.toString();
+      return newZoom;
+    });
+  };
+
+  const decreaseZoom = () => {
+    setZoom((prevZoom) => {
+      const newZoom = parseFloat(Math.max(prevZoom! - 0.1, 0.5).toFixed(1));
+      localStorage.setItem("zoom", newZoom.toString());
+      (document.body.style as any).zoom = newZoom.toString();
+      return newZoom;
+    });
+  };
+
+  const getZom = () => {
+    return (zoom! * 100).toFixed(0);
   };
 
   return (
     <div
-      className={`fixed flex right-2 bottom-2 rounded-full z-50 bg-bgButtonAccesible`}
+      className={`fixed flex right-2 bottom-2 rounded-s-full z-50 bg-bgButtonAccesible`}
     >
       <button
-        className=" text-textButtonAccesible font-bold py-2 px-4 rounded"
+        className=" text-textButtonAccesible font-bold py-2 px-4"
         onClick={() => setIsOpen(!isOpen)}
       >
         <svg
@@ -54,30 +79,35 @@ export default function AccessibilityButton() {
             >
               <option value="light">Claro</option>
               <option value="dark">Oscuro</option>
-              <option value="highContrast">Alto Contraste</option>
+              <option value="sepia">Sepia</option>
+              <option value="blackAndWhite">Blanco y Negro</option>
+              <option value="contrast">Alto Contraste</option>
             </select>
           </div>
           <div>
             <label className="mr-2 text-textButtonAccesible">
-              Tamaño de fuente:
+              Modificar tamaño:
             </label>
             <button
-              className="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-1 px-2 rounded-l"
-              onClick={() => handleFontSizeChange("small")}
+              onClick={decreaseZoom}
+              disabled={zoom == 0.5 ? true : false}
+              className={`bg-gray-200 ${
+                zoom == 0.5 ? "bg-gray-800 text-gray-50" : "hover:bg-gray-300"
+              }  text-gray-800 font-bold py-1 px-2 rounded-l`}
             >
-              A
+              -
             </button>
+            <div className="inline bg-gray-200  text-gray-800 py-[5.2px] font-bold px-2">
+              {getZom()}%
+            </div>
             <button
-              className="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-1 px-2"
-              onClick={() => handleFontSizeChange("medium")}
+              disabled={zoom == 2 ? true : false}
+              onClick={increaseZoom}
+              className={`bg-gray-200 ${
+                zoom == 2 ? "bg-gray-800 text-gray-50" : "hover:bg-gray-300"
+              }  text-gray-800 font-bold py-1 px-2 rounded-r`}
             >
-              A
-            </button>
-            <button
-              className="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-1 px-2 rounded-r"
-              onClick={() => handleFontSizeChange("large")}
-            >
-              A
+              +
             </button>
           </div>
         </div>

@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import logoImg from "../../../../public/imgs/icon.svg";
+import { useRouter, usePathname } from "next/navigation";
 
 interface SidebarProps {
   optionsRoutes: {
@@ -17,15 +18,15 @@ interface SidebarProps {
 const Sidebar: React.FC<SidebarProps> = ({ optionsRoutes }) => {
   const [selectedOption, setSelectedOption] = useState("Inicio");
   const [showFullSidebar, setShowFullSidebar] = useState(true);
+  const pathName = usePathname();
 
   useEffect(() => {
     handleSelectedOption();
   }, []);
 
   const handleSelectedOption = () => {
-    const currentPath = window.location.pathname;
     const selectedOption = optionsRoutes.find((option) =>
-      currentPath.includes(option.key)
+      pathName.includes(option.key)
     );
     if (selectedOption) {
       setSelectedOption(selectedOption.name);

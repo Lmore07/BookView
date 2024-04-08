@@ -67,9 +67,6 @@ const Input = ({
     setShowPassword(!showPassword);
   };
 
-  if (!browserSupportsSpeechRecognition) {
-    console.warn("El navegador no lo soporta");
-  }
   const handleChange = (e: any) => {
     const newValue = e.target.value;
     setInputValue(newValue);

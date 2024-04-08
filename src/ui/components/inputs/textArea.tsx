@@ -64,9 +64,6 @@ const TextArea = ({
     };
   }, [inputValue, validations]);
 
-  if (!browserSupportsSpeechRecognition) {
-    console.warn("El navegador no lo soporta");
-  }
   const handleChange = (e: any) => {
     const newValue = e.target.value;
     setInputValue(newValue);

@@ -9,10 +9,8 @@ export default function AccessibilityButton() {
   const [zoom, setZoom] = useState<number>();
 
   useEffect(() => {
-    console.log("La aplicación se ha iniciado");
     const localTheme = localStorage.getItem("theme");
     const localZoom = parseFloat(localStorage.getItem("zoom") ?? "1");
-    console.log("Zoom guardado en local: ", localZoom);
     if (localZoom) {
       const newZoom = Math.min(localZoom, 2);
       (document.body.style as any).zoom = newZoom.toString();
@@ -25,7 +23,6 @@ export default function AccessibilityButton() {
 
   const handleThemeChange = (event: any) => {
     localStorage.setItem("theme", event.target.value);
-    console.log("Se selecciono: ", event.target.value);
     setTheme(event.target.value);
   };
 

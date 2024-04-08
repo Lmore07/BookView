@@ -73,7 +73,6 @@ export default function Home() {
   };
 
   const stopListening = () => {
-    console.log("stopListening");
     SpeechRecognition.stopListening();
     resetTranscript();
   };
@@ -94,7 +93,6 @@ export default function Home() {
     const fetchData = async () => {
       const response = await fetch("../api/categories?limit=10000");
       const data: ResponseData<CategoriesAll[]> = await response.json();
-      console.log(data.data);
       setCategories(data.data ?? []);
     };
     fetchData();

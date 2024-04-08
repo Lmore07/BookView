@@ -1,6 +1,10 @@
-import { createRequire } from 'module';
+import { createRequire } from "module";
 const require = createRequire(import.meta.url);
-require('dotenv').config({ path: `./.env.${process.env.NODE_ENV}` });
+require("dotenv").config({
+  path: `${
+    process.env.NODE_ENV == "development" ? "./.env.development" : "./.env"
+  }`,
+});
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {

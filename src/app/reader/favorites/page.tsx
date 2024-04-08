@@ -2,13 +2,14 @@
 import FolderCard from "@/ui/components/cards/folderCard";
 import Pagination from "@mui/material/Pagination";
 import Stack from "@mui/material/Stack";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Button from "@/ui/components/buttons/ButtonFill";
 import CreateFolder from "@/ui/modals/folders/createFolder";
 import ModalParent from "@/ui/modals/modal";
 import { ResponseData } from "@/libs/interfaces/response.interface";
 import { FoldersAll } from "@/libs/interfaces/folders.interface";
+import { LoadingContext } from "@/libs/contexts/loadingContext";
 
 export default function Favorites() {
   const router = useRouter();
@@ -18,14 +19,13 @@ export default function Favorites() {
   const [open, setOpen] = useState(false);
   const [folders, setFolders] = useState<FoldersAll[]>([]);
   const [reloadData, setReloadData] = useState(false);
+  const { setIsLoading } = useContext(LoadingContext)!;
 
   const handleChange = (event: any, value: number) => {
-    console.log("Page changed");
     setPage(value);
   };
 
   const handleClickFolder = (id: number) => {
-    console.log("Click en abrir carpeta id: ", id);
     router.push(`/reader/favorites/${id}`);
   };
 
@@ -33,26 +33,29 @@ export default function Favorites() {
     setOpen(false);
   };
 
-
   const fetchData = async () => {
+    setIsLoading(true);
     const response = await fetch(`../api/folders/?limit=8&page=${page}`);
     const data: ResponseData<FoldersAll[]> = await response.json();
-    console.log(data.data);
     setTotalPages(data.pagination!.totalPages);
     setPage(data.pagination!.currentPage);
     setFolders(data.data ?? []);
+    setIsLoading(false);
   };
 
   useEffect(() => {
-    console.log("Reload data");
+    fetchData();
+  }, [page]);
+
+  useEffect(() => {
     fetchData();
   }, [reloadData]);
 
   return (
     <div className="shadow-2xl p-4 rounded-lg">
-      <div className="flex justify-between mb-5">
-        <h1 className="text-2xl text-primary-500 font-bold p-2">
-          Mis favoritos
+      <div className="flex flex-wrap justify-between mb-5">
+        <h1 className="relative text-2xl text-primary-500 font-bold before:content-[''] before:block before:absolute before:h-full before:w-1 before:bg-primary-500 before:left-0">
+          <span className="ps-2">Mis favoritos</span>
         </h1>
         <Button
           onClick={() => {
@@ -81,7 +84,7 @@ export default function Favorites() {
           <FolderCard
             key={folder.idFolder}
             folderName={folder.folderName}
-            imageUrl={folder.imageUrl}
+            imageUrl={folder.urlFolder}
             onClick={() => handleClickFolder(folder.idFolder)}
           />
         ))}

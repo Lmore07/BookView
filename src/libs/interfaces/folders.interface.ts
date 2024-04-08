@@ -4,5 +4,5 @@ export interface FoldersAll {
   folderDescription: string;
   createdBy: number;
   status: boolean;
-  imageUrl?: string;
+  urlFolder?: string;
 }

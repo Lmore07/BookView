@@ -2,6 +2,7 @@
 import { CreateFolderDTO } from "@/libs/dtos/folders/createFolderDTO";
 import { apiMiddleware } from "@/libs/middleware/apiMiddleware";
 import { toBoolean } from "@/libs/pipes/toBoolean";
+import { generateImage } from "@/libs/services/generateImage";
 import prisma from "@/libs/services/prisma";
 import { withAuth } from "@/libs/utils/auth";
 import { withValidation } from "@/libs/utils/validation";
@@ -27,6 +28,7 @@ export const GET = apiMiddleware(async (request: NextRequest) => {
       folderDescription: true,
       createdBy: true,
       status: true,
+      urlFolder: true,
     },
     where: {
       idUser: authResult.userId,
@@ -83,7 +85,7 @@ export const POST = apiMiddleware(async (request: NextRequest) => {
     });
 
     const existingFolder = allFolders.find(
-      (folder) => folder.folderName.toLowerCase() === body.name.toLowerCase()
+      (folder) => folder.folderName.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase() === body.name.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase()
     );
 
     if (existingFolder) {
@@ -94,18 +96,25 @@ export const POST = apiMiddleware(async (request: NextRequest) => {
         { status: 400 }
       );
     }
-
+    var urlImage: string | undefined;
+    try {
+      urlImage = await generateImage(body.name);
+    } catch (error) {
+      console.log(error);
+    }
     const folder = await prisma.favorite_Folders.create({
       data: {
         folderName: body.name,
         folderDescription: body.description,
         createdBy: authResult.userId,
         idUser: authResult.userId,
+        urlFolder: urlImage,
       },
       select: {
         idFolder: true,
         folderName: true,
         folderDescription: true,
+        urlFolder: true,
       },
     });
     return NextResponse.json(

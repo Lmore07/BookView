@@ -39,6 +39,7 @@ export const POST = apiMiddleware(async (request: NextRequest) => {
           mail: body.email,
           password: await bcrypt.hash(body.password, 10),
           idPerson: idPerson,
+          rol: body.role,
         },
       });
     });

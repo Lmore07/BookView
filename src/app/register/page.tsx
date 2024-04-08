@@ -90,7 +90,7 @@ export default function Login() {
     if (validateForm()) {
       setIsLoading(true);
       try {
-        const res = await fetch("../register/api", {
+        const res = await fetch("../api/security/register", {
           method: "POST",
           body: JSON.stringify(dataUserRegister),
         });

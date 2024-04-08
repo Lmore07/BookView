@@ -46,6 +46,7 @@ model Favorite_Folders {
   createdBy         Int?             @map("created_by")
   updatedBy         Int?             @map("updated_by")
   status            Boolean          @default(true) @map("status")
+  urlFolder         String?          @map("url_folder")
   Favorite_Books    Favorite_Books[]
   Users             Users            @relation(fields: [idUser], references: [idUser])
 

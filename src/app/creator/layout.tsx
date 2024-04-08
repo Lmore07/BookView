@@ -1,7 +1,7 @@
 import Header from "@/ui/components/header/header";
 import Sidebar from "@/ui/components/sidebar/sideBarReader";
 
-export default function RootLayout({
+export default function RootCreatorLayout({
   children,
 }: {
   children: React.ReactNode;

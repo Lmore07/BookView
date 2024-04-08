@@ -18,7 +18,7 @@ import { useRouter } from "next/navigation";
 import { useContext, useState } from "react";
 import frontPage from "../../../public/imgs/frontPage.png";
 
-export default function Login() {
+export default function Register() {
   //Variables
   const { handleShowToast } = useContext(ToastContext)!;
   const { setIsLoading } = useContext(LoadingContext)!;

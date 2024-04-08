@@ -3,7 +3,7 @@
 import Button from "@/ui/components/buttons/ButtonFill";
 import { useState } from "react";
 
-export default function Login() {
+export default function CreatorPage() {
   const [open, setOpen] = useState(false);
 
   return (

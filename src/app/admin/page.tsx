@@ -1,7 +1,6 @@
 "use client";
-import { useRouter } from "next/navigation";
 
-export default function Login() {
+export default function AdminPage() {
   //Variables declaradas
 
   return (

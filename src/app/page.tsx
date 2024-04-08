@@ -1,12 +1,13 @@
 "use client";
-import { useRouter } from "next/navigation";
 
-export default function Login() {
+import Login from "./login/page";
+
+export default function RootPage() {
   //Variables declaradas
-  const router = useRouter();
-  router.replace("/login");
 
   return (
-    <main></main>
+    <main>
+      <Login></Login>
+    </main>
   );
 }

@@ -9,8 +9,8 @@ export class createCategoryDTO {
   name!: string;
 
   @Length(1, 255, {
-    message: "El nombre de la categoría debe tener entre 1 y 255 caracteres",
+    message: "La descripción de la categoría debe tener entre 1 y 255 caracteres",
   })
-  @IsNotEmpty({ message: "La descripción es requerida" })
+  @IsNotEmpty({ message: "La descripción de la categoría es requerida" })
   description!: string;
 }

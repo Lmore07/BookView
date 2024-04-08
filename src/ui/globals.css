@@ -11,6 +11,8 @@
 
   [data-theme="light"] {
 
+
+    
     /* Principal Page */
     --bgColorLeft:rgba(168,168,167,0.16);
     --bgColorRight: white;
@@ -58,6 +60,14 @@
 
     /*Text sidebar no selected*/
     --text-SideBar-NS: rgba(86,93,109,1);
+
+    /* COLORS PAGINATION */
+
+    --text-no-select: #9095a1;
+    --bg-no-select: #fff;
+    --hover-text-not-select: #6f7787;
+    --border-not-select: #dee1e6;
+    --bg-select:#fff;
 
     --primary--100: #eefee9;
     --primary--150: #cafcbe;
@@ -146,6 +156,14 @@
     /*Text sidebar no selected*/
     --text-SideBar-NS: rgb(188, 187, 187);
 
+    /* COLORS PAGINATION */
+
+    --text-no-select: #9095a1;
+    --bg-no-select: #000000;
+    --hover-text-not-select: #ffffff;
+    --border-not-select: #8f8f8f;
+    --bg-select:#fff;
+
     --primary--100: #97c597;
     --primary--150: #1a391a;
     --primary--200: #205020;
@@ -158,7 +176,7 @@
     --primary--550: #3e9c3e;
     --primary--600: #c0ffc0;
     --primary--650: #348d34;
-    --primary--700: #2f832f;
+    --primary--700: #969696;
     --primary--750: #2a7a2a;
 
     --secondary--100: #081d08;
@@ -237,6 +255,14 @@
 /*Text sidebar no selected*/
 --text-SideBar-NS: rgba(86,93,109,1);
 
+    /* COLORS PAGINATION */
+
+    --text-no-select: #9095a1;
+    --bg-no-select: #fff;
+    --hover-text-not-select: #6f7787;
+    --border-not-select: #dee1e6;
+    --bg-select:#fff;
+
 --primary--100: #eefee9;
 --primary--150: #cafcbe;
 --primary--200: #a7fa92;
@@ -275,7 +301,9 @@
 --tertiary--350: #f2c75a;
 --tertiary--400: #efbc3c;
 --tertiary--450: #edb21e;
---tertiary--500: #dba112;
+--tertiary--500: #c5910d;
+
+
 
 }
 
@@ -328,6 +356,14 @@
 
 /*Text sidebar no selected*/
 --text-SideBar-NS: rgba(86,93,109,1);
+
+    /* COLORS PAGINATION */
+
+    --text-no-select: #9095a1;
+    --bg-no-select: #fff;
+    --hover-text-not-select: #6f7787;
+    --border-not-select: #dee1e6;
+    --bg-select:#fff;
 
 --primary--100: #eefee9;
 --primary--150: #cafcbe;
@@ -422,7 +458,15 @@
   
       /*Text sidebar no selected*/
       --text-SideBar-NS: rgba(86,93,109,1);
-  
+
+          /* COLORS PAGINATION */
+
+    --text-no-select: #9095a1;
+    --bg-no-select: #fff;
+    --hover-text-not-select: #6f7787;
+    --border-not-select: #dee1e6;
+    --bg-select:#fff;
+
       --primary--100: #eefee9;
       --primary--150: #cafcbe;
       --primary--200: #a7fa92;

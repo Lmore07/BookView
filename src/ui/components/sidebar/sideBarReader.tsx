@@ -1,24 +1,94 @@
 "use client";
 
 import Image from "next/image";
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
 import logoImg from "../../../../public/imgs/icon.svg";
 
 const Sidebar: React.FC = () => {
   const [selectedOption, setSelectedOption] = useState("Inicio");
+  const [showFullSidebar, setShowFullSidebar] = useState(true);
+
+  useEffect(() => {
+    handleSelectedOption();
+  }, []);
+
+  const handleSelectedOption = () => {
+    const currentPath = window.location.pathname;
+    console.log(currentPath);
+    if (currentPath === "/reader") {
+      setSelectedOption("Inicio");
+    } else if (currentPath === "/reader/favorites") {
+      setSelectedOption("Mis Favoritos");
+    } else if (currentPath === "/reader/statistics") {
+      setSelectedOption("Estadísticas");
+    } else if (currentPath === "/reader/profile") {
+      setSelectedOption("Mi Perfil");
+    }
+  };
 
   return (
-    <div className=" w-64 border-r shadow-2xl border-gray-300">
-      <div className="p-4 flex gap-2 justify-center items-center">
-        <Image alt="Logo" src={logoImg}></Image>
-        <div className="font-bold text-lg">BookView</div>
+    <div
+      className={`${
+        showFullSidebar ? "w-1/5 xl:w-1/5 lg:w-1/5" : "w-1/6"
+      } shadow-2xl border-gray-300 md:w-1/12 sm:w-auto`}
+    >
+      <div className="flex">
+        <div className="p-4 flex gap-1 justify-center items-center">
+          <Image alt="Logo" src={logoImg}></Image>
+          <div
+            className={`font-bold text-lg pe-2 ${
+              showFullSidebar
+                ? "lg:block md:hidden sm:hidden hidden"
+                : "hidden md:hidden"
+            }`}
+          >
+            BookView
+          </div>
+        </div>
+        <button
+          className="xl:block hidden pe-2"
+          onClick={() => setShowFullSidebar(!showFullSidebar)}
+        >
+          {showFullSidebar ? (
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="currentColor"
+              className="w-6 h-6"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
+              />
+            </svg>
+          ) : (
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="currentColor"
+              className="w-6 h-6"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+          )}
+        </button>
       </div>
-      <nav className="mt-5 flex flex-col font-open-sans text-sm font-normal">
+      <hr className="border-gray-300 border-2" />
+      <nav className="mt-3 flex flex-col gap-2 font-open-sans text-lg font-normal">
         <a
-          href="#"
+          href="/reader"
           onClick={() => setSelectedOption("Inicio")}
-          className={`flex items-center gap-2 px-4 py-2 bg-transparent cursor-pointer transition-colors ${
+          className={`flex items-center gap-2 px-3 py-2 bg-transparent cursor-pointer transition-colors ${
             selectedOption == "Inicio"
               ? "hover:bg-secondary-150 relative font-bold text-primary-500 before:content-[''] before:block before:h-full before:w-1 before:bg-primary-500 before:absolute before:left-0"
               : "text-textSidebar hover:bg-secondary-150"
@@ -29,18 +99,26 @@ const Sidebar: React.FC = () => {
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
               fill="currentColor"
-              className="w-5 h-5"
+              className="w-10"
             >
               <path d="M11.47 3.841a.75.75 0 0 1 1.06 0l8.69 8.69a.75.75 0 1 0 1.06-1.061l-8.689-8.69a2.25 2.25 0 0 0-3.182 0l-8.69 8.69a.75.75 0 1 0 1.061 1.06l8.69-8.689Z" />
               <path d="m12 5.432 8.159 8.159c.03.03.06.058.091.086v6.198c0 1.035-.84 1.875-1.875 1.875H15a.75.75 0 0 1-.75-.75v-4.5a.75.75 0 0 0-.75-.75h-3a.75.75 0 0 0-.75.75V21a.75.75 0 0 1-.75.75H5.625a1.875 1.875 0 0 1-1.875-1.875v-6.198a2.29 2.29 0 0 0 .091-.086L12 5.432Z" />
             </svg>
           </div>
-          <span>Inicio</span>
+          <span
+            className={`${
+              showFullSidebar
+                ? "lg:block md:hidden sm:hidden hidden"
+                : "hidden md:hidden"
+            }`}
+          >
+            Inicio
+          </span>
         </a>
         <a
-          href="#"
+          href="/reader/favorites"
           onClick={() => setSelectedOption("Mis Favoritos")}
-          className={`flex gap-2 items-center px-4 py-2 bg-transparent cursor-pointer transition-colors ${
+          className={`flex gap-2 items-center px-3 py-2 bg-transparent cursor-pointer transition-colors ${
             selectedOption == "Mis Favoritos"
               ? "hover:bg-secondary-150 relative font-bold text-primary-500 before:content-[''] before:block before:h-full before:w-1 before:bg-primary-500 before:absolute before:left-0"
               : "text-textSidebar hover:bg-secondary-150"
@@ -51,7 +129,7 @@ const Sidebar: React.FC = () => {
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
               fill="currentColor"
-              className="w-5 h-5"
+              className="w-10"
             >
               <path
                 fillRule="evenodd"
@@ -60,12 +138,20 @@ const Sidebar: React.FC = () => {
               />
             </svg>
           </div>
-          <span>Mis Favoritos</span>
+          <span
+            className={`${
+              showFullSidebar
+                ? "lg:block md:hidden sm:hidden hidden"
+                : "hidden md:hidden"
+            }`}
+          >
+            Mis Favoritos
+          </span>
         </a>
         <a
-          href="#"
+          href="/"
           onClick={() => setSelectedOption("Estadísticas")}
-          className={`flex gap-2 items-center px-4 py-2 bg-transparent cursor-pointer  transition-colors ${
+          className={`flex gap-2 items-center px-3 py-2 bg-transparent cursor-pointer  transition-colors ${
             selectedOption == "Estadísticas"
               ? "hover:bg-secondary-150 relative font-bold text-primary-500 before:content-[''] before:block before:h-full before:w-1 before:bg-primary-500 before:absolute before:left-0"
               : "text-textSidebar hover:bg-secondary-150"
@@ -76,12 +162,20 @@ const Sidebar: React.FC = () => {
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
               fill="currentColor"
-              className="w-5 h-5"
+              className="w-10"
             >
               <path d="M18.375 2.25c-1.035 0-1.875.84-1.875 1.875v15.75c0 1.035.84 1.875 1.875 1.875h.75c1.035 0 1.875-.84 1.875-1.875V4.125c0-1.036-.84-1.875-1.875-1.875h-.75ZM9.75 8.625c0-1.036.84-1.875 1.875-1.875h.75c1.036 0 1.875.84 1.875 1.875v11.25c0 1.035-.84 1.875-1.875 1.875h-.75a1.875 1.875 0 0 1-1.875-1.875V8.625ZM3 13.125c0-1.036.84-1.875 1.875-1.875h.75c1.036 0 1.875.84 1.875 1.875v6.75c0 1.035-.84 1.875-1.875 1.875h-.75A1.875 1.875 0 0 1 3 19.875v-6.75Z" />
             </svg>
           </div>
-          <span>Estadísticas</span>
+          <span
+            className={`${
+              showFullSidebar
+                ? "lg:block md:hidden sm:hidden hidden"
+                : "hidden md:hidden"
+            }`}
+          >
+            Estadísticas
+          </span>
         </a>
         <a
           href="#"
@@ -96,7 +190,7 @@ const Sidebar: React.FC = () => {
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
             fill="currentColor"
-            className="w-5 h-5"
+            className="w-10"
           >
             <path
               fillRule="evenodd"
@@ -105,18 +199,26 @@ const Sidebar: React.FC = () => {
             />
           </svg>
 
-          <span>Mi Perfil</span>
+          <span
+            className={`${
+              showFullSidebar
+                ? "lg:block md:hidden sm:hidden hidden"
+                : "hidden md:hidden"
+            }`}
+          >
+            Mi Perfil
+          </span>
         </a>
         <a
           href="../login"
-          className="flex gap-2 hover:bg-secondary-150 items-center px-4 py-2 transition-colors text-textSidebar"
+          className="flex gap-1 hover:bg-secondary-150 items-center px-3 py-2 transition-colors text-textSidebar"
         >
           <div>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
               fill="currentColor"
-              className="w-5 h-5"
+              className="w-10"
             >
               <path
                 fillRule="evenodd"
@@ -125,7 +227,15 @@ const Sidebar: React.FC = () => {
               />
             </svg>
           </div>
-          <span>Cerrar Sesión</span>
+          <span
+            className={`${
+              showFullSidebar
+                ? "lg:block md:hidden sm:hidden hidden"
+                : "hidden md:hidden"
+            }`}
+          >
+            Cerrar Sesión
+          </span>
         </a>
       </nav>
     </div>

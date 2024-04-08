@@ -8,7 +8,7 @@ export interface ResponseData<T = undefined> {
 
 export interface Pagination {
   total: number;
-  pages: number;
-  page: number;
-  limit: number;
+  totalPages: number;
+  currentPage: number;
+  perPage: number;
 }

@@ -105,7 +105,7 @@ const Toast: React.FC<ToastProps> = ({
 
   return (
     <div
-      className={`fixed flex items-center top-4 right-4 rounded-md p-4 text-white ${getBackgroundColor()} ${
+      className={`fixed flex items-center z-50 top-4 right-4 rounded-md p-4 text-white ${getBackgroundColor()} ${
         visible ? "opacity-100" : "opacity-0"
       } transition-opacity duration-500`}
     >

@@ -12,7 +12,7 @@ const Button: React.FC<ButtonProps> = ({ children, icon, onClick }) => {
     <div className="flex justify-center">
       <button
         onClick={onClick}
-        className="w-full font-open-sans font-bold py-2 rounded-lg bg-bgButtonFill text-textButtonFill hover:text-textButtonFillHover hover:bg-bgButtonFillHover"
+        className="w-full flex items-center justify-center font-open-sans font-bold py-2 rounded-lg bg-bgButtonFill text-textButtonFill px-3 hover:text-textButtonFillHover hover:bg-bgButtonFillHover"
       >
         {icon && <span className="mr-2">{icon}</span>}
         {children}

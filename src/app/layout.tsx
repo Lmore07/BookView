@@ -1,4 +1,4 @@
-import 'regenerator-runtime/runtime';
+import "regenerator-runtime/runtime";
 import { LoadingProvider } from "@/libs/contexts/loadingContext";
 import Providers from "@/libs/contexts/providers";
 import { ToastProvider } from "@/libs/contexts/toastContext";

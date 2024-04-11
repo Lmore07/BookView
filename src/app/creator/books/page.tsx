@@ -1,29 +1,16 @@
 "use client";
-import { commandsHomeReader } from "@/libs/texts/commands/reader/homeReader";
-import { CategoriesAll } from "@/libs/interfaces/categories.interface";
-import { ResponseData } from "@/libs/interfaces/response.interface";
+
 import { generateSpeech } from "@/libs/services/generateSpeech";
 import ButtonOutlined from "@/ui/components/buttons/ButtonOutlined";
-import Input from "@/ui/components/inputs/input";
-import "@/ui/globals.css";
-import Help from "@/ui/modals/help/help";
-import ModalParent from "@/ui/modals/modal";
-import { useEffect, useRef, useState } from "react";
+import Table from "@/ui/components/tabble/table";
+import { Tooltip } from "@mui/material";
+import { useRef, useState } from "react";
 import SpeechRecognition, {
   useSpeechRecognition,
 } from "react-speech-recognition";
-import Tooltip from "@mui/material/Tooltip";
+import {useRouter} from 'next/navigation'
 
-export default function Home() {
-  //Variables declaradas
-  const [searchTerm, setSearchTerm] = useState("");
-  const [categories, setCategories] = useState<CategoriesAll[]>([]);
-  const [filterCategories, setFilterCategories] = useState<number[]>([]);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const audioContext = useRef<AudioContext | null>(null);
-  const source = useRef<AudioBufferSourceNode | null>(null);
-  const [openHelp, setOpenHelp] = useState(false);
-
+export default function CreatorBooksPage() {
   const commands = [
     {
       command: [
@@ -36,7 +23,7 @@ export default function Home() {
         "Agrega la categoría *",
         "Agrega las categorías *",
       ],
-      callback: (speech: string) => findCategoriesInSpeech(speech),
+      callback: (speech: string) => {},
     },
     {
       command: [
@@ -45,36 +32,19 @@ export default function Home() {
         "Saca la categoría *",
         "Saca las categorías *",
       ],
-      callback: (speech: string) => removeCategoriesFromSpeech(speech),
+      callback: (speech: string) => {},
     },
   ];
 
+  const [open, setOpen] = useState(false);
   const { transcript, resetTranscript, listening } = useSpeechRecognition({
     commands: commands,
   });
-
-  const findCategoriesInSpeech = (speech: string) => {
-    const lowerCaseSpeech = speech.toLowerCase();
-    categories.forEach((category) => {
-      if (lowerCaseSpeech.includes(category.categoryName.toLowerCase())) {
-        setFilterCategories((prevFilterCategories) => [
-          ...prevFilterCategories,
-          category.idCategory,
-        ]);
-      }
-    });
-  };
-
-  const removeCategoriesFromSpeech = (speech: string) => {
-    const lowerCaseSpeech = speech.toLowerCase();
-    categories.forEach((category) => {
-      if (lowerCaseSpeech.includes(category.categoryName.toLowerCase())) {
-        setFilterCategories((prevFilterCategories) =>
-          prevFilterCategories.filter((id) => id !== category.idCategory)
-        );
-      }
-    });
-  };
+  const [openHelp, setOpenHelp] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const audioContext = useRef<AudioContext | null>(null);
+  const source = useRef<AudioBufferSourceNode | null>(null);
+  const router = useRouter();
 
   const startListening = () => {
     SpeechRecognition.startListening({ language: "es-EC" });
@@ -129,45 +99,20 @@ export default function Home() {
     }
   };
 
-  const handleChange = (e: any) => {
-    setSearchTerm(e.target.value);
-  };
+  const tableData = [
+    { bookName: "Elizabeth Watson", createdAt: '25/12/2021', visits: 1 },
+    { bookName: "Elizabeth Allen", createdAt: '25/12/2021', visits: 2 },
+    { bookName: "Caleb Jones", createdAt: '25/12/2021', visits: 3 },
+  ];
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const response = await fetch("../api/categories?limit=10000");
-      const data: ResponseData<CategoriesAll[]> = await response.json();
-      setCategories(data.data ?? []);
-    };
-    fetchData();
-  }, []);
-
-  const handleCategoryChange = (event: any) => {
-    const selectedCategoryId = event.target.value;
-    const category = categories.find(
-      (category) => category.idCategory == selectedCategoryId
-    );
-    if (category) {
-      if (filterCategories.includes(category.idCategory)) {
-        setFilterCategories((prev) =>
-          prev.filter((id) => id !== category.idCategory)
-        );
-      } else {
-        setFilterCategories((prev) => [...prev, category.idCategory]);
-      }
-    }
-  };
-
-  const handleClick = async () => {
-    console.log("Click", searchTerm);
-  };
-
-  const handleCloseHelp = () => {
-    setOpenHelp(false);
-  };
+  const headers = [
+    { key: "bookName", name: "Nombre" },
+    { key: "createdAt", name: "Edad" },
+    { key: "visits", name: "Activo" },
+  ];
 
   return (
-    <div className="shadow-xl p-8 grid rounded-md">
+    <div className="shadow-2xl p-4  rounded-lg">
       <div className="flex items-center justify-end gap-2">
         <Tooltip arrow title={isPlaying ? "Detener" : "Oír"} placement="top">
           <span className="cursor-pointer" onClick={handleSpeech}>
@@ -247,7 +192,7 @@ export default function Home() {
             )}
           </span>
         </Tooltip>
-        <Tooltip arrow title='Ayuda' placement="top">
+        <Tooltip arrow title="Ayuda" placement="top">
           <span className="cursor-pointer" onClick={() => setOpenHelp(true)}>
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -264,90 +209,38 @@ export default function Home() {
           </span>
         </Tooltip>
       </div>
-      <div className="my-2 border-b border-gray-300"></div>
-      <div className="flex gap-5">
-        <div className="w-5/6">
-          <Input
-            label="Encuentra el libro que buscas"
-            name="bookName"
-            placeholder="Escribe el nombre o autor del libro"
-            type="text"
+      <div className="my-3 border-b border-gray-300"></div>
+      <div className="flex flex-wrap justify-between mb-5">
+        <h1 className="relative text-2xl text-primary-500 font-bold before:content-[''] before:block before:absolute before:h-full before:w-1 before:bg-primary-500 before:left-0">
+          <span className="ps-2">Mis Libros</span>
+        </h1>
+        <div className="flex gap-2">
+          <ButtonOutlined
             icon={
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"
-                fill="currentColor text-iconBgColor"
-                className="w-5 h-5"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M10.5 3.75a6.75 6.75 0 1 0 0 13.5 6.75 6.75 0 0 0 0-13.5ZM2.25 10.5a8.25 8.25 0 1 1 14.59 5.28l4.69 4.69a.75.75 0 1 1-1.06 1.06l-4.69-4.69A8.25 8.25 0 0 1 2.25 10.5Z"
-                  clipRule="evenodd"
-                />
-              </svg>
-            }
-            onChange={handleChange}
-            value={searchTerm}
-          ></Input>
-        </div>
-        <div className="flex items-end">
-          <ButtonOutlined
-            onClick={handleClick}
-            icon={
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 16 16"
                 fill="currentColor"
-                className="w-4 h-4"
+                className="w-6 h-6"
               >
                 <path
                   fillRule="evenodd"
-                  d="M9.965 11.026a5 5 0 1 1 1.06-1.06l2.755 2.754a.75.75 0 1 1-1.06 1.06l-2.755-2.754ZM10.5 7a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z"
+                  d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM12.75 9a.75.75 0 0 0-1.5 0v2.25H9a.75.75 0 0 0 0 1.5h2.25V15a.75.75 0 0 0 1.5 0v-2.25H15a.75.75 0 0 0 0-1.5h-2.25V9Z"
                   clipRule="evenodd"
                 />
               </svg>
             }
+            onClick={() => {
+                router.push('/creator/books/creation')
+            }}
           >
-            Buscar
+            Nuevo Libro
           </ButtonOutlined>
         </div>
       </div>
-      <div className="pb-3 pt-5 text-left font-bold text-xl text-primary-500 font-poppins">
-        Filtros
+      <div>
+        <Table data={tableData} showEdit showView showActions headers={headers} />
       </div>
-      <div className="shadow-md rounded-md p-3">
-        <div className="flex items-center justify-between">
-          <span className="font-open-sans text-secondary-400 font-normal text-sm">
-            Categorías
-          </span>
-        </div>
-        <div className="pt-3">
-          <div className="flex flex-row gap-5 flex-wrap">
-            {categories.map((category) => (
-              <label
-                key={category.idCategory}
-                className="flex items-center cursor-pointer"
-              >
-                <input
-                  type="checkbox"
-                  value={category.idCategory}
-                  checked={filterCategories.includes(category.idCategory)}
-                  onChange={handleCategoryChange}
-                  className="mr-2 cursor-pointer focus:outline-none w-6 border-gray-200 rounded-md custom-checkbox"
-                />
-                <span className="font-open-sans text-sm font-normal text-labelInputText">
-                  {category.categoryName}
-                </span>
-              </label>
-            ))}
-          </div>
-        </div>
-      </div>
-      {openHelp && (
-        <ModalParent onClose={handleCloseHelp}>
-          <Help commands={commandsHomeReader} page="inicio"></Help>
-        </ModalParent>
-      )}
     </div>
   );
 }

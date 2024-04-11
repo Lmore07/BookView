@@ -10,7 +10,7 @@ interface ModalParentProps {
 const ModalParent: React.FC<ModalParentProps> = ({ children, onClose }) => {
   return (
     <div
-      className="fixed z-10 inset-0 overflow-y-auto"
+      className="fixed z-10 inset-0 overflow-y-auto mx-3"
       aria-labelledby="modal-title"
       role="dialog"
       aria-modal="true"

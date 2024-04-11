@@ -4,7 +4,8 @@ import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import logoImg from "../../../../public/imgs/icon.svg";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import Cookie from "js-cookie";
 
 interface SidebarProps {
   optionsRoutes: {
@@ -19,6 +20,7 @@ const Sidebar: React.FC<SidebarProps> = ({ optionsRoutes }) => {
   const [selectedOption, setSelectedOption] = useState("Inicio");
   const [showFullSidebar, setShowFullSidebar] = useState(true);
   const pathName = usePathname();
+  const router = useRouter();
 
   useEffect(() => {
     handleSelectedOption();
@@ -118,6 +120,10 @@ const Sidebar: React.FC<SidebarProps> = ({ optionsRoutes }) => {
         ))}
         <a
           href="../login"
+          onClick={() => {
+            Cookie.remove("token");
+            router.replace("/login");
+          }}
           className="flex gap-1 hover:bg-secondary-150 items-center px-3 py-2 transition-colors text-textSidebar"
         >
           <div>

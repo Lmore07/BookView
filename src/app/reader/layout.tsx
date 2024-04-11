@@ -1,11 +1,12 @@
 import Header from "@/ui/components/header/header";
-import Sidebar from "@/ui/components/sidebar/sideBarReader";
+import Sidebar from "@/ui/components/sidebar/sideBar";
 
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  
   const optionsRoutes = [
     {
       name: "Inicio",

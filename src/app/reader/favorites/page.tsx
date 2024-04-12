@@ -35,12 +35,17 @@ export default function Favorites() {
 
   const fetchData = async () => {
     setIsLoading(true);
-    const response = await fetch(`../api/folders/?limit=8&page=${page}`);
-    const data: ResponseData<FoldersAll[]> = await response.json();
-    setTotalPages(data.pagination!.totalPages);
-    setPage(data.pagination!.currentPage);
-    setFolders(data.data ?? []);
-    setIsLoading(false);
+    try {
+      const response = await fetch(`../api/folders/?limit=8&page=${page}`);
+      const data: ResponseData<FoldersAll[]> = await response.json();
+      setTotalPages(data.pagination?.totalPages ?? 0);
+      setPage(data.pagination?.currentPage ?? 0);
+      setFolders(data.data ?? []);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   useEffect(() => {

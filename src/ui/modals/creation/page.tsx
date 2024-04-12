@@ -1,20 +1,27 @@
 import Chip from "@mui/material/Chip";
 import Divider from "@mui/material/Divider";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import NoImage from "../../../../public/imgs/no-image.jpg";
 import Template1 from "./pages/templateOne";
 import Template2 from "./pages/templateTwo";
 import Template3 from "./pages/templateThree";
 import Template4 from "./pages/templateFour";
 
-const BookEditor = () => {
+const BookEditor: React.FC<{ onChangedPages: any }> = ({ onChangedPages }) => {
   const [pages, setPages] = useState<any>([]);
 
   const addPage = (template: any) => {
     setPages([
       ...pages,
-      { template, content: "", imageBlob: null, pageNumber: pages.length + 1 },
+      {
+        template,
+        content: "",
+        imageBlob: null,
+        pageNumber: pages.length + 1,
+        audioBlob: null,
+        videoBlob: null,
+      },
     ]);
   };
 
@@ -24,13 +31,24 @@ const BookEditor = () => {
     setPages(newPages.map((page, i) => ({ ...page, pageNumber: i + 1 })));
   };
 
-  const updatePageContent = (index: any, content: any, imageBlob: any) => {
+  const updatePageContent = (
+    index: any,
+    content: any,
+    imageBlob: any,
+    audioBlob?: any,
+    videoBlob?: any
+  ) => {
     const newPages = [...pages];
     newPages[index].content = content;
     newPages[index].imageBlob = imageBlob;
+    newPages[index].audioBlob = audioBlob;
+    newPages[index].videoBlob = videoBlob;
     setPages(newPages);
-    console.log(newPages);
   };
+
+  useEffect(() => {
+    onChangedPages(pages);
+  }, [pages]);
 
   return (
     <div className="bg-gray-100 flex flex-col">
@@ -47,32 +65,76 @@ const BookEditor = () => {
                 {page.template === "Template1" && (
                   <Template1
                     content={page.content}
-                    onContentChange={(content: any, imageBlob: any) =>
-                      updatePageContent(index, content, imageBlob)
+                    onContentChange={(
+                      content: any,
+                      imageBlob: any,
+                      audioBlob: any,
+                      videoBlob: any
+                    ) =>
+                      updatePageContent(
+                        index,
+                        content,
+                        imageBlob,
+                        audioBlob,
+                        videoBlob
+                      )
                     }
                   />
                 )}
                 {page.template === "Template2" && (
                   <Template2
                     content={page.content}
-                    onContentChange={(content: any, imageBlob: any) =>
-                      updatePageContent(index, content, imageBlob)
+                    onContentChange={(
+                      content: any,
+                      imageBlob: any,
+                      audioBlob: any,
+                      videoBlob: any
+                    ) =>
+                      updatePageContent(
+                        index,
+                        content,
+                        imageBlob,
+                        audioBlob,
+                        videoBlob
+                      )
                     }
                   />
                 )}
                 {page.template === "Template3" && (
                   <Template3
                     content={page.content}
-                    onContentChange={(content: any, imageBlob: any) =>
-                      updatePageContent(index, content, imageBlob)
+                    onContentChange={(
+                      content: any,
+                      imageBlob: any,
+                      audioBlob: any,
+                      videoBlob: any
+                    ) =>
+                      updatePageContent(
+                        index,
+                        content,
+                        imageBlob,
+                        audioBlob,
+                        videoBlob
+                      )
                     }
                   />
                 )}
                 {page.template === "Template4" && (
                   <Template4
                     content={page.content}
-                    onContentChange={(content: any, imageBlob: any) =>
-                      updatePageContent(index, content, imageBlob)
+                    onContentChange={(
+                      content: any,
+                      imageBlob: any,
+                      audioBlob: any,
+                      videoBlob: any
+                    ) =>
+                      updatePageContent(
+                        index,
+                        content,
+                        imageBlob,
+                        audioBlob,
+                        videoBlob
+                      )
                     }
                   />
                 )}

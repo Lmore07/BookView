@@ -1,5 +1,9 @@
-import JoditEditor from "jodit-react";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import AudioUpload from "../multimedia/audio/page";
+import dynamic from "next/dynamic";
+import VideoUpload from "../multimedia/video/page";
+import ButtonOutlined from "@/ui/components/buttons/ButtonOutlined";
+const JoditEditor = dynamic(() => import("jodit-react"), { ssr: false });
 
 const Template1: React.FC<{ content: any; onContentChange: any }> = ({
   content,
@@ -8,8 +12,8 @@ const Template1: React.FC<{ content: any; onContentChange: any }> = ({
   const editor = useRef<any>(null);
   const [image, setImage] = useState<File | null>(null);
   const [imageBlob, setImageBlob] = useState<Blob | null>(null);
-  const [audio, setAudio] = useState<File | null>(null);
-  const [video, setVideo] = useState<File | null>(null);
+  const [audioBlob, setAudioBlob] = useState<Blob | null>(null);
+  const [videoBlob, setVideoBlob] = useState<Blob | string | null>(null);
 
   const handleImageUpload = () => {
     const input = document.createElement("input");
@@ -33,6 +37,30 @@ const Template1: React.FC<{ content: any; onContentChange: any }> = ({
     input.click();
   };
 
+  useEffect(() => {
+    if (imageBlob) {
+      onContentChange(content, imageBlob, audioBlob, videoBlob);
+    } else {
+      onContentChange(content, null, audioBlob, videoBlob);
+    }
+  }, [imageBlob]);
+
+  useEffect(() => {
+    if (audioBlob) {
+      onContentChange(content, imageBlob, audioBlob, videoBlob);
+    } else {
+      onContentChange(content, imageBlob, null, videoBlob);
+    }
+  }, [audioBlob]);
+
+  useEffect(() => {
+    if (videoBlob) {
+      onContentChange(content, imageBlob, audioBlob, videoBlob);
+    } else {
+      onContentChange(content, imageBlob, audioBlob, null);
+    }
+  }, [videoBlob]);
+
   const openPreviewWindow = () => {
     if (editor.current) {
       const previewContent = editor.current.value;
@@ -52,26 +80,33 @@ const Template1: React.FC<{ content: any; onContentChange: any }> = ({
     }
   };
 
-  const handleAudioUpload = () => {
-    const input = document.createElement("input");
-    input.type = "file";
-    input.accept = "audio/*";
-    input.onchange = (e) => {
-      const file = (e.target as HTMLInputElement).files?.[0];
-      setAudio(file || null);
-    };
-    input.click();
+  const generateVideoSource = () => {
+    if (videoBlob) {
+      if (typeof videoBlob === "string") {
+        return videoBlob;
+      } else {
+        return URL.createObjectURL(videoBlob);
+      }
+    }
+    return "";
   };
 
-  const handleVideoUpload = () => {
-    const input = document.createElement("input");
-    input.type = "file";
-    input.accept = "video/*";
-    input.onchange = (e) => {
-      const file = (e.target as HTMLInputElement).files?.[0];
-      setVideo(file || null);
-    };
-    input.click();
+  const generateVideoType = () => {
+    if (videoBlob) {
+      if (typeof videoBlob === "string") {
+        return "video/mp4";
+      } else {
+        return videoBlob.type;
+      }
+    }
+    return "";
+  };
+
+  const extractYouTubeId = (url: any) => {
+    const regex =
+      /(youtu.be\/|youtube.com\/(watch\?(.*&)?v=|(embed|v)\/))([^?&"'>]+)/;
+    const matches = url.match(regex);
+    return matches ? matches[5] : null;
   };
 
   return (
@@ -118,7 +153,6 @@ const Template1: React.FC<{ content: any; onContentChange: any }> = ({
               "align",
               "undo",
               "redo",
-              "fullsize",
             ],
             safeMode: true,
             useSplitMode: false,
@@ -135,39 +169,89 @@ const Template1: React.FC<{ content: any; onContentChange: any }> = ({
               "video",
             ],
           }}
-          onBlur={(newContent) => onContentChange(newContent, imageBlob)}
-          onChange={(newContent) => {}}
+          onBlur={(newContent) =>
+            onContentChange(newContent, imageBlob, audioBlob, videoBlob)
+          }
         />
       </div>
-      <div className="mt-4 flex justify-between">
+      <div className="mt-4 gap-4 flex flex-wrap items-center justify-center">
         <div className="flex items-center">
-          <span className="mr-2 text-gray-600">Seleccione un audio:</span>
-          {audio ? (
-            <audio controls>
-              <source src={URL.createObjectURL(audio)} type={audio.type} />
-            </audio>
+          {audioBlob ? (
+            <div className="bg-bgColorRight rounded-lg shadow-md p-4">
+              <audio controls>
+                <source
+                  src={URL.createObjectURL(audioBlob)}
+                  type={audioBlob.type}
+                />
+              </audio>
+              <ButtonOutlined
+                onClick={() => {
+                  setAudioBlob(null);
+                }}
+                className={
+                  "border-red-600 mt-3 text-red-600 hover:text-white hover:bg-red-600"
+                }
+              >
+                Quitar audio
+              </ButtonOutlined>
+            </div>
           ) : (
-            <button
-              className="bg-green-500 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded"
-              onClick={handleAudioUpload}
-            >
-              Elegir audio
-            </button>
+            <AudioUpload
+              onAudioSelected={(file: any) => {
+                setAudioBlob(file);
+              }}
+            ></AudioUpload>
           )}
         </div>
         <div className="flex items-center">
-          <span className="mr-2 text-gray-600">Seleccione un video:</span>
-          {video ? (
-            <video controls>
-              <source src={URL.createObjectURL(video)} type={video.type} />
-            </video>
+          {videoBlob ? (
+            <div className="bg-bgColorRight rounded-lg shadow-md p-4">
+              {typeof videoBlob === "string" ? (
+                videoBlob.includes("youtube") ||
+                videoBlob.includes("youtu.be") ? (
+                  <iframe
+                    width="400"
+                    height="200"
+                    src={`https://www.youtube.com/embed/${extractYouTubeId(
+                      videoBlob
+                    )}?si=1hJICvjoozCQ6RdW`}
+                    frameBorder="0"
+                    allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                  ></iframe>
+                ) : (
+                  <video controls>
+                    <source
+                      src={generateVideoSource()}
+                      type={generateVideoType()}
+                    />
+                  </video>
+                )
+              ) : (
+                <video controls>
+                  <source
+                    src={generateVideoSource()}
+                    type={generateVideoType()}
+                  />
+                </video>
+              )}
+              <ButtonOutlined
+                onClick={() => {
+                  setVideoBlob(null);
+                }}
+                className={
+                  "border-red-600 mt-3 text-red-600 hover:text-white hover:bg-red-600"
+                }
+              >
+                Quitar video
+              </ButtonOutlined>
+            </div>
           ) : (
-            <button
-              className="bg-green-500 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded"
-              onClick={handleVideoUpload}
-            >
-              Elegir video
-            </button>
+            <VideoUpload
+              onAudioSelected={(video: any) => {
+                setVideoBlob(video);
+              }}
+            ></VideoUpload>
           )}
         </div>
       </div>

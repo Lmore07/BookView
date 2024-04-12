@@ -42,7 +42,6 @@ const Help: React.FC<VoiceCommandProps> = ({ commands, page }) => {
       source.current = src;
       setIsPlaying(true);
       src.onended = () => {
-        console.log("El audio ha terminado de reproducirse");
         setIsPlaying(false);
       };
     });

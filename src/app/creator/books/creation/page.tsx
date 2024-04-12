@@ -1,7 +1,9 @@
 "use client";
 
+import { ToastContext } from "@/libs/contexts/toastContext";
 import { CategoriesAll } from "@/libs/interfaces/categories.interface";
 import { ResponseData } from "@/libs/interfaces/response.interface";
+import { ToastType } from "@/libs/interfaces/toast.interface";
 import {
   validateCorrectDate,
   validateNotEmpty,
@@ -10,12 +12,14 @@ import Button from "@/ui/components/buttons/ButtonFill";
 import ButtonOutlined from "@/ui/components/buttons/ButtonOutlined";
 import Input from "@/ui/components/inputs/input";
 import BookEditor from "@/ui/modals/creation/page";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 
 export default function Stepper() {
   const [currentStep, setCurrentStep] = useState(0);
   const [categories, setCategories] = useState<CategoriesAll[]>([]);
+  const [pages, setPages] = useState<any>([]);
   const [filterCategories, setFilterCategories] = useState<number[]>([]);
+  const { handleShowToast } = useContext(ToastContext)!;
   const [stepOne, setStepOne] = useState({
     bookName: "",
     author: "",
@@ -172,6 +176,38 @@ export default function Stepper() {
   };
 
   const handleClick = () => {
+    if (currentStep == 2) {
+      for (let i = 0; i < pages.length; i++) {
+        const obj = pages[i];
+        if (obj.content === null || obj.content === "") {
+          handleShowToast(
+            `En la página ${obj.pageNumber} falta el contenido.`,
+            ToastType.ERROR
+          );
+          return;
+        }
+        if (obj.imageBlob === null && obj.template!='Template4') {
+          handleShowToast(
+            `En la página ${obj.pageNumber} falta la imagen.`,
+            ToastType.ERROR
+          );
+          return;
+        }
+        if (obj.audioBlob === null) {
+          handleShowToast(
+            `En las páginas que falta el audio se realizará lectura mediante IA.`,
+            ToastType.INFO
+          );
+        }
+        if (obj.videoBlob === null) {
+          handleShowToast(
+            `En la página ${obj.pageNumber} falta el video.`,
+            ToastType.ERROR
+          );
+          return;
+        }
+      }
+    }
     if (currentStep != 3) {
       handleNext();
     }
@@ -209,9 +245,8 @@ export default function Stepper() {
       </div>
       <div className="flex items-center justify-center flex-wrap gap-3 py-2 px-4 rounded-lg shadow-xl mx-5">
         {steps.map((step, index) => (
-          <div className="flex justify-center">
+          <div key={index} className="flex justify-center">
             <div
-              key={index}
               className={`flex items-center text-sm justify-start cursor-pointer pb-2 font-open-sans ${
                 index === currentStep
                   ? "text-primary-500 border-b-4 border-secondary-400 font-bold"
@@ -417,7 +452,14 @@ export default function Stepper() {
             </div>
           </div>
         )}
-        {currentStep == 2 && <BookEditor></BookEditor>}
+        <div style={{ display: currentStep === 2 ? "block" : "none" }}>
+          <BookEditor
+            onChangedPages={(pages: any) => {
+              console.log(pages);
+              setPages(pages);
+            }}
+          />
+        </div>
         {currentStep == 3 && <div>Hola paso 4</div>}
       </div>
       <div className="flex items-center justify-end mt-4 px-5 gap-3">

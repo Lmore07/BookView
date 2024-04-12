@@ -83,7 +83,6 @@ export default function Login() {
           handleShowToast(response.error, ToastType.ERROR);
         }
       } catch (error) {
-        console.log("Error al login: ", error);
         handleShowToast("Ocurrio un error inesperado", ToastType.ERROR);
       } finally {
         setIsLoading(false);

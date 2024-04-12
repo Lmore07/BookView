@@ -20,3 +20,9 @@ export const validateMaxDate = (value: string) => {
   const currentDate = new Date();
   return inputDate <= currentDate ? "" : "La fecha no puede ser futura";
 };
+
+// Validar que el campo sea un enlace valido
+export const validateUrl = (value: string) => {
+  const urlRegex = /^(http|https):\/\/[^ "]+$/;
+  return urlRegex.test(value) ? "" : "Ingrese un enlace válido";
+};

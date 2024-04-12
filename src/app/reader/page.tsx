@@ -107,7 +107,6 @@ export default function Home() {
       source.current = src;
       setIsPlaying(true);
       src.onended = () => {
-        console.log("El audio ha terminado de reproducirse");
         setIsPlaying(false);
       };
     });

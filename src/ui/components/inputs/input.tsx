@@ -93,9 +93,6 @@ const Input = ({
     }
   };
 
-  useEffect(() => {
-    console.log("Transcript del input: ", transcript);
-  }, [transcript]);
 
   const handleBlur = () => {
     setTouched(true);

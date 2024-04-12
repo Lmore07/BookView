@@ -10,6 +10,8 @@ import ModalParent from "@/ui/modals/modal";
 import { ResponseData } from "@/libs/interfaces/response.interface";
 import { FoldersAll } from "@/libs/interfaces/folders.interface";
 import { LoadingContext } from "@/libs/contexts/loadingContext";
+import { ToastContext } from "@/libs/contexts/toastContext";
+import { ToastType } from "@/libs/interfaces/toast.interface";
 
 export default function Favorites() {
   const router = useRouter();
@@ -20,6 +22,7 @@ export default function Favorites() {
   const [folders, setFolders] = useState<FoldersAll[]>([]);
   const [reloadData, setReloadData] = useState(false);
   const { setIsLoading } = useContext(LoadingContext)!;
+  const { handleShowToast } = useContext(ToastContext)!;
 
   const handleChange = (event: any, value: number) => {
     setPage(value);
@@ -38,11 +41,16 @@ export default function Favorites() {
     try {
       const response = await fetch(`../api/folders/?limit=8&page=${page}`);
       const data: ResponseData<FoldersAll[]> = await response.json();
+      if (data.error) {
+        handleShowToast(data.error, ToastType.ERROR);
+        return;
+      }
       setTotalPages(data.pagination?.totalPages ?? 0);
       setPage(data.pagination?.currentPage ?? 0);
       setFolders(data.data ?? []);
     } catch (error) {
       console.error(error);
+      handleShowToast("Error al cargar las carpetas", ToastType.ERROR);
     } finally {
       setIsLoading(false);
     }

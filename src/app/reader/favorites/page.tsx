@@ -16,8 +16,8 @@ import { ToastType } from "@/libs/interfaces/toast.interface";
 export default function Favorites() {
   const router = useRouter();
 
-  const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
+  const [page, setPage] = useState<number | null>(null);
+  const [totalPages, setTotalPages] = useState<number | null>(null);
   const [open, setOpen] = useState(false);
   const [folders, setFolders] = useState<FoldersAll[]>([]);
   const [reloadData, setReloadData] = useState(false);
@@ -46,7 +46,7 @@ export default function Favorites() {
         return;
       }
       setTotalPages(data.pagination?.totalPages ?? 0);
-      setPage(data.pagination?.currentPage ?? 0);
+      setPage(data.pagination?.currentPage ?? 1);
       setFolders(data.data ?? []);
     } catch (error) {
       console.error(error);
@@ -130,9 +130,9 @@ export default function Favorites() {
                   color: "#000",
                 },
             }}
-            count={totalPages}
+            count={totalPages!}
             size="large"
-            page={page}
+            page={page!}
             onChange={handleChange}
             variant="outlined"
             shape="rounded"

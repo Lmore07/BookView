@@ -41,8 +41,8 @@ export default function Favorites() {
     try {
       const response = await fetch(`../api/folders/?limit=8&page=${page}`);
       const data: ResponseData<FoldersAll[]> = await response.json();
-      if (data.error) {
-        handleShowToast(data.error, ToastType.ERROR);
+      if (data.statusCode != 200) {
+        handleShowToast(data.message ?? "Error", ToastType.ERROR);
         return;
       }
       setTotalPages(data.pagination?.totalPages ?? 0);

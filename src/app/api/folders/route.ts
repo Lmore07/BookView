@@ -61,7 +61,7 @@ export const GET = apiMiddleware(async (request: NextRequest) => {
     return NextResponse.json(
       {
         data: folders,
-        message: "No hay categorías disponibles",
+        message: "No tiene carpetas agregadas",
       },
       { status: 404 }
     );

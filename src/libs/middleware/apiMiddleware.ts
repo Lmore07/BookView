@@ -21,12 +21,11 @@ export function apiMiddleware(
         );
       }
 
-      // Si la respuesta no es exitosa, da formato al error
       return NextResponse.json(
         {
-          message: data.message || "Error",
+          message: data.message,
           statusCode: data.statusCode || res.status,
-          error: data.error,
+          error: data.error || "Error",
           data: data.data,
         },
         { status: data.statusCode ?? res.status }

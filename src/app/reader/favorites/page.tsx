@@ -16,8 +16,8 @@ import { ToastType } from "@/libs/interfaces/toast.interface";
 export default function Favorites() {
   const router = useRouter();
 
-  const [page, setPage] = useState<number | null>(null);
-  const [totalPages, setTotalPages] = useState<number | null>(null);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
   const [open, setOpen] = useState(false);
   const [folders, setFolders] = useState<FoldersAll[]>([]);
   const [reloadData, setReloadData] = useState(false);
@@ -41,13 +41,13 @@ export default function Favorites() {
     try {
       const response = await fetch(`../api/folders/?limit=8&page=${page}`);
       const data: ResponseData<FoldersAll[]> = await response.json();
-      if (data.statusCode != 200) {
-        handleShowToast(data.message ?? "Error", ToastType.ERROR);
-        return;
+      if (data.error) {
+        handleShowToast(data.message!, ToastType.ERROR);
+      } else {
+        setTotalPages(data.pagination?.totalPages ?? 0);
+        setPage(data.pagination?.currentPage ?? 0);
+        setFolders(data.data ?? []);
       }
-      setTotalPages(data.pagination?.totalPages ?? 0);
-      setPage(data.pagination?.currentPage ?? 1);
-      setFolders(data.data ?? []);
     } catch (error) {
       console.error(error);
       handleShowToast("Error al cargar las carpetas", ToastType.ERROR);
@@ -60,9 +60,6 @@ export default function Favorites() {
     fetchData();
   }, [page]);
 
-  useEffect(() => {
-    fetchData();
-  }, [reloadData]);
 
   return (
     <div className="shadow-2xl p-4 rounded-lg">
@@ -130,9 +127,9 @@ export default function Favorites() {
                   color: "#000",
                 },
             }}
-            count={totalPages!}
+            count={totalPages}
             size="large"
-            page={page!}
+            page={page}
             onChange={handleChange}
             variant="outlined"
             shape="rounded"
@@ -143,7 +140,9 @@ export default function Favorites() {
         <ModalParent onClose={handleClose}>
           <CreateFolder
             onClose={handleClose}
-            onFolderCreated={() => setReloadData((prevState) => !prevState)}
+            onFolderCreated={() => {
+              fetchData();
+            }}
           />
         </ModalParent>
       )}

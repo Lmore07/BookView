@@ -70,32 +70,41 @@ model Books {
   idBook          Int              @id @default(autoincrement()) @map("id_book")
   bookName        String           @map("book_name")
   author          String           @map("author")
-  illustrator      String?         @map("illustrator")
+  illustrator     String?          @map("illustrator")
   publicationDate DateTime?        @map("publication_date")
   createdAt       DateTime?        @default(now()) @map("created_at")
   updatedAt       DateTime?        @updatedAt @map("updated_at")
   createdBy       Int?             @map("created_by")
   updatedBy       Int?             @map("updated_by")
   status          Boolean          @default(true) @map("status")
-  idCategory      Int              @map("id_category")
   Favorite_Books  Favorite_Books[]
   Pages           Pages[]
   View_Books      View_Books[]
-  Categories      Categories?      @relation(fields: [idCategory], references: [idCategory])
+  BookCategories  BookCategory[]
 
   @@map("books")
 }
 
+model BookCategory {
+  id         Int        @id @default(autoincrement())
+  idBook     Int        @map("id_book")
+  idCategory Int        @map("id_category")
+  Books      Books      @relation(fields: [idBook], references: [idBook])
+  Categories Categories @relation(fields: [idCategory], references: [idCategory])
+
+  @@map("book_categories")
+}
+
 model Categories {
-  idCategory   Int       @id @default(autoincrement()) @map("id_category")
-  categoryName String    @map("category_name")
-  description  String    @map("description")
-  createdAt    DateTime? @default(now()) @map("created_at")
-  updatedAt    DateTime? @updatedAt @map("updated_at")
-  status       Boolean   @default(true) @map("status")
-  createdBy    Int?      @map("created_by")
-  updatedBy    Int?      @map("updated_by")
-  Books        Books[]
+  idCategory     Int            @id @default(autoincrement()) @map("id_category")
+  categoryName   String         @map("category_name")
+  description    String         @map("description")
+  createdAt      DateTime?      @default(now()) @map("created_at")
+  updatedAt      DateTime?      @updatedAt @map("updated_at")
+  status         Boolean        @default(true) @map("status")
+  createdBy      Int?           @map("created_by")
+  updatedBy      Int?           @map("updated_by")
+  BookCategories BookCategory[]
 
   @@map("categories")
 }
@@ -104,8 +113,11 @@ model Pages {
   idPage     Int       @id @default(autoincrement()) @map("id_page")
   idBook     Int       @map("id_book")
   numberPage Int       @map("number_page")
-  typePage   String    @map("type_page")
+  template   String    @map("template")
   content    String    @map("content")
+  audio      String?   @map("audio")
+  video      String?   @map("video")
+  image      String?   @map("image")
   createdAt  DateTime? @default(now()) @map("created_at")
   updatedAt  DateTime? @updatedAt @map("updated_at")
   createdBy  Int?      @map("created_by")

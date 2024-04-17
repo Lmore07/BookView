@@ -110,7 +110,7 @@ const Template1: React.FC<{ content: any; onContentChange: any }> = ({
   };
 
   return (
-    <div className="bg-white p-8 rounded shadow-md w-full max-w-4xl mx-auto">
+    <div className="bg-bgColorDark p-8 rounded shadow-md w-full max-w-4xl mx-auto">
       <div
         className="bg-gray-200 h-64 flex items-center justify-center mb-4 cursor-pointer"
         onClick={handleImageUpload}
@@ -142,8 +142,8 @@ const Template1: React.FC<{ content: any; onContentChange: any }> = ({
               "underline",
               "strikethrough",
               "font",
+              "brush",
               "fontsize",
-              "image",
               "ul",
               "ol",
               "outdent",
@@ -164,7 +164,6 @@ const Template1: React.FC<{ content: any; onContentChange: any }> = ({
               "copyformat",
               "speechRecognize",
               "hr",
-              "brush",
               "paragraph",
               "video",
             ],

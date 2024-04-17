@@ -59,8 +59,8 @@ const Template4: React.FC<{ content: any; onContentChange: any }> = ({
   };
 
   return (
-    <div className="bg-white p-8 rounded shadow-md w-full mx-auto grid">
-      <div className="flex-wrap">
+    <div className="bg-white p-8 rounded shadow-md w-full mx-auto flex flex-col items-center">
+      <div className="max-w-2xl">
         <JoditEditor
           ref={editor}
           value={content}
@@ -76,6 +76,7 @@ const Template4: React.FC<{ content: any; onContentChange: any }> = ({
               "strikethrough",
               "font",
               "fontsize",
+              "brush",
               "ul",
               "ol",
               "outdent",
@@ -96,7 +97,6 @@ const Template4: React.FC<{ content: any; onContentChange: any }> = ({
               "copyformat",
               "speechRecognize",
               "hr",
-              "brush",
               "paragraph",
               "image",
               "video",

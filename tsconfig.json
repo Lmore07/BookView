@@ -9,6 +9,7 @@
     "module": "esnext",
     "moduleResolution": "bundler",
     "strictPropertyInitialization": false,
+    "emitDecoratorMetadata": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",

@@ -16,6 +16,7 @@ const config: Config = {
       },
       colors: {
         bgColorLeft: "var(--bgColorLeft)",
+        bgColorDark: "var(--bgColorDark)",
         bgColorRight: "var(--bgColorRight)",
         bgButtonAccesible: "var(--bg--ButtonAccesible)",
         textButtonAccesible: "var(--text--ButtonAccesible)",
@@ -29,6 +30,10 @@ const config: Config = {
         textButtonFill: "var(--text--ButtonFill)",
         bgButtonFillHover: "var(--bg--ButtonFillHover)",
         textButtonFillHover: "var(--text--ButtonFillHover)",
+        bgButtonPrevFill: "var(--bg--ButonPrevFill)",
+        textButtonPrevFill: "var(--text--ButtonPrevFill)",
+        bgButtonPrevFillHover: "var(--bg--ButtonPrevFillHover)",
+        textButtonPrevFillHover: "var(--text--ButtonPrevFillHover)",
         bgButtonOutlined: "var(--bg--ButtonOutlined)",
         textButtonOutlined: "var(--text--ButtonOutlined)",
         bgButtonOutlinedHover: "var(--bg--ButtonOutlinedHover)",

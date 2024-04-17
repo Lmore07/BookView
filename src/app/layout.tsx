@@ -1,4 +1,5 @@
 import "regenerator-runtime/runtime";
+import 'reflect-metadata';
 import { LoadingProvider } from "@/libs/contexts/loadingContext";
 import Providers from "@/libs/contexts/providers";
 import { ToastProvider } from "@/libs/contexts/toastContext";

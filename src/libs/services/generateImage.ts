@@ -23,3 +23,40 @@ export async function generateImage(text: string): Promise<string> {
   const url = await getDownloadURL(storageRef);
   return url;
 }
+
+export async function saveAudio(audio: any): Promise<string> {
+  const timestamp = new Date().getTime();
+  const extension = audio.type.split("/")[1];
+  const filename = `audio_${timestamp}.${extension}`;
+  console.log("Audio: ", filename);
+  const storageRef = ref(storage, `pages/audios/${filename}`);
+  await uploadBytes(storageRef, audio);
+  const url = await getDownloadURL(storageRef);
+  return url;
+}
+
+export async function saveImage(image: any): Promise<string> {
+  const timestamp = new Date().getTime();
+  const extension = image.type.split("/")[1];
+  const filename = `image_${timestamp}.${extension}`;
+  console.log("Imagen: ", filename);
+  const storageRef = ref(storage, `pages/images/${filename}`);
+  await uploadBytes(storageRef, image);
+  const url = await getDownloadURL(storageRef);
+  return url;
+}
+
+export async function saveVideo(video: any): Promise<string> {
+  if (typeof video === "string") {
+    return video;
+  } else {
+    const timestamp = new Date().getTime();
+    const extension = video.type.split("/")[1];
+    const filename = `video_${timestamp}.${extension}`;
+    console.log("Video: ", filename);
+    const storageRef = ref(storage, `pages/videos/${filename}`);
+    await uploadBytes(storageRef, video);
+    const url = await getDownloadURL(storageRef);
+    return url;
+  }
+}

@@ -12,11 +12,15 @@ import Button from "@/ui/components/buttons/ButtonFill";
 import ButtonOutlined from "@/ui/components/buttons/ButtonOutlined";
 import Input from "@/ui/components/inputs/input";
 import BookEditor from "@/ui/modals/creation/page";
-import React, { useContext, useEffect, useState } from "react";
+import PreviewContent from "@/ui/modals/creation/previewModal/page";
+import ModalParent from "@/ui/modals/modal";
+import { useContext, useEffect, useState } from "react";
 
 export default function Stepper() {
   const [currentStep, setCurrentStep] = useState(0);
   const [categories, setCategories] = useState<CategoriesAll[]>([]);
+  const [visible, setVisible] = useState(true);
+  const [previsualize, setPrevisualize] = useState(false);
   const [pages, setPages] = useState<any>([]);
   const [filterCategories, setFilterCategories] = useState<number[]>([]);
   const { handleShowToast } = useContext(ToastContext)!;
@@ -175,41 +179,79 @@ export default function Stepper() {
     setCurrentStep(currentStep - 1);
   };
 
-  const handleClick = () => {
-    if (currentStep == 2) {
-      for (let i = 0; i < pages.length; i++) {
-        const obj = pages[i];
-        if (obj.content === null || obj.content === "") {
-          handleShowToast(
-            `En la página ${obj.pageNumber} falta el contenido.`,
-            ToastType.ERROR
-          );
-          return;
-        }
-        if (obj.imageBlob === null && obj.template!='Template4') {
-          handleShowToast(
-            `En la página ${obj.pageNumber} falta la imagen.`,
-            ToastType.ERROR
-          );
-          return;
-        }
-        if (obj.audioBlob === null) {
-          handleShowToast(
-            `En las páginas que falta el audio se realizará lectura mediante IA.`,
-            ToastType.INFO
-          );
-        }
-        if (obj.videoBlob === null) {
-          handleShowToast(
-            `En la página ${obj.pageNumber} falta el video.`,
-            ToastType.ERROR
-          );
+  const handlePageValidation = (obj: any) => {
+    if (obj.content === null || obj.content === "") {
+      handleShowToast(
+        `En la página ${obj.pageNumber} falta el contenido.`,
+        ToastType.ERROR
+      );
+      return false;
+    }
+    if (obj.imageBlob === null && obj.template !== "Template4") {
+      handleShowToast(
+        `En la página ${obj.pageNumber} falta la imagen.`,
+        ToastType.ERROR
+      );
+      return false;
+    }
+    if (obj.audioBlob === null) {
+      handleShowToast(
+        `En las páginas que falta el audio se realizará lectura mediante IA.`,
+        ToastType.INFO
+      );
+    }
+    if (obj.videoBlob === null) {
+      handleShowToast(
+        `En la página ${obj.pageNumber} falta el video.`,
+        ToastType.ERROR
+      );
+      return false;
+    }
+    return true;
+  };
+
+  const handleClick = async () => {
+    if (currentStep === 2) {
+      for (const obj of pages) {
+        if (!handlePageValidation(obj)) {
           return;
         }
       }
     }
-    if (currentStep != 3) {
+    if (currentStep !== 3) {
       handleNext();
+    }
+    if (currentStep == 3) {
+      let body = {
+        ...stepOne,
+        categoriesIds: filterCategories,
+        pages: pages,
+      };
+      const formData = new FormData();
+      formData.append("bookName", body.bookName);
+      formData.append("author", body.author);
+      formData.append("publicationDate", body.publicationDate.toString());
+      body.pages.forEach((page: any, index: any) => {
+        formData.append(`pages[${index}][template]`, page.template);
+        formData.append(`pages[${index}][content]`, page.content);
+        formData.append(`pages[${index}][numberPage]`, page.numberPage);
+        if (page.image) {
+          formData.append(`pages[${index}][image]`, page.image);
+        }
+        if (page.audio) {
+          formData.append(`pages[${index}][audio]`, page.audio);
+        }
+        if (page.video) {
+          formData.append(`pages[${index}][video]`, page.video);
+        }
+      });
+      formData.append("categoriesIds", JSON.stringify(body.categoriesIds));
+      console.log(formData.get("bookName"));
+      const response = await fetch("../../api/books", {
+        method: "POST",
+        body: formData,
+      });
+      const data: ResponseData<CategoriesAll[]> = await response.json();
     }
   };
 
@@ -460,7 +502,80 @@ export default function Stepper() {
             }}
           />
         </div>
-        {currentStep == 3 && <div>Hola paso 4</div>}
+        {currentStep == 3 && (
+          <div className="shadow-2xl w-full rounded-xl p-3">
+            <div className="flex items-center justify-between pb-2 flex-wrap">
+              <h1 className="relative ps-2 pb-3 text-2xl text-left text-primary-500 font-bold">
+                <span>Publicar Libro</span>
+              </h1>
+              <div className="flex justify-center">
+                <button
+                  onClick={() => {
+                    setPrevisualize(true);
+                  }}
+                  className="w-full flex text-sm items-center justify-center font-open-sans font-normal py-1 rounded-lg bg-bgButtonPrevFill text-textButtonPrevFill px-3 hover:text-textButtonPrevFillHover hover:bg-bgButtonPrevFillHover"
+                >
+                  Previsualizar libro
+                </button>
+              </div>
+            </div>
+            {visible && (
+              <div
+                className={`flex xl:w-1/2 lg:w-1/2 md:w-full sm:w-full items-center top-4 rounded-md font-bold font-opens-sans text-base bg-tertiary-200 text-tertiary p-4${
+                  visible ? "opacity-100" : "opacity-0"
+                } transition-opacity duration-500`}
+              >
+                <div className="ms-4 grow">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                    className="w-5 h-5"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M9.401 3.003c1.155-2 4.043-2 5.197 0l7.355 12.748c1.154 2-.29 4.5-2.599 4.5H4.645c-2.309 0-3.752-2.5-2.598-4.5L9.4 3.003ZM12 8.25a.75.75 0 0 1 .75.75v3.75a.75.75 0 0 1-1.5 0V9a.75.75 0 0 1 .75-.75Zm0 8.25a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                </div>
+                <span className="py-1 ms-2 grow">
+                  Por favor, revise todo antes de publicar el libro.
+                </span>
+                <button
+                  className="text-white pe-2 top-1 hover:text-gray-300 focus:outline-none"
+                  onClick={() => {
+                    setVisible(false);
+                  }}
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                    className="w-5 h-5"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                </button>
+              </div>
+            )}
+            <div>
+              {previsualize && (
+                <ModalParent
+                  onClose={() => {
+                    setPrevisualize(false);
+                  }}
+                >
+                  <PreviewContent content={pages}></PreviewContent>
+                </ModalParent>
+              )}
+            </div>
+          </div>
+        )}
       </div>
       <div className="flex items-center justify-end mt-4 px-5 gap-3">
         <ButtonOutlined

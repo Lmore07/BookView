@@ -13,6 +13,7 @@
     
     /* Principal Page */
     --bgColorLeft:rgba(168,168,167,0.16);
+    --bgColorDark: rgb(240, 239, 239);
     --bgColorRight: white;
 
     /* Accessible Button */
@@ -67,6 +68,14 @@
     --border-not-select: #dee1e6;
     --bg-select:#fff;
 
+    /* Button Previsualization Fill */
+    --bg--ButonPrevFill: #eefee9;
+    --text--ButtonPrevFill: #1b7505;
+  
+    /* Button Previsualization Fill Hover*/
+    --bg--ButtonPrevFillHover: #1b7505;
+    --text--ButtonPrevFillHover: #fff;
+
     --primary--100: #eefee9;
     --primary--150: #cafcbe;
     --primary--200: #a7fa92;
@@ -110,6 +119,7 @@
 
   [data-theme="dark"] {
     --bgColorLeft: rgba(23, 23, 23, 0.8);
+    --bgColorDark: rgba(47, 44, 44, 1);
     --bgColorRight: #121212;
     --bg--ButtonAccesible: #1f8905;
     --text--ButtonAccesible: #ffffff;
@@ -162,6 +172,14 @@
     --border-not-select: #8f8f8f;
     --bg-select:#fff;
 
+        /* Button Previsualization Fill */
+        --bg--ButonPrevFill: #eefee9;
+        --text--ButtonPrevFill: #000000;
+      
+        /* Button Previsualization Fill Hover*/
+        --bg--ButtonPrevFillHover: #1b7505;
+        --text--ButtonPrevFillHover: #fff;
+
     --primary--100: #97c597;
     --primary--150: #1a391a;
     --primary--200: #205020;
@@ -185,7 +203,7 @@
     --secondary--350: #267026;
     --secondary--400: #000000;
     --secondary--450: #328b32;
-    --secondary--500: #379937;
+    --secondary--500: #ffffff;
     --secondary--550: #309030;
     --secondary--600: #298829;
     --secondary--650: #228122;
@@ -200,7 +218,7 @@
     --tertiary--350: #6e6e6e;
     --tertiary--400: #777777;
     --tertiary--450: #818181;
-    --tertiary--500: #8a8a8a;
+    --tertiary--500: #f2f2f2;
 }
 
 [data-theme="sepia"] {
@@ -214,6 +232,14 @@
 --text--ButtonAccesible: #ffffff;
 --bg--SelectTheme: #ffffff;
 --text--SelectTheme: #000000;
+
+        /* Button Previsualization Fill */
+        --bg--ButonPrevFill: #eefee9;
+        --text--ButtonPrevFill: #000000;
+      
+        /* Button Previsualization Fill Hover*/
+        --bg--ButtonPrevFillHover: #1b7505;
+        --text--ButtonPrevFillHover: #fff;
 
 /* Input */
 --label--inputText:#424856;
@@ -310,6 +336,13 @@
   /* High Contrast */
   filter: contrast(200%) brightness(0.8);
 
+          /* Button Previsualization Fill */
+          --bg--ButonPrevFill: #eefee9;
+          --text--ButtonPrevFill: #000000;
+        
+          /* Button Previsualization Fill Hover*/
+          --bg--ButtonPrevFillHover: #1b7505;
+          --text--ButtonPrevFillHover: #fff;
 
 /* Accessible Button */
 --bg--ButtonAccesible: #1b7505;
@@ -413,6 +446,13 @@
       --bgColorLeft:rgba(168,168,167,0.16);
       --bgColorRight: white;
   
+              /* Button Previsualization Fill */
+              --bg--ButonPrevFill: #eefee9;
+              --text--ButtonPrevFill: #000000;
+            
+              /* Button Previsualization Fill Hover*/
+              --bg--ButtonPrevFillHover: #1b7505;
+              --text--ButtonPrevFillHover: #fff;
       /* Accessible Button */
       --bg--ButtonAccesible: #1b7505;
       --text--ButtonAccesible: #ffffff;

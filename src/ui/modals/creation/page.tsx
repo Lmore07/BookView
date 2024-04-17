@@ -2,11 +2,14 @@ import Chip from "@mui/material/Chip";
 import Divider from "@mui/material/Divider";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import NoImage from "../../../../public/imgs/no-image.jpg";
-import Template1 from "./pages/templateOne";
-import Template2 from "./pages/templateTwo";
-import Template3 from "./pages/templateThree";
+import template1 from "../../../../public/templates/template1.svg";
+import template2 from "../../../../public/templates/template2.svg";
+import template3 from "../../../../public/templates/template3.svg";
+import template4 from "../../../../public/templates/template4.svg";
 import Template4 from "./pages/templateFour";
+import Template1 from "./pages/templateOne";
+import Template3 from "./pages/templateThree";
+import Template2 from "./pages/templateTwo";
 
 const BookEditor: React.FC<{ onChangedPages: any }> = ({ onChangedPages }) => {
   const [pages, setPages] = useState<any>([]);
@@ -17,10 +20,10 @@ const BookEditor: React.FC<{ onChangedPages: any }> = ({ onChangedPages }) => {
       {
         template,
         content: "",
-        imageBlob: null,
-        pageNumber: pages.length + 1,
-        audioBlob: null,
-        videoBlob: null,
+        image: null,
+        numberPage: pages.length + 1,
+        audio: null,
+        video: null,
       },
     ]);
   };
@@ -28,21 +31,21 @@ const BookEditor: React.FC<{ onChangedPages: any }> = ({ onChangedPages }) => {
   const removePage = (index: any) => {
     const newPages = [...pages];
     newPages.splice(index, 1);
-    setPages(newPages.map((page, i) => ({ ...page, pageNumber: i + 1 })));
+    setPages(newPages.map((page, i) => ({ ...page, numberPage: i + 1 })));
   };
 
   const updatePageContent = (
     index: any,
     content: any,
-    imageBlob: any,
-    audioBlob?: any,
-    videoBlob?: any
+    image: any,
+    audio?: any,
+    video?: any
   ) => {
     const newPages = [...pages];
     newPages[index].content = content;
-    newPages[index].imageBlob = imageBlob;
-    newPages[index].audioBlob = audioBlob;
-    newPages[index].videoBlob = videoBlob;
+    newPages[index].image = image;
+    newPages[index].audio = audio;
+    newPages[index].video = video;
     setPages(newPages);
   };
 
@@ -51,32 +54,32 @@ const BookEditor: React.FC<{ onChangedPages: any }> = ({ onChangedPages }) => {
   }, [pages]);
 
   return (
-    <div className="bg-gray-100 flex flex-col">
+    <div className="flex flex-col">
       <div className="p-8">
         <div className="mx-auto">
           {pages.map((page: any, index: any) => (
             <div key={index} className="mb-8">
               <div className="mb-2 font-semibold">
-                <Divider>
-                  <Chip label={`Pagina N° ${page.pageNumber}`} size="medium" />
+                <Divider className="border-t-black">
+                  <Chip label={`Pagina N° ${page.numberPage}`} size="medium" />
                 </Divider>
               </div>
-              <div className="bg-white p-6 rounded-lg shadow-md">
+              <div className="bg-bgColorLeft p-6 rounded-lg shadow-xl">
                 {page.template === "Template1" && (
                   <Template1
                     content={page.content}
                     onContentChange={(
                       content: any,
-                      imageBlob: any,
-                      audioBlob: any,
-                      videoBlob: any
+                      image: any,
+                      audio: any,
+                      video: any
                     ) =>
                       updatePageContent(
                         index,
                         content,
-                        imageBlob,
-                        audioBlob,
-                        videoBlob
+                        image,
+                        audio,
+                        video
                       )
                     }
                   />
@@ -86,16 +89,16 @@ const BookEditor: React.FC<{ onChangedPages: any }> = ({ onChangedPages }) => {
                     content={page.content}
                     onContentChange={(
                       content: any,
-                      imageBlob: any,
-                      audioBlob: any,
-                      videoBlob: any
+                      image: any,
+                      audio: any,
+                      video: any
                     ) =>
                       updatePageContent(
                         index,
                         content,
-                        imageBlob,
-                        audioBlob,
-                        videoBlob
+                        image,
+                        audio,
+                        video
                       )
                     }
                   />
@@ -105,16 +108,16 @@ const BookEditor: React.FC<{ onChangedPages: any }> = ({ onChangedPages }) => {
                     content={page.content}
                     onContentChange={(
                       content: any,
-                      imageBlob: any,
-                      audioBlob: any,
-                      videoBlob: any
+                      image: any,
+                      audio: any,
+                      video: any
                     ) =>
                       updatePageContent(
                         index,
                         content,
-                        imageBlob,
-                        audioBlob,
-                        videoBlob
+                        image,
+                        audio,
+                        video
                       )
                     }
                   />
@@ -124,16 +127,16 @@ const BookEditor: React.FC<{ onChangedPages: any }> = ({ onChangedPages }) => {
                     content={page.content}
                     onContentChange={(
                       content: any,
-                      imageBlob: any,
-                      audioBlob: any,
-                      videoBlob: any
+                      image: any,
+                      audio: any,
+                      video: any
                     ) =>
                       updatePageContent(
                         index,
                         content,
-                        imageBlob,
-                        audioBlob,
-                        videoBlob
+                        image,
+                        audio,
+                        video
                       )
                     }
                   />
@@ -151,66 +154,37 @@ const BookEditor: React.FC<{ onChangedPages: any }> = ({ onChangedPages }) => {
           ))}
         </div>
       </div>
-      <div className="bg-white shadow-xl">
+      <div className="bg-bgColorDark rounded-md shadow-xl">
         <div className="mt-3">
-          <h1 className="relative text-sm text-primary-500 font-bold underline">
+          <h1 className="relative cursor-default text-sm text-primary-500 font-bold underline">
             <span className="ps-2">Selecciona una plantilla</span>
           </h1>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          <div
-            className="rounded border cursor-pointer hover:animate-pulse  overflow-hidden shadow-lg m-4"
+        <div className="flex flex-wrap items-center gap-4 justify-center">
+          <Image
             onClick={() => addPage("Template1")}
-          >
-            <div className="flex items-center shrink  justify-center">
-              <Image alt="Logo" width={100} src={NoImage}></Image>
-            </div>
-            <div className="px-2 mb-2 text-center">
-              <p className="text-gray-700 text-base">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                eiusmod tempor incididunt ut labore et dolore magna aliqua.
-              </p>
-            </div>
-          </div>
-          <div
-            className="rounded overflow-hidden cursor-pointer hover:animate-pulse border shadow-lg m-4 flex gap-3"
+            alt="Logo"
+            className="cursor-pointer"
+            src={template1}
+          ></Image>
+          <Image
             onClick={() => addPage("Template2")}
-          >
-            <div className="px-2 py-1 flex items-center">
-              <p className="text-gray-700 text-base">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                eiusmod tempor incididunt ut labore et dolore magna aliqua.
-              </p>
-            </div>
-            <div className="flex items-center shrink justify-center me-2">
-              <Image alt="Logo" src={NoImage}></Image>
-            </div>
-          </div>
-          <div
-            className="rounded overflow-hidden cursor-pointer hover:animate-pulse border shadow-lg m-4 flex gap-3"
+            alt="Logo"
+            className="cursor-pointer"
+            src={template2}
+          ></Image>
+          <Image
             onClick={() => addPage("Template3")}
-          >
-            <div className="flex items-center justify-center ms-2">
-              <Image alt="Logo" src={NoImage}></Image>
-            </div>
-            <div className="px-2 py-1 flex items-center">
-              <p className="text-gray-700 text-base">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                eiusmod tempor incididunt ut labore et dolore magna aliqua.
-              </p>
-            </div>
-          </div>
-          <div
-            className="rounded border cursor-pointer hover:animate-pulse  overflow-hidden shadow-lg m-4 p-2"
+            alt="Logo"
+            className="cursor-pointer"
+            src={template3}
+          ></Image>
+          <Image
             onClick={() => addPage("Template4")}
-          >
-            <div className="px-2 py-1 mr-1">
-              <p className="text-gray-700 text-base ">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                eiusmod tempor incididunt ut labore et dolore magna aliqua.
-              </p>
-            </div>
-          </div>
+            alt="Logo"
+            className="cursor-pointer"
+            src={template4}
+          ></Image>
         </div>
       </div>
     </div>

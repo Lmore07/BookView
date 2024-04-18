@@ -8,21 +8,24 @@ import { ToastType } from "@/libs/interfaces/toast.interface";
 import { generateSpeech } from "@/libs/services/generateSpeech";
 import { commandsSearchBooks } from "@/libs/texts/commands/reader/homeReader";
 import BookCard from "@/ui/components/cards/bookCard";
+import AddToFavorite from "@/ui/modals/folders/addToFavorite";
 import Help from "@/ui/modals/help/help";
+import ModalParent from "@/ui/modals/modal";
 import { Tooltip } from "@mui/material";
 import Pagination from "@mui/material/Pagination";
 import Stack from "@mui/material/Stack";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { useContext, useEffect, useRef, useState } from "react";
 import SpeechRecognition, {
   useSpeechRecognition,
 } from "react-speech-recognition";
 
 export default function BookSearch() {
-  const router = useRouter();
   const paramsRouter = useSearchParams();
   const [orderBy, setOrderBy] = useState("bookName_asc");
   const [page, setPage] = useState(1);
+  const [isFavorite, setIsFavorite] = useState(false);
+  const [selectedBook, setSelectedBook] = useState<BooksAll | null>(null);
   const [totalPages, setTotalPages] = useState(1);
   const [totalBooks, setTotalBooks] = useState(0);
   const [books, setBooks] = useState<BooksAll[]>([]);
@@ -506,6 +509,16 @@ export default function BookSearch() {
             author={book.author}
             title={book.bookName}
             imageUrl={book.coverPhoto}
+            isFavorite={book.isFavorite}
+            onFavoriteClick={() => {
+              console.log("Favorito: ", book.bookName);
+              if (!book.isFavorite) {
+                setSelectedBook(book);
+                setIsFavorite(true);
+              } else {
+                //AQUI HAY QUE SACAR EL LIBRO DE FAVORITOS
+              }
+            }}
           ></BookCard>
         ))}
       </div>
@@ -546,6 +559,23 @@ export default function BookSearch() {
           />
         </Stack>
       </div>
+      {isFavorite && (
+        <ModalParent
+          onClose={() => {
+            setIsFavorite(false);
+          }}
+        >
+          <AddToFavorite
+            onClose={() => {
+              setIsFavorite(false);
+            }}
+            onAddFavorite={() => {
+              setIsFavorite(false);
+            }}
+            book={selectedBook!}
+          ></AddToFavorite>
+        </ModalParent>
+      )}
     </div>
   );
 }

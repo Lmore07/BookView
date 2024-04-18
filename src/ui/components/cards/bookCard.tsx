@@ -8,6 +8,7 @@ interface BookCardProps {
   author: string;
   imageUrl?: string;
   isFavorite?: boolean;
+  onFavoriteClick: () => void;
 }
 
 const BookCard: React.FC<BookCardProps> = ({
@@ -15,6 +16,7 @@ const BookCard: React.FC<BookCardProps> = ({
   author,
   imageUrl,
   isFavorite = false,
+  onFavoriteClick,
 }) => {
   return (
     <div className="bg-bgColorDark shadow-md rounded-lg overflow-hidden">
@@ -66,6 +68,7 @@ const BookCard: React.FC<BookCardProps> = ({
             Leer
           </Button>
           <button
+            onClick={onFavoriteClick}
             className={`${
               isFavorite
                 ? "text-red-500 hover:text-gray-400"

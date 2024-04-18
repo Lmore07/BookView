@@ -1,6 +1,7 @@
 export interface BooksAll {
-  idBook: string;
+  idBook: number;
   author: string;
+  isFavorite: boolean;
   bookName: string;
   publicationDate: Date;
   illustrator: string;

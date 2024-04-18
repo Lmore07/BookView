@@ -62,6 +62,12 @@ export const GET = apiMiddleware(async (request: NextRequest) => {
       bookName: true,
       publicationDate: true,
       illustrator: true,
+      Favorite_Books: {
+        include: {
+            Favorite_Folders:true
+        }
+      },
+      coverPhoto: true,
     },
     where: {
       status: true,
@@ -81,6 +87,33 @@ export const GET = apiMiddleware(async (request: NextRequest) => {
     },
     orderBy: orderByOption,
   });
+  const userFavoriteFolders = await prisma.favorite_Folders.findMany({
+    where: {
+      idUser: authResult.userId,
+      status: true,
+    },
+    select: {
+      idFolder: true,
+    },
+  });
+  const userFavoriteBooks = await prisma.favorite_Books.findMany({
+    where: {
+      idFolder: {
+        in: userFavoriteFolders.map((folder) => folder.idFolder),
+      },
+    },
+    select: {
+      idBook: true,
+    },
+  });
+
+  const booksWithIsFavorite = books.map((book) => ({
+    ...book,
+    isFavorite: userFavoriteBooks.some(
+      (favoriteBook) => favoriteBook.idBook === book.idBook
+    ),
+  }));
+
   const totalBooks = await prisma.books.count({
     where: {
       status: true,
@@ -101,10 +134,10 @@ export const GET = apiMiddleware(async (request: NextRequest) => {
   });
   const totalPages = Math.ceil(totalBooks / limit);
 
-  if (books.length > 0) {
+  if (booksWithIsFavorite.length > 0) {
     return NextResponse.json(
       {
-        data: books,
+        data: booksWithIsFavorite,
         message: "Libros encontrados",
         pagination: {
           total: totalBooks,
@@ -118,7 +151,7 @@ export const GET = apiMiddleware(async (request: NextRequest) => {
   } else {
     return NextResponse.json(
       {
-        data: books,
+        data: booksWithIsFavorite,
         message: "No se encontraron libros para tu busqueda",
       },
       { status: 404 }

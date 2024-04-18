@@ -70,6 +70,7 @@ model Books {
   idBook          Int              @id @default(autoincrement()) @map("id_book")
   bookName        String           @map("book_name")
   author          String           @map("author")
+  coverPhoto      String?           @map("cover_photo")
   illustrator     String?          @map("illustrator")
   publicationDate DateTime?        @map("publication_date")
   createdAt       DateTime?        @default(now()) @map("created_at")

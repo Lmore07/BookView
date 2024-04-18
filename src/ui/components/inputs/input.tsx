@@ -48,7 +48,7 @@ const Input = ({
     },
   ];
 
-  const { transcript, resetTranscript, browserSupportsSpeechRecognition } =
+  const { transcript, resetTranscript } =
     useSpeechRecognition({ commands: commands });
 
   useEffect(() => {

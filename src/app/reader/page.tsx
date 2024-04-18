@@ -8,11 +8,14 @@ import Input from "@/ui/components/inputs/input";
 import "@/ui/globals.css";
 import Help from "@/ui/modals/help/help";
 import ModalParent from "@/ui/modals/modal";
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import SpeechRecognition, {
   useSpeechRecognition,
 } from "react-speech-recognition";
 import Tooltip from "@mui/material/Tooltip";
+import { useRouter } from "next/navigation";
+import { ToastContext } from "@/libs/contexts/toastContext";
+import { ToastType } from "@/libs/interfaces/toast.interface";
 
 export default function Home() {
   //Variables declaradas
@@ -23,7 +26,8 @@ export default function Home() {
   const audioContext = useRef<AudioContext | null>(null);
   const source = useRef<AudioBufferSourceNode | null>(null);
   const [openHelp, setOpenHelp] = useState(false);
-
+  const { handleShowToast } = useContext(ToastContext)!;
+  const router = useRouter();
   const commands = [
     {
       command: [
@@ -158,7 +162,20 @@ export default function Home() {
   };
 
   const handleClick = async () => {
+    if (!searchTerm && filterCategories.length === 0) {
+      handleShowToast(
+        "Por favor, introduce un término de búsqueda o selecciona al menos una categoría",
+        ToastType.ERROR
+      );
+      return;
+    }
     console.log("Click", searchTerm);
+    router.push(
+      "/reader/books?searchTerm=" +
+        searchTerm +
+        "&categories=" +
+        filterCategories.join(",")
+    );
   };
 
   const handleCloseHelp = () => {
@@ -246,7 +263,7 @@ export default function Home() {
             )}
           </span>
         </Tooltip>
-        <Tooltip arrow title='Ayuda' placement="top">
+        <Tooltip arrow title="Ayuda" placement="top">
           <span className="cursor-pointer" onClick={() => setOpenHelp(true)}>
             <svg
               xmlns="http://www.w3.org/2000/svg"

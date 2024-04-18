@@ -3,48 +3,174 @@
 import { generateSpeech } from "@/libs/services/generateSpeech";
 import ButtonOutlined from "@/ui/components/buttons/ButtonOutlined";
 import Table from "@/ui/components/tabble/table";
-import { Tooltip } from "@mui/material";
-import { useRef, useState } from "react";
+import { Pagination, Stack, Tooltip } from "@mui/material";
+import { useContext, useEffect, useRef, useState } from "react";
 import SpeechRecognition, {
   useSpeechRecognition,
 } from "react-speech-recognition";
-import {useRouter} from 'next/navigation'
-
+import { useRouter } from "next/navigation";
+import { ResponseData } from "@/libs/interfaces/response.interface";
+import { ToastType } from "@/libs/interfaces/toast.interface";
+import { ToastContext } from "@/libs/contexts/toastContext";
+import { LoadingContext } from "@/libs/contexts/loadingContext";
+import { messageBooks } from "@/libs/texts/messages/creator/message";
+import ModalParent from "@/ui/modals/modal";
+import Help from "@/ui/modals/help/help";
+import { commandsBookCreator } from "@/libs/texts/commands/creator/commandsCreator";
+import { ModalContext } from "@/libs/contexts/modalContext";
 export default function CreatorBooksPage() {
+  //comandos de voz
   const commands = [
     {
       command: [
-        "Filtra por las categorías *",
-        "Filtra por la categoría *",
-        "Elige la categoría *",
-        "Elige las categorías *",
-        "Selecciona las categorías *",
-        "Selecciona la categoría *",
-        "Agrega la categoría *",
-        "Agrega las categorías *",
+        "Avanza una página",
+        "Siguiente página",
+        "Muestra la página siguiente",
+        "Muestra la siguiente página",
+      ],
+      callback: () => {
+        if (page < totalPages) {
+          setPage(page + 1);
+        } else {
+          handleShowToast(
+            "No existen páginas hacia delante",
+            ToastType.WARNING
+          );
+        }
+      },
+    },
+    {
+      command: [
+        "Regresa una página",
+        "Pon la página anterior",
+        "Muestra la página anterior",
+      ],
+      callback: () => {
+        if (page - 1 != 0) {
+          setPage(page - 1);
+        } else {
+          handleShowToast("No existen páginas hacia atrás", ToastType.WARNING);
+        }
+      },
+    },
+    {
+      command: [
+        "Ve hacia la página :page",
+        "Ponte en la página :page",
+        "Elige la página :page",
+        "Dirígite a la página :page",
+      ],
+      callback: (page: number) => {
+        console.log("Page: ", page);
+        if (page > 1 && page <= totalPages) {
+          setPage(page);
+        } else {
+          handleShowToast("La página indicada no existe", ToastType.WARNING);
+        }
+      },
+    },
+    {
+      command: ["Agrega un nuevo libro", "Quiero agregar un nuevo libro"],
+      callback: () => {
+        handleClickNewBook();
+      },
+    },
+    {
+      command: ["Abre la ayuda", "Quiero ver la ayuda", "Muestra la ayuda"],
+      callback: () => {
+        setOpenHelp(true);
+      },
+    },
+    {
+      command: [
+        "Quiero ver el libro *",
+        "Muestra el libro *",
+        "Ver el libro *",
       ],
       callback: (speech: string) => {},
     },
     {
       command: [
-        "Quita las categorías *",
-        "Quita la categoría *",
-        "Saca la categoría *",
-        "Saca las categorías *",
+        "Quiero editar el libro *",
+        "Edita el libro *",
+        "Editar el libro *",
       ],
+      callback: (speech: string) => {},
+    },
+    {
+      command: ["Quiero borrar el libro *", "Borrar el libro *"],
       callback: (speech: string) => {},
     },
   ];
 
-  const [open, setOpen] = useState(false);
   const { transcript, resetTranscript, listening } = useSpeechRecognition({
     commands: commands,
   });
+  const router = useRouter();
   const [openHelp, setOpenHelp] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
   const audioContext = useRef<AudioContext | null>(null);
   const source = useRef<AudioBufferSourceNode | null>(null);
-  const router = useRouter();
+  const [tableData, setTableData] = useState<any>([]);
+  const { handleShowToast } = useContext(ToastContext)!;
+  const { setIsLoading } = useContext(LoadingContext)!;
+  const { openModal } = useContext(ModalContext)!;
+
+  const headers = [
+    { key: "bookName", name: "Nombre del libro" },
+    { key: "publicationDate", name: "Fecha de publicación" },
+    { key: "author", name: "Autor" },
+  ];
+
+  const handlePageChange = (event: any, value: number) => {
+    setPage(value);
+  };
+
+  const handleCloseHelp = () => {
+    setOpenHelp(false);
+  };
+
+  useEffect(() => {
+    getBooks();
+  }, [page]);
+
+  const getBooks = async () => {
+    setIsLoading(true);
+    try {
+      const response = await fetch(`../api/books/?limit=1&page=${page}`);
+      const data: ResponseData<any> = await response.json();
+      if (data.error) {
+        handleShowToast(data.message!, ToastType.ERROR);
+      } else {
+        setTotalPages(data.pagination?.totalPages ?? 0);
+        setPage(data.pagination?.currentPage ?? 0);
+        const tableData = data.data.map((item: any) => {
+          const date = new Date(item.publicationDate);
+          const day = date.getDate();
+          const month = date.getMonth() + 1;
+          const year = date.getFullYear();
+          const formatDate = `${day}-${month}-${year}`;
+          return { ...item, publicationDate: formatDate };
+        });
+        setTableData(tableData);
+      }
+    } catch (error) {
+      handleShowToast("Error al cargar los libros", ToastType.ERROR);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  //FUNCIONALIDAD DE ESCUCHAR LOS COMANDOS
+  const handleToggleListening = () => {
+    if (listening) {
+      stopListening();
+    } else {
+      startListening();
+    }
+  };
 
   const startListening = () => {
     SpeechRecognition.startListening({ language: "es-EC" });
@@ -55,18 +181,26 @@ export default function CreatorBooksPage() {
     resetTranscript();
   };
 
-  const handleToggleListening = () => {
-    if (listening) {
-      stopListening();
+  useEffect(() => {
+    console.log(transcript);
+  }, [transcript]);
+
+  const handleClickNewBook = () => {
+    console.log("agregar nuevo libro");
+    router.push("/creator/books/creation");
+  };
+
+  //FUNCIONALIDAD DE PRESENTAR MEDIANTE LA VOZ
+  const handleSpeech = () => {
+    if (isPlaying) {
+      stopSpeech();
     } else {
-      startListening();
+      startSpeech();
     }
   };
 
   const startSpeech = async () => {
-    const audioData = await generateSpeech(
-      "A continuación, puede realizar la búsqueda de libros por autor y nombre de libro. Además, también puede filtrar por las categorías presentadas, recuerde que puede usar comandos de voz para realizar esto, para ver los comandos de voz haga click en el ícono de ayuda."
-    );
+    const audioData = await generateSpeech(messageBooks);
     const ctx = new AudioContext();
     await ctx.decodeAudioData(audioData, (buffer) => {
       const src = ctx.createBufferSource();
@@ -89,26 +223,6 @@ export default function CreatorBooksPage() {
       setIsPlaying(false);
     }
   };
-
-  const handleSpeech = () => {
-    if (isPlaying) {
-      stopSpeech();
-    } else {
-      startSpeech();
-    }
-  };
-
-  const tableData = [
-    { bookName: "Elizabeth Watson", createdAt: '25/12/2021', visits: 1 },
-    { bookName: "Elizabeth Allen", createdAt: '25/12/2021', visits: 2 },
-    { bookName: "Caleb Jones", createdAt: '25/12/2021', visits: 3 },
-  ];
-
-  const headers = [
-    { key: "bookName", name: "Nombre" },
-    { key: "createdAt", name: "Edad" },
-    { key: "visits", name: "Activo" },
-  ];
 
   return (
     <div className="shadow-2xl p-4  rounded-lg">
@@ -192,7 +306,14 @@ export default function CreatorBooksPage() {
           </span>
         </Tooltip>
         <Tooltip arrow title="Ayuda" placement="top">
-          <span className="cursor-pointer" onClick={() => setOpenHelp(true)}>
+          <span
+            className="cursor-pointer"
+            onClick={() => {
+              openModal(
+                <Help commands={commandsBookCreator} page="sus libros" />
+              );
+            }}
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
@@ -230,7 +351,7 @@ export default function CreatorBooksPage() {
               </svg>
             }
             onClick={() => {
-                router.push('/creator/books/creation')
+              handleClickNewBook();
             }}
           >
             Nuevo Libro
@@ -238,7 +359,53 @@ export default function CreatorBooksPage() {
         </div>
       </div>
       <div>
-        <Table data={tableData} showEdit showView showActions headers={headers} />
+        <Table
+          data={tableData}
+          showEdit
+          showView
+          showActions
+          onViewClick={(item: any) => {
+            console.log(item);
+          }}
+          headers={headers}
+        />
+        <div className="mt-5 flex items-center justify-center">
+          <Stack spacing={2}>
+            <Pagination
+              sx={{
+                "& .MuiPaginationItem-page": {
+                  backgroundColor: "var(--bg-no-select)",
+                  color: "var(--text-no-select)",
+                  borderColor: "var(--border-not-select)",
+                  "&:hover": {
+                    backgroundColor: "var(--bg-no-select)",
+                    borderColor: "var(--text-no-select)",
+                    color: "var(--hover-text-not-select)",
+                  },
+                },
+                "& .MuiPaginationItem-page.Mui-selected": {
+                  backgroundColor: "var(--primary--500)",
+                  color: "var(--bg-no-select)",
+                  "&:hover": {
+                    backgroundColor: "var(--primary--700)",
+                    color: "var(--bg-select)",
+                  },
+                },
+                '& [aria-label="Go to next page"], & [aria-label="Go to previous page"]':
+                  {
+                    backgroundColor: "#fff",
+                    color: "#000",
+                  },
+              }}
+              count={totalPages}
+              size="large"
+              page={page}
+              onChange={handlePageChange}
+              variant="outlined"
+              shape="rounded"
+            />
+          </Stack>
+        </div>
       </div>
     </div>
   );

@@ -172,8 +172,11 @@ const Help: React.FC<VoiceCommandProps> = ({ commands, page }) => {
           </svg>
         </div>
         <div>
-          El <span className="text-red-500 font-bold">*</span> indica que puede
-          decir cualquier cosa luego del comando.
+          El
+          <span className="text-red-500 font-bold">
+            <b> * </b>
+          </span>
+          indica que puede decir cualquier cosa luego del comando.
         </div>
       </div>
       {commands.map((commandObj, index) => (

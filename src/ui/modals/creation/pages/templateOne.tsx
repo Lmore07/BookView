@@ -110,7 +110,7 @@ const Template1: React.FC<{ content: any; onContentChange: any }> = ({
   };
 
   return (
-    <div className="bg-bgColorDark p-8 rounded shadow-md w-full max-w-4xl mx-auto">
+    <div className="bg-bgColorDark p-8 rounded shadow-md w-full max-w-4xl mx-auto flex flex-col items-center justify-center">
       <div
         className="bg-gray-200 h-64 flex items-center justify-center mb-4 cursor-pointer"
         onClick={handleImageUpload}
@@ -127,7 +127,7 @@ const Template1: React.FC<{ content: any; onContentChange: any }> = ({
           </span>
         )}
       </div>
-      <div className="flex-grow col-span-2">
+      <div className=" max-w-2xl col-span-2">
         <JoditEditor
           ref={editor}
           value={content}

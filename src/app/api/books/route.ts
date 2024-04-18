@@ -1,4 +1,3 @@
-import formDataSchema from "@/libs/dtos/books/booksDTOS";
 import { apiMiddleware } from "@/libs/middleware/apiMiddleware";
 import { toBoolean } from "@/libs/pipes/toBoolean";
 import { saveAudio, saveImage, saveVideo } from "@/libs/services/generateImage";
@@ -45,7 +44,7 @@ export const GET = apiMiddleware(async (request: NextRequest) => {
     return NextResponse.json(
       {
         data: books,
-        message: "Libros encontradas",
+        message: "Libros encontrados",
         pagination: {
           total: totalBooks,
           totalPages,
@@ -122,11 +121,13 @@ export const POST = apiMiddleware(async (request: NextRequest) => {
       author: true,
       bookName: true,
       publicationDate: true,
+      Pages: true,
     },
     data: {
       author: data.author,
       bookName: data.bookName,
       publicationDate: data.publicationDate,
+      createdBy: authResult.userId,
       BookCategories: {
         create: data.categoriesIds?.map((idCategory: any) => ({
           Categories: { connect: { idCategory } },

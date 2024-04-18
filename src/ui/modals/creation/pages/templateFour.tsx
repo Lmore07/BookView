@@ -59,7 +59,7 @@ const Template4: React.FC<{ content: any; onContentChange: any }> = ({
   };
 
   return (
-    <div className="bg-white p-8 rounded shadow-md w-full mx-auto flex flex-col items-center">
+    <div className="bg-bgColorDark p-8 rounded shadow-md w-full mx-auto flex flex-col items-center">
       <div className="max-w-2xl">
         <JoditEditor
           ref={editor}

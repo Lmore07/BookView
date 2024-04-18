@@ -15,7 +15,7 @@ const FolderCard: React.FC<FolderCardProps> = ({
   onClick,
 }) => {
   return (
-    <div className="bg-white shadow-lg rounded-lg overflow-hidden">
+    <div className="bg-bgColorDark shadow-lg rounded-lg overflow-hidden">
       <div className="relative h-28">
         <Image
           src={imageUrl == null || imageUrl == "" ? NoImage : imageUrl}

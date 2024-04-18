@@ -1,11 +1,12 @@
 import "regenerator-runtime/runtime";
-import 'reflect-metadata';
+import "reflect-metadata";
 import { LoadingProvider } from "@/libs/contexts/loadingContext";
 import Providers from "@/libs/contexts/providers";
 import { ToastProvider } from "@/libs/contexts/toastContext";
 import AccessibilityButton from "@/ui/components/buttons/AccessibilityButton";
 import type { Metadata } from "next";
 import "../ui/globals.css";
+import { ModalProvider } from "@/libs/contexts/modalContext";
 
 export const metadata: Metadata = {
   title: "BookView",
@@ -22,10 +23,12 @@ export default function RootLayout({
       <body>
         <Providers>
           <LoadingProvider>
-            <ToastProvider>
-              {children}
-              <AccessibilityButton />
-            </ToastProvider>
+            <ModalProvider>
+              <ToastProvider>
+                {children}
+                <AccessibilityButton />
+              </ToastProvider>
+            </ModalProvider>
           </LoadingProvider>
         </Providers>
       </body>

@@ -76,6 +76,7 @@ export const POST = apiMiddleware(async (request: NextRequest) => {
     bookName?: string;
     author?: string;
     publicationDate?: Date;
+    bookCover?: Blob;
     pages: {
       template?: string;
       content?: string;
@@ -88,7 +89,12 @@ export const POST = apiMiddleware(async (request: NextRequest) => {
     [key: string]: any;
   } = { pages: [] };
   Object.assign(data, Object.fromEntries(formData.entries()));
-  if (!data.bookName || !data.author || !data.publicationDate) {
+  if (
+    !data.bookName ||
+    !data.author ||
+    !data.publicationDate ||
+    !data.bookCover
+  ) {
     throw new Error("Faltan campos requeridos");
   }
 
@@ -128,6 +134,7 @@ export const POST = apiMiddleware(async (request: NextRequest) => {
       bookName: data.bookName,
       publicationDate: data.publicationDate,
       createdBy: authResult.userId,
+      coverPhoto: await saveImage(data.bookCover),
       BookCategories: {
         create: data.categoriesIds?.map((idCategory: any) => ({
           Categories: { connect: { idCategory } },

@@ -10,13 +10,13 @@ import Button from "@/ui/components/buttons/ButtonFill";
 import ButtonOutlined from "@/ui/components/buttons/ButtonOutlined";
 import { useContext, useEffect, useState } from "react";
 
-interface DeleteToFavoriteProps {
+interface AddToFavoriteProps {
   book: BooksAll;
   onClose?: () => void;
   onAddFavorite?: () => void;
 }
 
-const AddToFavorite: React.FC<DeleteToFavoriteProps> = ({
+const DeleteFavorite: React.FC<AddToFavoriteProps> = ({
   book,
   onAddFavorite,
   onClose,
@@ -163,4 +163,4 @@ const AddToFavorite: React.FC<DeleteToFavoriteProps> = ({
   );
 };
 
-export default AddToFavorite;
+export default DeleteFavorite;

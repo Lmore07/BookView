@@ -8,6 +8,8 @@ interface BookCardProps {
   author: string;
   imageUrl?: string;
   isFavorite?: boolean;
+  isViewed?: boolean;
+  onReadClick: () => void;
   onFavoriteClick: () => void;
 }
 
@@ -16,7 +18,9 @@ const BookCard: React.FC<BookCardProps> = ({
   author,
   imageUrl,
   isFavorite = false,
+  isViewed = false,
   onFavoriteClick,
+  onReadClick,
 }) => {
   return (
     <div className="bg-bgColorDark shadow-md rounded-lg overflow-hidden">
@@ -63,9 +67,9 @@ const BookCard: React.FC<BookCardProps> = ({
                 </g>
               </svg>
             }
-            onClick={() => {}}
+            onClick={onReadClick}
           >
-            Leer
+            {isViewed ? "Continuar" : "Leer"}
           </Button>
           <button
             onClick={onFavoriteClick}

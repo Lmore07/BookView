@@ -24,11 +24,18 @@ export default function Stepper() {
   const [pages, setPages] = useState<any>([]);
   const [filterCategories, setFilterCategories] = useState<number[]>([]);
   const { handleShowToast } = useContext(ToastContext)!;
-  const [stepOne, setStepOne] = useState({
+  const [stepOne, setStepOne] = useState<{
+    bookName: string;
+    author: string;
+    illustrator: string;
+    publicationDate: Date;
+    bookImage: File | null;
+  }>({
     bookName: "",
     author: "",
     illustrator: "",
     publicationDate: new Date(),
+    bookImage: null,
   });
 
   useEffect(() => {
@@ -231,6 +238,7 @@ export default function Stepper() {
       formData.append("bookName", body.bookName);
       formData.append("author", body.author);
       formData.append("publicationDate", body.publicationDate.toString());
+      formData.append("bookCover", body.bookImage!);
       body.pages.forEach((page: any, index: any) => {
         formData.append(`pages[${index}][template]`, page.template);
         formData.append(`pages[${index}][content]`, page.content);
@@ -458,6 +466,16 @@ export default function Stepper() {
                 onChange={handleChangeStepOne}
                 validations={[validateCorrectDate]}
               ></Input>
+              <Input
+                label="Portada del libro"
+                name="bookImage"
+                placeholder="Selecciona una imagen"
+                value={stepOne.bookImage}
+                type="file"
+                onChange={(e) => {
+                  console.log(stepOne);
+                }}
+              />
             </div>
           </div>
         )}

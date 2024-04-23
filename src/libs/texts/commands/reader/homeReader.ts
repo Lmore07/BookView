@@ -63,3 +63,38 @@ export const commandsSearchBooks = [
     tittle: "Ir a una página específica",
   },
 ];
+
+export const commandsBooksFavorites = [
+  {
+    command: [
+      "Avanza una página",
+      "Siguiente página",
+      "Muestra la página siguiente",
+      "Muestra la siguiente página",
+    ],
+    tittle: "Avanzar a la página siguiente",
+  },
+  {
+    command: [
+      "Ve hacia la página :número",
+      "Ve a la página :número",
+      "Ponte en la página :número",
+      "Elige la página :número",
+      "Dirígete a la página :número",
+      "Dirígete hacia la página :número",
+    ],
+    tittle: "Ir a una página específica",
+  },
+  {
+    command: [
+      "Regresa una página",
+      "Pon la página anterior",
+      "Muestra la página anterior",
+    ],
+    tittle: "Regresar a la página anterior",
+  },
+  {
+    command: ["Abre el libro *", "Quiero leer el libro *", "Lee el libro *"],
+    tittle: "Abrir o leer el libro",
+  },
+];

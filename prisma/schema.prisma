@@ -19,7 +19,7 @@ model Users {
   rol              rol                @default(READER) @map("rol")
   Favorite_Folders Favorite_Folders[]
   Person           Persons            @relation(fields: [idPerson], references: [idPerson])
-  View_Books       View_Books[]
+  View_Books       ViewBooks[]
 
   @@map("users")
 }
@@ -70,7 +70,7 @@ model Books {
   idBook          Int              @id @default(autoincrement()) @map("id_book")
   bookName        String           @map("book_name")
   author          String           @map("author")
-  coverPhoto      String?           @map("cover_photo")
+  coverPhoto      String?          @map("cover_photo")
   illustrator     String?          @map("illustrator")
   publicationDate DateTime?        @map("publication_date")
   createdAt       DateTime?        @default(now()) @map("created_at")
@@ -80,7 +80,7 @@ model Books {
   status          Boolean          @default(true) @map("status")
   Favorite_Books  Favorite_Books[]
   Pages           Pages[]
-  View_Books      View_Books[]
+  View_Books      ViewBooks[]
   BookCategories  BookCategory[]
 
   @@map("books")
@@ -129,15 +129,17 @@ model Pages {
   @@map("pages")
 }
 
-model View_Books {
+model ViewBooks {
   idViewBook Int      @id @default(autoincrement()) @map("id_view_book")
   idBook     Int      @map("id_book")
   idUser     Int      @map("id_user")
+  lastPage   Int      @default(1) @map("last_page")
   dateView   DateTime @default(now()) @map("date_view")
   Books      Books    @relation(fields: [idBook], references: [idBook])
   Users      Users    @relation(fields: [idUser], references: [idUser])
 
   @@map("view_books")
+  @@unique([idUser, idBook])
 }
 
 enum rol {

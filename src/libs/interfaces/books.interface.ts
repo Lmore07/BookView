@@ -6,4 +6,15 @@ export interface BooksAll {
   publicationDate: Date;
   illustrator: string;
   coverPhoto?: string;
+  isViewed: boolean;
+}
+
+export interface PageI {
+  idPage: number;
+  numberPage: number;
+  audio: string | null;
+  video: string | null;
+  image: string | null;
+  template: string;
+  content: string;
 }

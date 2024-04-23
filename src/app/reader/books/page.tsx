@@ -2,7 +2,7 @@
 import { LoadingContext } from "@/libs/contexts/loadingContext";
 import { ModalContext } from "@/libs/contexts/modalContext";
 import { ToastContext } from "@/libs/contexts/toastContext";
-import { BooksAll } from "@/libs/interfaces/books.interface";
+import { BooksAll, PageI } from "@/libs/interfaces/books.interface";
 import { ResponseData } from "@/libs/interfaces/response.interface";
 import { ToastType } from "@/libs/interfaces/toast.interface";
 import { generateSpeech } from "@/libs/services/generateSpeech";
@@ -11,6 +11,7 @@ import BookCard from "@/ui/components/cards/bookCard";
 import AddToFavorite from "@/ui/modals/folders/addToFavorite";
 import Help from "@/ui/modals/help/help";
 import ModalParent from "@/ui/modals/modal";
+import BookViewer from "@/ui/modals/viewBook/bookViewer";
 import { Tooltip } from "@mui/material";
 import Pagination from "@mui/material/Pagination";
 import Stack from "@mui/material/Stack";
@@ -508,6 +509,31 @@ export default function BookSearch() {
             key={book.idBook}
             author={book.author}
             title={book.bookName}
+            isViewed={book.isViewed}
+            onReadClick={async () => {
+              setIsLoading(true);
+              const response = await fetch(
+                `../api/books/pages?book=${book.idBook}`
+              );
+              const responseView = await fetch(`../api/books/views`, {
+                method: "POST",
+                body: JSON.stringify({ idBook: book.idBook }),
+              });
+              let lastPage = 0;
+              if (!responseView.ok) {
+                const dataView: ResponseData<any> = await responseView.json();
+                lastPage = dataView.data[0].lastPage;
+                setIsLoading(false);
+              }
+              const data: ResponseData<PageI[]> = await response.json();
+              openModal(
+                <BookViewer
+                  content={data.data ?? []}
+                  bookId={book.idBook}
+                  lastPage={lastPage}
+                ></BookViewer>
+              );
+            }}
             imageUrl={book.coverPhoto}
             isFavorite={book.isFavorite}
             onFavoriteClick={() => {

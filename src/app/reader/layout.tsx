@@ -1,3 +1,4 @@
+import DynamicBreadcrumbs from "@/ui/components/breadcumbs/dynamicBreadcumbs";
 import Header from "@/ui/components/header/header";
 import Sidebar from "@/ui/components/sidebar/sideBar";
 
@@ -6,7 +7,6 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  
   const optionsRoutes = [
     {
       name: "Inicio",
@@ -83,7 +83,11 @@ export default function RootLayout({
       <Sidebar optionsRoutes={optionsRoutes} />
       <div className="flex flex-col w-full">
         <Header category="" projectName=""></Header>
-        <main className="overflow-y-auto p-10">{children}</main>
+
+        <main className="overflow-y-auto p-10">
+          <DynamicBreadcrumbs />
+          {children}
+        </main>
       </div>
     </div>
   );

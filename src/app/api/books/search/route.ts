@@ -64,8 +64,8 @@ export const GET = apiMiddleware(async (request: NextRequest) => {
       illustrator: true,
       Favorite_Books: {
         include: {
-            Favorite_Folders:true
-        }
+          Favorite_Folders: true,
+        },
       },
       coverPhoto: true,
     },
@@ -107,10 +107,22 @@ export const GET = apiMiddleware(async (request: NextRequest) => {
     },
   });
 
+  const userViewedBooks = await prisma.viewBooks.findMany({
+    where: {
+      idUser: authResult.userId,
+    },
+    select: {
+      idBook: true,
+    },
+  });
+
   const booksWithIsFavorite = books.map((book) => ({
     ...book,
     isFavorite: userFavoriteBooks.some(
       (favoriteBook) => favoriteBook.idBook === book.idBook
+    ),
+    isViewed: userViewedBooks.some(
+      (viewedBook) => viewedBook.idBook === book.idBook
     ),
   }));
 

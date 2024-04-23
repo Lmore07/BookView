@@ -84,3 +84,92 @@ export const DELETE = apiMiddleware(async (request: NextRequest) => {
     );
   }
 });
+
+export const GET = apiMiddleware(async (request: NextRequest) => {
+  const authResult = await withAuth(request);
+  if (authResult instanceof NextResponse) {
+    return authResult;
+  }
+
+  try {
+    const url = new URL(request.url);
+
+    const page = parseInt(url.searchParams.get("page") ?? "1", 10);
+    const limit = parseInt(url.searchParams.get("limit") ?? "8", 10);
+    const folderId = parseInt(url.searchParams.get("folder") ?? "0", 10);
+    const skip = (page - 1) * limit;
+
+    const books = await prisma.books.findMany({
+      skip,
+      take: limit,
+      select: {
+        idBook: true,
+        author: true,
+        bookName: true,
+        publicationDate: true,
+        illustrator: true,
+        coverPhoto: true,
+        Favorite_Books: true,
+      },
+      where: {
+        status: true,
+        Favorite_Books: {
+          some:{
+            idFolder: folderId,
+          },
+        },
+      },
+    });
+
+    const totalBooks = await prisma.books.count({
+      where: {
+        status: true,
+        Favorite_Books: {
+          some: {
+            idFolder: folderId,
+          }
+        },
+      },
+    });
+    
+    const totalPages = Math.ceil(totalBooks / limit);
+
+    const booksWithIsFavorite = books.map((book) => ({
+      ...book,
+      isFavorite: book.Favorite_Books.some(
+        (favoriteBook) => favoriteBook.idBook === book.idBook
+      ),
+    }));
+    if (booksWithIsFavorite.length > 0) {
+      return NextResponse.json(
+        {
+          data: booksWithIsFavorite,
+          message: "Libros encontrados",
+          pagination: {
+            total: totalBooks,
+            totalPages,
+            currentPage: page,
+            perPage: limit,
+          },
+        },
+        { status: 200 }
+      );
+    } else {
+      return NextResponse.json(
+        {
+          data: booksWithIsFavorite,
+          message: "No se encontraron libros para tu carpeta",
+        },
+        { status: 404 }
+      );
+    }
+  } catch (error) {
+    console.log(error);
+    return NextResponse.json(
+      {
+        message: "No se encontraron libros para tu carpeta",
+      },
+      { status: 404 }
+    );
+  }
+});

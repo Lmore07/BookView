@@ -606,7 +606,7 @@ export default function BookSearch() {
       )}
       {isViewBook && (
         <div
-          className="fixed z-10 inset-0 overflow-y-auto w-full"
+          className="fixed z-10 inset-0 overflow-auto w-full"
           aria-labelledby="modal-title"
           role="dialog"
           aria-modal="true"

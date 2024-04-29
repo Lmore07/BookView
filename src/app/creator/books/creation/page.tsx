@@ -286,6 +286,30 @@ export default function Stepper() {
     }
   };
 
+  const handleImageUpload = () => {
+    const input = document.createElement("input");
+    input.type = "file";
+    input.accept = "image/*";
+    input.onchange = (e) => {
+      const file = (e.target as HTMLInputElement).files?.[0];
+      setStepOne({
+        ...stepOne,
+        bookImage: file ?? null,
+      });
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = () => {};
+        reader.readAsArrayBuffer(file);
+      } else {
+        setStepOne({
+          ...stepOne,
+          bookImage: null,
+        });
+      }
+    };
+    input.click();
+  };
+
   return (
     <div className="shadow-xl rounded-xl p-3">
       <div className="py-2">
@@ -466,16 +490,27 @@ export default function Stepper() {
                 onChange={handleChangeStepOne}
                 validations={[validateCorrectDate]}
               ></Input>
-              <Input
-                label="Portada del libro"
-                name="bookImage"
-                placeholder="Selecciona una imagen"
-                value={stepOne.bookImage}
-                type="file"
-                onChange={(e) => {
-                  console.log(stepOne);
-                }}
-              />
+              <div>
+                <div className="font-open-sans mb-1 text-sm font-bold text-labelInputText">
+                  Portada del libro
+                </div>
+                <div
+                  className="bg-bgInputText rounded-md h-64 flex items-center justify-center mb-4 cursor-pointer hover:text-secondary-400 hover:border hover:border-black"
+                  onClick={handleImageUpload}
+                >
+                  {stepOne.bookImage ? (
+                    <img
+                      src={URL.createObjectURL(stepOne.bookImage)}
+                      alt="Imagen"
+                      className="max-h-full max-w-full"
+                    />
+                  ) : (
+                    <span className="text-gray-500">
+                      Haga clic para agregar la portada
+                    </span>
+                  )}
+                </div>
+              </div>
             </div>
           </div>
         )}

@@ -20,9 +20,8 @@ const BookViewer: React.FC<BookViewerProps> = ({
   const handlePrevPage = () => {
     if (currentPage > 0) {
       setCurrentPage(currentPage - 1);
-      console.log("Pagina atras");
       if (bookRef.current) {
-        bookRef.current.pageFlip().flipPrev();
+        bookRef.current.pageFlip().turnToPrevPage();
       }
     }
   };
@@ -59,17 +58,18 @@ const BookViewer: React.FC<BookViewerProps> = ({
   }, [currentPage]);
 
   return (
-    <div className="">
+    <div className="overflow-y-auto overflow-x-hidden h-screen">
       <div className="w-full">
         <HTMLFlipBook
           width={500}
+          height={800}
           autoSize={false}
           usePortrait={true}
           size="fixed"
-          minWidth={315}
+          minWidth={400}
           maxWidth={1000}
-          minHeight={1000}
-          className="flex items-center justify-center shadow-lg rounded-lg"
+          minHeight={500}
+          className="flex items-center h-screen justify-center shadow-lg rounded-lg"
           maxHeight={1533}
           maxShadowOpacity={0.5}
           showCover={true}
@@ -89,9 +89,9 @@ const BookViewer: React.FC<BookViewerProps> = ({
             gap: "10px",
             alignItems: "center",
             cursor: "default",
+            height:"auto"
           }}
           mobileScrollSupport={true}
-          height={1000}
           startPage={currentPage}
           onFlip={(e) => {
             setCurrentPage(e.data);

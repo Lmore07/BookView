@@ -26,6 +26,7 @@ export const GET = apiMiddleware(async (request: NextRequest) => {
       bookName: true,
       publicationDate: true,
       illustrator: true,
+      coverPhoto: true,
     },
     where: {
       status: status,
@@ -121,12 +122,15 @@ export const POST = apiMiddleware(async (request: NextRequest) => {
     }
   }
 
+  console.log(data);
+
   const book = await prisma.books.create({
     select: {
       idBook: true,
       author: true,
       bookName: true,
       publicationDate: true,
+      coverPhoto: true,
       Pages: true,
     },
     data: {

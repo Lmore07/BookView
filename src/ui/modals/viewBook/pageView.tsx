@@ -56,6 +56,7 @@ const PageContent: React.FC<PageProps> = ({ page }) => {
   };
 
   const stopSpeech = () => {
+    console.log('stopSpeech', source.current);
     if (source.current) {
       source.current.stop();
       audioContext.current?.close();
@@ -65,6 +66,7 @@ const PageContent: React.FC<PageProps> = ({ page }) => {
 
   const handleSpeech = () => {
     if (isPlayingAudio) {
+      console.log("Speech is stopped");
       stopSpeech();
     } else {
       startSpeech();

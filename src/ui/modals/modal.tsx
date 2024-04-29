@@ -15,7 +15,7 @@ const ModalParent: React.FC<ModalParentProps> = ({ children, onClose }) => {
       role="dialog"
       aria-modal="true"
     >
-      <div className="flex items-center justify-center min-h-screen">
+      <div className="flex items-center justify-center min-h-screen h-screen">
         <div
           className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
           aria-hidden="true"

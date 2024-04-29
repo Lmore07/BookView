@@ -36,6 +36,9 @@ export default function BookSearch() {
   const source = useRef<AudioBufferSourceNode | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const { openModal } = useContext(ModalContext)!;
+  const [isViewBook, setIsViewBook] = useState(false);
+  const [pagesBook, setPagesBook] = useState<PageI[] | null | undefined>([]);
+  const [lastPage, setLastPage] = useState(0);
 
   const commands = [
     {
@@ -519,20 +522,19 @@ export default function BookSearch() {
                 method: "POST",
                 body: JSON.stringify({ idBook: book.idBook }),
               });
-              let lastPage = 0;
               if (!responseView.ok) {
                 const dataView: ResponseData<any> = await responseView.json();
-                lastPage = dataView.data[0].lastPage;
+                setLastPage(dataView.data[0].lastPage);
                 setIsLoading(false);
               }
               const data: ResponseData<PageI[]> = await response.json();
-              openModal(
-                <BookViewer
-                  content={data.data ?? []}
-                  bookId={book.idBook}
-                  lastPage={lastPage}
-                ></BookViewer>
-              );
+              if (data.error) {
+                handleShowToast(data.message!, ToastType.ERROR);
+              } else {
+                setSelectedBook(book);
+                setPagesBook(data.data);
+                setIsViewBook(true);
+              }
             }}
             imageUrl={book.coverPhoto}
             isFavorite={book.isFavorite}
@@ -601,6 +603,49 @@ export default function BookSearch() {
             book={selectedBook!}
           ></AddToFavorite>
         </ModalParent>
+      )}
+      {isViewBook && (
+        <div
+          className="fixed z-10 inset-0 overflow-y-auto w-full"
+          aria-labelledby="modal-title"
+          role="dialog"
+          aria-modal="true"
+        >
+          <div className="flex items-center justify-center min-h-screen h-screen">
+            <div
+              className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
+              aria-hidden="true"
+            ></div>
+            <div className="inline-block  align-bottom bg-white rounded-lg overflow-hidden shadow-xl transform transition-all sm:my-8 h-screen w-screen">
+              <button
+                onClick={() => {
+                  setIsViewBook(false);
+                }}
+                className="absolute top-0 z-40 right-0 p-2 transform hover:scale-150 transition duration-500 ease-in-out"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  className="h-6 w-6 text-gray-600"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </button>
+              <BookViewer
+                content={pagesBook ?? []}
+                bookId={selectedBook!.idBook}
+                lastPage={lastPage}
+              ></BookViewer>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

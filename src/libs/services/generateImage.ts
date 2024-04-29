@@ -25,7 +25,8 @@ export async function generateImage(text: string): Promise<string> {
 }
 
 export async function saveAudio(audio: any): Promise<string | null> {
-  if (audio) {
+  console.log(audio);
+  if (audio != null) {
     const timestamp = new Date().getTime();
     const extension = audio.type.split("/")[1];
     const filename = `audio_${timestamp}.${extension}`;
@@ -55,7 +56,8 @@ export async function saveVideo(video: any): Promise<string | null> {
     return video;
   } else {
     const timestamp = new Date().getTime();
-    if (video) {
+    console.log(video);
+    if (video != null) {
       const extension = video.type.split("/")[1];
       const filename = `video_${timestamp}.${extension}`;
       console.log("Video: ", filename);

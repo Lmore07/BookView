@@ -24,4 +24,5 @@ export interface CoverI {
   author: string;
   bookName: string;
   publicationDate: Date;
+  idBook: number;
 }

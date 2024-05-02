@@ -61,7 +61,6 @@ export default function CreatorBooksPage() {
         "Dirígite a la página :page",
       ],
       callback: (page: number) => {
-        console.log("Page: ", page);
         if (page > 1 && page <= totalPages) {
           setPage(page);
         } else {

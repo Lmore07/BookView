@@ -1,8 +1,9 @@
+import { CoverI } from "@/libs/interfaces/books.interface";
 import { generateSpeech } from "@/libs/services/generateSpeech";
 import { generateText } from "@/libs/services/generateText";
 import { parseHtmlToText } from "@/libs/services/parseHtmlToText";
-import { Chip, Divider, Snackbar, IconButton } from "@mui/material";
-import React, { useRef, useState } from "react";
+import { Chip, Divider, Snackbar } from "@mui/material";
+import React, { useEffect, useRef, useState } from "react";
 
 interface PageProps {
   page: {
@@ -13,21 +14,33 @@ interface PageProps {
     audio: string | null;
     video: string | null;
   };
+  coverInfo?: CoverI;
 }
 
-const PageContent: React.FC<PageProps> = ({ page }) => {
+const PageContent: React.FC<PageProps> = ({ page, coverInfo }) => {
   const [isPlayingAudio, setIsPlayingAudio] = useState(false);
   const [isPlayingVideo, setIsPlayingVideo] = useState(false);
   const audioContext = useRef<AudioContext | null>(null);
   const source = useRef<AudioBufferSourceNode | null>(null);
   const [selectedText, setSelectedText] = useState("");
   const [textGenerated, setTextGenerated] = useState("");
+  const [formatDate, setFormatDate] = useState("");
 
   const [open, setOpen] = React.useState(false);
 
   const handlePlayVideo = () => {
     setIsPlayingVideo(true);
   };
+
+  useEffect(() => {
+    if(coverInfo){
+      const date = new Date(coverInfo!.publicationDate);
+    const day = date.getDate();
+    const month = date.getMonth() + 1;
+    const year = date.getFullYear();
+    setFormatDate(`${day}-${month}-${year}`);
+    }
+  }, []);
 
   const startSpeech = async () => {
     let audioData: any;
@@ -40,10 +53,23 @@ const PageContent: React.FC<PageProps> = ({ page }) => {
         setIsPlayingAudio(false);
       });
     } else {
-      const textContent = parseHtmlToText(page.content);
-      audioData = await generateSpeech(
-        textContent.replaceAll('"', "").replaceAll("{", "").replaceAll("}", "")
-      );
+      let textContent: any;
+      if (page.template == "Cover") {
+        audioData = await generateSpeech(
+          page.content
+            .replaceAll('"', "")
+            .replaceAll("{", "")
+            .replaceAll("}", "")
+        );
+      } else {
+        textContent = parseHtmlToText(page.content);
+        audioData = await generateSpeech(
+          textContent
+            .replaceAll('"', "")
+            .replaceAll("{", "")
+            .replaceAll("}", "")
+        );
+      }
       const ctx = new AudioContext();
       await ctx.decodeAudioData(audioData, (buffer) => {
         const src = ctx.createBufferSource();
@@ -91,13 +117,40 @@ const PageContent: React.FC<PageProps> = ({ page }) => {
   return (
     <div className="py-5 bg-bgColorDark rounded-lg shadow-md flex flex-col items-center justify-center">
       <Divider className="py-1">
-        <Chip
-          className="font-semibold"
-          label={`Página N° ${page.numberPage}`}
-          size="medium"
-        />
+        {page.numberPage == 0 ? (
+          null
+        ) : (
+          <Chip
+            className="font-semibold"
+            label={`Página N° ${page.numberPage}`}
+            size="medium"
+          />
+        )}
       </Divider>
       <div className="px-4 pb-1 pt-2">
+        {page.template === "Cover" && (
+          <div className="overflow-hidden">
+            <div
+              className="flex flex-col items-center"
+              onMouseUp={handleTextSelection}
+            >
+              <h1 className="text-3xl font-poppins font-bold pb-5">
+                {coverInfo?.bookName}
+              </h1>
+              <p className="text-lg font-poppins font-light pb-5">
+                Autor: {coverInfo?.author}
+              </p>
+              <img
+                className="w-[250px] rounded-md"
+                src={coverInfo?.coverPhoto}
+                alt="Portada del libro"
+              />
+              <p className="text-lg font-poppins font-light pt-5">
+                Publicado: {formatDate}
+              </p>
+            </div>
+          </div>
+        )}
         {page.template === "Template1" && (
           <div className="overflow-hidden">
             <div className="flex items-center justify-center mb-2">

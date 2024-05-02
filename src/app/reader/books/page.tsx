@@ -351,7 +351,7 @@ export default function BookSearch() {
 
       <div className="flex flex-wrap justify-between mb-5">
         <h1 className="relative text-2xl text-primary-500 font-bold before:content-[''] before:block before:absolute before:h-full before:w-1 before:bg-primary-500 before:left-0">
-          <span className="ps-2">Busqueda de libros</span>
+          <span className="ps-2">Busqueda</span>
         </h1>
       </div>
       <div className="flex flex-wrap justify-between">
@@ -507,7 +507,7 @@ export default function BookSearch() {
           </button>
         </div>
       </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 pt-5">
         {books.map((book) => (
           <BookCard
             key={book.idBook}
@@ -516,26 +516,30 @@ export default function BookSearch() {
             isViewed={book.isViewed}
             onReadClick={async () => {
               setIsLoading(true);
-              const response = await fetch(
-                `../api/books/pages?book=${book.idBook}`
-              );
-              const responseView = await fetch(`../api/books/views`, {
-                method: "POST",
-                body: JSON.stringify({ idBook: book.idBook }),
-              });
-              if (!responseView.ok) {
-                const dataView: ResponseData<any> = await responseView.json();
-                setLastPage(dataView.data[0].lastPage);
+              try {
+                const response = await fetch(
+                  `../api/books/pages?book=${book.idBook}`
+                );
+                const responseView = await fetch(`../api/books/views`, {
+                  method: "POST",
+                  body: JSON.stringify({ idBook: book.idBook }),
+                });
+                if (!responseView.ok) {
+                  const dataView: ResponseData<any> = await responseView.json();
+                  setLastPage(dataView.data[0].lastPage);
+                }
+                const data: ResponseData<any> = await response.json();
+                if (data.error) {
+                  handleShowToast(data.message!, ToastType.ERROR);
+                } else {
+                  setSelectedBook(book);
+                  setPagesBook(data.data);
+                  setIsViewBook(true);
+                }
+              } catch (error) {
+                console.log("Error al cargar el libro a leer", error);
+              } finally {
                 setIsLoading(false);
-              }
-              const data: ResponseData<any> = await response.json();
-              console.log(data);
-              if (data.error) {
-                handleShowToast(data.message!, ToastType.ERROR);
-              } else {
-                setSelectedBook(book);
-                setPagesBook(data.data);
-                setIsViewBook(true);
               }
             }}
             imageUrl={book.coverPhoto}

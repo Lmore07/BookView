@@ -11,13 +11,6 @@ interface BookViewerProps {
 const BookViewer: React.FC<BookViewerProps> = ({ content, book, lastPage }) => {
   const [currentPage, setCurrentPage] = useState(lastPage);
 
-  const updateLastPage = async () => {
-    await fetch("../api/books/views?firstOpen=false", {
-      method: "PUT",
-      body: JSON.stringify({ idBook: book.idBook, lastPage: currentPage }),
-    });
-  };
-
   const initView = async () => {
     await fetch("../api/books/views?firstOpen=true", {
       method: "PUT",
@@ -30,21 +23,18 @@ const BookViewer: React.FC<BookViewerProps> = ({ content, book, lastPage }) => {
     initView();
   }, []);
 
-  useEffect(() => {
-    updateLastPage();
-  }, [currentPage]);
-
   return (
     <div className="overflow-y-auto overflow-x-hidden pb-10">
       <div className="w-full">
         <FlipBook
           pages={content}
-          startPage={currentPage}
+          startPage={lastPage}
           coverInfo={{
             author: book.author,
             bookName: book.bookName,
             coverPhoto: book.coverPhoto!,
             publicationDate: book.publicationDate,
+            idBook: book.idBook,
           }}
         />
       </div>

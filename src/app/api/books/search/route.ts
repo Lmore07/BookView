@@ -116,6 +116,8 @@ export const GET = apiMiddleware(async (request: NextRequest) => {
     },
   });
 
+  console.log("Vistos: ",userViewedBooks);
+
   const booksWithIsFavorite = books.map((book) => ({
     ...book,
     isFavorite: userFavoriteBooks.some(

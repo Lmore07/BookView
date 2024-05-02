@@ -6,6 +6,5 @@ export async function generateText(text: string) {
   const prompt = `Quiero una definición corta, clara y sencilla, sobre la palabra: '${text}'`;
   const result = await model.generateContent(prompt);
   const textResult = result.response.text();
-  console.log(textResult);
   return textResult;
 }

@@ -21,19 +21,10 @@ const FlipBook: React.FC<FlipBookProps> = ({
   coverInfo,
 }) => {
   const [currentPage, setCurrentPage] = useState(startPage);
-  const [viewCover, setViewCover] = useState(false);
+  const [currentBook, setCurrentBook] = useState(coverInfo);
   const [isFlipping, setIsFlipping] = useState(false);
   const [flipDirection, setFlipDirection] = useState("");
-  const [formatDate, setFormatDate] = useState("");
   const bookRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const date = new Date(coverInfo.publicationDate);
-    const day = date.getDate();
-    const month = date.getMonth() + 1;
-    const year = date.getFullYear();
-    setFormatDate(`${day}-${month}-${year}`);
-  }, []);
 
   const handlePrevPage = () => {
     if (currentPage > 0 && !isFlipping) {
@@ -42,7 +33,6 @@ const FlipBook: React.FC<FlipBookProps> = ({
     } else {
       setFlipDirection("prev");
       setIsFlipping(true);
-      setViewCover(true);
     }
   };
 
@@ -79,6 +69,17 @@ const FlipBook: React.FC<FlipBookProps> = ({
     }
   };
 
+  const updateLastPage = async () => {
+    await fetch("../api/books/views?firstOpen=false", {
+      method: "PUT",
+      body: JSON.stringify({ idBook: coverInfo.idBook, lastPage: currentPage }),
+    });
+  };
+
+  useEffect(() => {
+    updateLastPage();
+  }, [currentPage]);
+
   useEffect(() => {
     if (isFlipping) {
       const bookElement = bookRef.current;
@@ -96,16 +97,9 @@ const FlipBook: React.FC<FlipBookProps> = ({
           bookElement.classList.remove("flip-next");
           setIsFlipping(false);
           if (flipDirection === "prev") {
-            if (!viewCover) {
-              setCurrentPage(currentPage - 1);
-            }
+            setCurrentPage(currentPage - 1);
           } else {
-            if (viewCover) {
-              setViewCover(false);
-              setCurrentPage(0);
-            } else {
-              setCurrentPage(currentPage + 1);
-            }
+            setCurrentPage(currentPage + 1);
           }
         };
 
@@ -129,7 +123,7 @@ const FlipBook: React.FC<FlipBookProps> = ({
           <button
             className="bg-gray-300 p-2 rounded-full focus:outline-none"
             onClick={handlePrevPage}
-            disabled={currentPage == 0 && viewCover}
+            disabled={currentPage == 0}
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -148,44 +142,21 @@ const FlipBook: React.FC<FlipBookProps> = ({
           </button>
         </div>
         <div className="pages">
-          {viewCover && coverInfo && (
-            <div>
-              <div className="page front cover flex items-center justify-center rounded-lg">
-                <div className="flex flex-col">
-                  <h1 className="text-3xl font-poppins font-bold pb-5">
-                    {coverInfo.bookName}
-                  </h1>
-                  <p className="text-lg font-poppins font-light pb-5">Autor: {coverInfo.author}</p>
-                  <img
-                    className="w-[250px] rounded-md"
-                    src={coverInfo.coverPhoto}
-                    alt="Portada del libro"
-                  />
-                  <p className="text-lg font-poppins font-light pt-5">
-                    Publicado: {formatDate}
-                  </p>
-                </div>
-              </div>
-              <div className="page back">
-                <PageContent page={pages[0]} />
-              </div>
-            </div>
-          )}
-          {!viewCover && (
-            <div>
-              <div className={`page front no-cover`}>
-                <PageContent page={pages[currentPage]} />
-              </div>
-              <div className="page back">
-                {flipDirection === "next" && currentPage < pages.length - 1 && (
-                  <PageContent page={pages[currentPage + 1]} />
-                )}
-                {flipDirection === "prev" && currentPage > 0 && (
-                  <PageContent page={pages[currentPage - 1]} />
-                )}
-              </div>
-            </div>
-          )}
+          <div className={`page front no-cover`}>
+            {currentPage == 0 ? (
+              <PageContent page={pages[currentPage]} coverInfo={currentBook} />
+            ) : (
+              <PageContent page={pages[currentPage]} />
+            )}
+          </div>
+          <div className="page back">
+            {flipDirection === "next" && currentPage < pages.length - 1 && (
+              <PageContent page={pages[currentPage + 1]} />
+            )}
+            {flipDirection === "prev" && currentPage > 0 && (
+              <PageContent page={pages[currentPage - 1]} />
+            )}
+          </div>
         </div>
         <div className="ml-5 my-2 z-40">
           <button

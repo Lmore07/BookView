@@ -53,7 +53,6 @@ export const DELETE = apiMiddleware(async (request: NextRequest) => {
       idFolder: true,
     },
   });
-  console.log(userFavoriteFolder);
 
   if (userFavoriteFolder) {
     const updatedFavoriteBook = await prisma.favorite_Books.updateMany({
@@ -65,7 +64,6 @@ export const DELETE = apiMiddleware(async (request: NextRequest) => {
         status: false,
       },
     });
-    console.log(updatedFavoriteBook);
 
     return NextResponse.json(
       {
@@ -114,7 +112,7 @@ export const GET = apiMiddleware(async (request: NextRequest) => {
       where: {
         status: true,
         Favorite_Books: {
-          some:{
+          some: {
             idFolder: folderId,
           },
         },
@@ -127,17 +125,29 @@ export const GET = apiMiddleware(async (request: NextRequest) => {
         Favorite_Books: {
           some: {
             idFolder: folderId,
-          }
+          },
         },
       },
     });
-    
+
+    const userViewedBooks = await prisma.viewBooks.findMany({
+      where: {
+        idUser: authResult.userId,
+      },
+      select: {
+        idBook: true,
+      },
+    });
+
     const totalPages = Math.ceil(totalBooks / limit);
 
     const booksWithIsFavorite = books.map((book) => ({
       ...book,
       isFavorite: book.Favorite_Books.some(
         (favoriteBook) => favoriteBook.idBook === book.idBook
+      ),
+      isViewed: userViewedBooks.some(
+        (viewedBook) => viewedBook.idBook === book.idBook
       ),
     }));
     if (booksWithIsFavorite.length > 0) {

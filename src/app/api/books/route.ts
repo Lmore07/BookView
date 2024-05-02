@@ -100,11 +100,16 @@ export const POST = apiMiddleware(async (request: NextRequest) => {
   }
 
   data.pages = [];
-  for (let i = 0; data[`pages[${i}][template]`]; i++) {
+  data.pages.push({
+    template: "Cover",
+    numberPage: 0,
+    content: `Hola, el nombre del libro es: ${data.bookName} el autor es: ${data.author} y lo publicó el: ${data.publicationDate}`,
+  });
+  for (let i = 0, j = 1; data[`pages[${i}][template]`]; i++, j++) {
     data.pages.push({
       template: data[`pages[${i}][template]`],
       content: data[`pages[${i}][content]`],
-      numberPage: Number(data[`pages[${i}][numberPage]`]),
+      numberPage: j,
       image: data[`pages[${i}][image]`],
       audio: data[`pages[${i}][audio]`],
       video: data[`pages[${i}][video]`],
@@ -121,8 +126,6 @@ export const POST = apiMiddleware(async (request: NextRequest) => {
       delete data[key];
     }
   }
-
-  console.log(data);
 
   const book = await prisma.books.create({
     select: {

@@ -32,13 +32,13 @@ const BookCard: React.FC<BookCardProps> = ({
           className="object-cover"
         />
       </div>
-      <div className="p-4">
+      <div className="p-4 flex flex-col flex-wrap">
         <p className=" font-open-sans text-sm">Autor: {author}</p>
         <h3 className=" font-bold font-open-sans capitalize text-xl">
           {title}
         </h3>
 
-        <div className="flex justify-between items-center mt-2">
+        <div className="flex justify-between items-center mt-2 mr-2">
           <Button
             icon={
               <svg
@@ -76,7 +76,7 @@ const BookCard: React.FC<BookCardProps> = ({
             className={`${
               isFavorite
                 ? "text-red-500 hover:text-gray-400"
-                : "text-gray-400 hover:text-red-600"
+                : "text-gray-400 hover:text-red-600 ml-2"
             } `}
           >
             <svg

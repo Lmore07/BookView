@@ -1,6 +1,7 @@
 import { generateSpeech } from "@/libs/services/generateSpeech";
+import { generateText } from "@/libs/services/generateText";
 import { parseHtmlToText } from "@/libs/services/parseHtmlToText";
-import { Chip, Divider } from "@mui/material";
+import { Chip, Divider, Snackbar, IconButton } from "@mui/material";
 import React, { useRef, useState } from "react";
 
 interface PageProps {
@@ -19,6 +20,10 @@ const PageContent: React.FC<PageProps> = ({ page }) => {
   const [isPlayingVideo, setIsPlayingVideo] = useState(false);
   const audioContext = useRef<AudioContext | null>(null);
   const source = useRef<AudioBufferSourceNode | null>(null);
+  const [selectedText, setSelectedText] = useState("");
+  const [textGenerated, setTextGenerated] = useState("");
+
+  const [open, setOpen] = React.useState(false);
 
   const handlePlayVideo = () => {
     setIsPlayingVideo(true);
@@ -56,7 +61,7 @@ const PageContent: React.FC<PageProps> = ({ page }) => {
   };
 
   const stopSpeech = () => {
-    console.log('stopSpeech', source.current);
+    console.log("stopSpeech", source.current);
     if (source.current) {
       source.current.stop();
       audioContext.current?.close();
@@ -73,16 +78,26 @@ const PageContent: React.FC<PageProps> = ({ page }) => {
     }
   };
 
+  const handleTextSelection = async (event: any) => {
+    const selection = window.getSelection();
+    const selectedText = selection?.toString().trim();
+    setSelectedText(selectedText ?? "vacio");
+    if (selectedText != "" && selectedText != null) {
+      setTextGenerated(await generateText(selectedText));
+      setOpen(true);
+    }
+  };
+
   return (
-    <div className="mb-3">
-      <Divider className="py-4">
+    <div className="py-5 bg-bgColorDark rounded-lg shadow-md flex flex-col">
+      <Divider className="py-1">
         <Chip
           className="font-semibold"
           label={`Página N° ${page.numberPage}`}
           size="medium"
         />
       </Divider>
-      <div className="bg-bgColorDark px-4 pb-1 pt-2 rounded-lg shadow-md">
+      <div className="px-4 pb-1 pt-2">
         {page.template === "Template1" && (
           <div className="overflow-hidden">
             <div className="flex items-center justify-center mb-2">
@@ -95,6 +110,7 @@ const PageContent: React.FC<PageProps> = ({ page }) => {
               )}
             </div>
             <div
+              onMouseUp={handleTextSelection}
               className="break-words max-w-none"
               dangerouslySetInnerHTML={{ __html: page.content }}
             ></div>
@@ -194,6 +210,12 @@ const PageContent: React.FC<PageProps> = ({ page }) => {
           )}
         </div>
       </div>
+      <Snackbar
+        open={open}
+        autoHideDuration={5000}
+        onClose={() => setOpen(false)}
+        message={textGenerated}
+      />
     </div>
   );
 };

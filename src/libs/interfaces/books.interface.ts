@@ -18,3 +18,10 @@ export interface PageI {
   template: string;
   content: string;
 }
+
+export interface CoverI {
+  coverPhoto: string;
+  author: string;
+  bookName: string;
+  publicationDate: Date;
+}

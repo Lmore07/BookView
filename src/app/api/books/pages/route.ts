@@ -12,6 +12,7 @@ export const GET = apiMiddleware(async (request: NextRequest) => {
   const url = new URL(request.url);
   const idBook = parseInt(url.searchParams.get("book") ?? "1", 10);
 
+
   const pages = await prisma.pages.findMany({
     select: {
       idPage: true,

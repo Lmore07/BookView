@@ -2,6 +2,146 @@
 @tailwind components;
 @tailwind utilities;
 
+.flip-book {
+  position: relative;
+  display: flex;
+  align-items: center;
+  perspective: 1000px;
+  align-items: center;
+  justify-content: center;
+}
+
+.pages {
+  position: relative;
+  width: 500px; /* Ajusta el ancho según tus necesidades */
+  height: 90dvh;
+  transform-style: preserve-3d;
+}
+
+.page {
+  position: absolute;
+  width: 100%;
+  height: 90%;
+  margin-top: 15px;
+  backface-visibility: hidden;
+}
+
+.front {
+  z-index: 2;
+}
+
+.back {
+  transform: rotateY(180deg);
+}
+
+.cover {
+  background-color: #f0f0f0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.no-cover {
+  z-index: 1;
+}
+
+.flipping .front {
+  animation: flip-book-front 0.6s forwards;
+}
+
+.flipping .back {
+  animation: flip-book-back 0.6s forwards;
+}
+
+.flip-prev .front {
+  animation: flip-book-front-prev 0.6s forwards;
+}
+
+.flip-prev .back {
+  animation: flip-book-back-prev 0.6s forwards;
+}
+
+.flip-next .front {
+  animation: flip-book-front-next 0.6s forwards;
+}
+
+.flip-next .back {
+  animation: flip-book-back-next 0.6s forwards;
+}
+
+@keyframes flip-book-front {
+  0% {
+    transform: none;
+  }
+  50% {
+    transform: perspective(1000px) rotateY(-90deg);
+  }
+  100% {
+    transform: perspective(1000px) rotateY(-180deg);
+  }
+}
+
+@keyframes flip-book-back {
+  0% {
+    transform: rotateY(180deg);
+  }
+  50% {
+    transform: perspective(1000px) rotateY(90deg);
+  }
+  100% {
+    transform: perspective(1000px) rotateY(0deg);
+  }
+}
+
+@keyframes flip-book-front-prev {
+  0% {
+    transform: none;
+  }
+  50% {
+    transform: perspective(1000px) rotateY(90deg);
+  }
+  100% {
+    transform: perspective(1000px) rotateY(180deg);
+  }
+}
+
+@keyframes flip-book-back-prev {
+  0% {
+    transform: rotateY(180deg);
+  }
+  50% {
+    transform: perspective(1000px) rotateY(-90deg);
+  }
+  100% {
+    transform: perspective(1000px) rotateY(0deg);
+  }
+}
+
+@keyframes flip-book-front-next {
+  0% {
+    transform: none;
+  }
+  50% {
+    transform: perspective(1000px) rotateY(-90deg);
+  }
+  100% {
+    transform: perspective(1000px) rotateY(-180deg);
+  }
+}
+
+@keyframes flip-book-back-next {
+  0% {
+    transform: rotateY(180deg);
+  }
+  50% {
+    transform: perspective(1000px) rotateY(90deg);
+  }
+  100% {
+    transform: perspective(1000px) rotateY(0deg);
+  }
+}
 
 @media (prefers-color-scheme: light) {
     html {

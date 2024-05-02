@@ -2,7 +2,7 @@
 import { LoadingContext } from "@/libs/contexts/loadingContext";
 import { ModalContext } from "@/libs/contexts/modalContext";
 import { ToastContext } from "@/libs/contexts/toastContext";
-import { BooksAll, PageI } from "@/libs/interfaces/books.interface";
+import { BooksAll, CoverI, PageI } from "@/libs/interfaces/books.interface";
 import { ResponseData } from "@/libs/interfaces/response.interface";
 import { ToastType } from "@/libs/interfaces/toast.interface";
 import { generateSpeech } from "@/libs/services/generateSpeech";
@@ -39,6 +39,7 @@ export default function BookSearch() {
   const [isViewBook, setIsViewBook] = useState(false);
   const [pagesBook, setPagesBook] = useState<PageI[] | null | undefined>([]);
   const [lastPage, setLastPage] = useState(0);
+  const [coverInfo, setCoverInfo] = useState<CoverI | null>(null);
 
   const commands = [
     {
@@ -527,7 +528,8 @@ export default function BookSearch() {
                 setLastPage(dataView.data[0].lastPage);
                 setIsLoading(false);
               }
-              const data: ResponseData<PageI[]> = await response.json();
+              const data: ResponseData<any> = await response.json();
+              console.log(data);
               if (data.error) {
                 handleShowToast(data.message!, ToastType.ERROR);
               } else {
@@ -640,7 +642,7 @@ export default function BookSearch() {
               </button>
               <BookViewer
                 content={pagesBook ?? []}
-                bookId={selectedBook!.idBook}
+                book={selectedBook!}
                 lastPage={lastPage}
               ></BookViewer>
             </div>

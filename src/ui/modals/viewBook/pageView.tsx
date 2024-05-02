@@ -125,6 +125,7 @@ const PageContent: React.FC<PageProps> = ({ page }) => {
             </div>
             <div className="col-span-3">
               <div
+                onMouseUp={handleTextSelection}
                 className="break-words max-w-none"
                 dangerouslySetInnerHTML={{ __html: page.content }}
               ></div>
@@ -136,6 +137,7 @@ const PageContent: React.FC<PageProps> = ({ page }) => {
             <div className="col-span-3">
               <div
                 className="break-words max-w-none"
+                onMouseUp={handleTextSelection}
                 dangerouslySetInnerHTML={{ __html: page.content }}
               ></div>
             </div>
@@ -148,7 +150,11 @@ const PageContent: React.FC<PageProps> = ({ page }) => {
         )}
         {page.template === "Template4" && (
           <div>
-            <div dangerouslySetInnerHTML={{ __html: page.content }}></div>
+            <div
+              onMouseUp={handleTextSelection}
+              className="break-words max-w-none"
+              dangerouslySetInnerHTML={{ __html: page.content }}
+            ></div>
           </div>
         )}
         <div className="flex justify-end mt-4">

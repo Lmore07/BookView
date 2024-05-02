@@ -89,7 +89,7 @@ const PageContent: React.FC<PageProps> = ({ page }) => {
   };
 
   return (
-    <div className="py-5 bg-bgColorDark rounded-lg shadow-md flex flex-col">
+    <div className="py-5 bg-bgColorDark rounded-lg shadow-md flex flex-col items-center justify-center">
       <Divider className="py-1">
         <Chip
           className="font-semibold"

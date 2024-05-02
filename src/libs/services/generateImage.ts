@@ -42,6 +42,7 @@ export async function saveAudio(audio: any): Promise<string | null> {
 
 export async function saveImage(image: any): Promise<string> {
   const timestamp = new Date().getTime();
+  console.log("Imagen que llega: ", image);
   const extension = image.type.split("/")[1];
   const filename = `image_${timestamp}.${extension}`;
   console.log("Imagen: ", filename);

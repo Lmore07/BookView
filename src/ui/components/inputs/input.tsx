@@ -40,7 +40,7 @@ const Input = ({
     {
       command: "Ingresa en la búsqueda *",
       callback: (search: string) => {
-        setInputValue(search);
+        onChange({ target: { value: search } } as any);
       },
     },
   ];

@@ -126,6 +126,7 @@ model Pages {
   status     Boolean   @default(true) @map("status")
   Books      Books     @relation(fields: [idBook], references: [idBook])
 
+  @@unique([idBook, numberPage])
   @@map("pages")
 }
 

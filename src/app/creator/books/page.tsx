@@ -1,23 +1,24 @@
 "use client";
 
+import { LoadingContext } from "@/libs/contexts/loadingContext";
+import { ModalContext } from "@/libs/contexts/modalContext";
+import { ToastContext } from "@/libs/contexts/toastContext";
+import { BooksAll, PageI } from "@/libs/interfaces/books.interface";
+import { ResponseData } from "@/libs/interfaces/response.interface";
+import { ToastType } from "@/libs/interfaces/toast.interface";
 import { generateSpeech } from "@/libs/services/generateSpeech";
+import { commandsBookCreator } from "@/libs/texts/commands/creator/commandsCreator";
+import { messageBooks } from "@/libs/texts/messages/creator/message";
 import ButtonOutlined from "@/ui/components/buttons/ButtonOutlined";
 import Table from "@/ui/components/tabble/table";
+import Help from "@/ui/modals/help/help";
+import BookViewer from "@/ui/modals/viewBook/bookViewer";
 import { Pagination, Stack, Tooltip } from "@mui/material";
+import { useRouter } from "next/navigation";
 import { useContext, useEffect, useRef, useState } from "react";
 import SpeechRecognition, {
   useSpeechRecognition,
 } from "react-speech-recognition";
-import { useRouter } from "next/navigation";
-import { ResponseData } from "@/libs/interfaces/response.interface";
-import { ToastType } from "@/libs/interfaces/toast.interface";
-import { ToastContext } from "@/libs/contexts/toastContext";
-import { LoadingContext } from "@/libs/contexts/loadingContext";
-import { messageBooks } from "@/libs/texts/messages/creator/message";
-import ModalParent from "@/ui/modals/modal";
-import Help from "@/ui/modals/help/help";
-import { commandsBookCreator } from "@/libs/texts/commands/creator/commandsCreator";
-import { ModalContext } from "@/libs/contexts/modalContext";
 export default function CreatorBooksPage() {
   //comandos de voz
   const commands = [
@@ -116,6 +117,9 @@ export default function CreatorBooksPage() {
   const { handleShowToast } = useContext(ToastContext)!;
   const { setIsLoading } = useContext(LoadingContext)!;
   const { openModal } = useContext(ModalContext)!;
+  const [isViewBook, setIsViewBook] = useState(false);
+  const [pagesBook, setPagesBook] = useState<PageI[] | null | undefined>([]);
+  const [selectedBook, setSelectedBook] = useState<BooksAll | null>(null);
 
   const headers = [
     { key: "bookName", name: "Nombre del libro" },
@@ -138,7 +142,7 @@ export default function CreatorBooksPage() {
   const getBooks = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch(`../api/books/?limit=1&page=${page}`);
+      const response = await fetch(`../api/books/?limit=5&page=${page}`);
       const data: ResponseData<any> = await response.json();
       if (data.error) {
         handleShowToast(data.message!, ToastType.ERROR);
@@ -362,9 +366,31 @@ export default function CreatorBooksPage() {
           data={tableData}
           showEdit
           showView
+          onEditClick={(item: any) => {
+            console.log("Editar libro: ", item);
+            router.push(`/creator/books/edition/${item.idBook}`);
+          }}
           showActions
-          onViewClick={(item: any) => {
-            console.log(item);
+          onViewClick={async (item: any) => {
+            console.log("Ver libro: ", item);
+            setIsLoading(true);
+            try {
+              const response = await fetch(
+                `../../api/books/pages?book=${item.idBook}`
+              );
+              const data: ResponseData<any> = await response.json();
+              if (data.error) {
+                handleShowToast(data.message!, ToastType.ERROR);
+              } else {
+                setSelectedBook(item);
+                setPagesBook(data.data);
+                setIsViewBook(true);
+              }
+            } catch (error) {
+              console.log("Error al cargar el libro a leer", error);
+            } finally {
+              setIsLoading(false);
+            }
           }}
           headers={headers}
         />
@@ -406,6 +432,49 @@ export default function CreatorBooksPage() {
           </Stack>
         </div>
       </div>
+      {isViewBook && (
+        <div
+          className="fixed z-10 inset-0 overflow-auto w-full"
+          aria-labelledby="modal-title"
+          role="dialog"
+          aria-modal="true"
+        >
+          <div className="flex items-center justify-center min-h-screen h-screen">
+            <div
+              className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
+              aria-hidden="true"
+            ></div>
+            <div className="inline-block  align-bottom bg-white rounded-lg overflow-hidden shadow-xl transform transition-all sm:my-8 h-screen w-screen">
+              <button
+                onClick={() => {
+                  setIsViewBook(false);
+                }}
+                className="absolute top-0 z-40 right-0 p-2 transform hover:scale-150 transition duration-500 ease-in-out"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  className="h-6 w-6 text-gray-600"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </button>
+              <BookViewer
+                content={pagesBook ?? []}
+                book={selectedBook!}
+                lastPage={0}
+              ></BookViewer>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

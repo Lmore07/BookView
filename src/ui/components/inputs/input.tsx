@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import SpeechRecognition, {
   useSpeechRecognition,
 } from "react-speech-recognition";
@@ -18,7 +18,6 @@ const Input = ({
   value,
   type,
   onChange,
-  voiceToText,
   validations = [],
   className = "",
 }: {
@@ -28,12 +27,10 @@ const Input = ({
   placeholder: string;
   value: any;
   type: string;
-  voiceToText?: boolean;
-  onChange: (value: string) => void;
+  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   validations?: ((value: string) => string)[];
   className?: string;
 }) => {
-  const [inputValue, setInputValue] = useState(value || "");
   const [touched, setTouched] = useState(false);
   const [isValid, setIsValid] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -48,30 +45,29 @@ const Input = ({
     },
   ];
 
-  const { transcript, resetTranscript } =
-    useSpeechRecognition({ commands: commands });
+  const { transcript, resetTranscript } = useSpeechRecognition({
+    commands: commands,
+  });
 
   useEffect(() => {
     const handleValidateForm = () => {
       setTouched(true);
-      setIsValid(validations.every((validate) => !validate(inputValue)));
+      setIsValid(validations.every((validate) => !validate(value)));
     };
 
     window.addEventListener("validate-form", handleValidateForm);
     return () => {
       window.removeEventListener("validate-form", handleValidateForm);
     };
-  }, [inputValue, validations]);
+  }, [value, validations]);
 
   const handleShowPassword = () => {
     setShowPassword(!showPassword);
   };
 
   const handleChange = (e: any) => {
-    const newValue = e.target.value;
-    setInputValue(newValue);
     onChange(e);
-    setIsValid(validations.every((validate) => !validate(newValue)));
+    setIsValid(validations.every((validate) => !validate(e.target.value)));
   };
 
   const startListening = () => {
@@ -85,22 +81,13 @@ const Input = ({
     resetTranscript();
   };
 
-  const handleToggleListening = () => {
-    if (isListening) {
-      stopListening();
-    } else {
-      startListening();
-    }
-  };
-
-
   const handleBlur = () => {
     setTouched(true);
   };
 
   const validationErrors = touched
     ? validations
-        .map((validation) => validation(inputValue))
+        .map((validation) => validation(value))
         .filter((error) => error !== "")
     : [];
 
@@ -117,11 +104,11 @@ const Input = ({
             type == "password" ? (showPassword ? "text" : "password") : type
           }
           name={name}
-          value={inputValue}
+          value={value ?? ""}
           onChange={handleChange}
           onBlur={handleBlur}
           placeholder={placeholder}
-          className={`w-full pl-9 pr-14 font-open-sans bg-bgInputText px-3 py-2 border-0 text-sm font-normal placeholder:text-gray-500 hover:placeholder:text-secondary-400 text-secondary-400 rounded-md outline-none hover:text-secondary-400 hover:border hover:border-black ${
+          className={`w-full pl-9 pr-14 font-open-sans bg-bgInputText px-3 py-2 border-0 text-sm font-medium placeholder:text-gray-400 hover:placeholder:text-secondary-400 text-secondary-400 rounded-md outline-none hover:text-secondary-400 hover:border hover:border-black ${
             validationErrors.length > 0
               ? "border-red-500 border focus:ring-2 focus:ring-red-500 hover:border-red-500 hover:border-2"
               : "border-0 focus:ring-2 focus:ring-slate-300"
@@ -132,37 +119,6 @@ const Input = ({
           } focus:bg-focusBgInput focus:text-secondary-400`}
         />
         {icon && <div className="absolute left-2">{icon}</div>}
-        {voiceToText && (
-          <div
-            className="absolute right-2 cursor-pointer"
-            onClick={handleToggleListening}
-          >
-            {isListening ? (
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="currentColor text-iconBgColor"
-                className="w-5 h-5"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M4.5 7.5a3 3 0 0 1 3-3h9a3 3 0 0 1 3 3v9a3 3 0 0 1-3 3h-9a3 3 0 0 1-3-3v-9Z"
-                  clipRule="evenodd"
-                />
-              </svg>
-            ) : (
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="currentColor text-iconBgColor"
-                className="w-5 h-5"
-              >
-                <path d="M8 1a2 2 0 0 0-2 2v4a2 2 0 1 0 4 0V3a2 2 0 0 0-2-2Z" />
-                <path d="M4.5 7A.75.75 0 0 0 3 7a5.001 5.001 0 0 0 4.25 4.944V13.5h-1.5a.75.75 0 0 0 0 1.5h4.5a.75.75 0 0 0 0-1.5h-1.5v-1.556A5.001 5.001 0 0 0 13 7a.75.75 0 0 0-1.5 0 3.5 3.5 0 1 1-7 0Z" />
-              </svg>
-            )}
-          </div>
-        )}
         {type == "password" && (
           <div
             className="absolute right-2 cursor-pointer"

@@ -25,6 +25,9 @@ export async function generateImage(text: string): Promise<string> {
 }
 
 export async function saveAudio(audio: any): Promise<string | null> {
+  if (typeof audio === "string") {
+    return audio;
+  }
   if (audio != null) {
     const timestamp = new Date().getTime();
     const extension = audio.type.split("/")[1];
@@ -39,6 +42,9 @@ export async function saveAudio(audio: any): Promise<string | null> {
 }
 
 export async function saveImage(image: any): Promise<string | null> {
+  if (typeof image === "string") {
+    return image;
+  }
   if (image != null) {
     const timestamp = new Date().getTime();
     const extension = image.type.split("/")[1];

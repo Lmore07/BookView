@@ -5,15 +5,29 @@ import VideoUpload from "../multimedia/video/page";
 import ButtonOutlined from "@/ui/components/buttons/ButtonOutlined";
 const JoditEditor = dynamic(() => import("jodit-react"), { ssr: false });
 
-const Template1: React.FC<{ content: any; onContentChange: any }> = ({
-  content,
-  onContentChange,
-}) => {
+const Template1: React.FC<{
+  content: any;
+  onContentChange: any;
+  image?: any;
+  audio?: any;
+  video?: any;
+}> = ({ content, onContentChange, image, audio, video }) => {
   const editor = useRef<any>(null);
-  const [image, setImage] = useState<File | null>(null);
-  const [imageBlob, setImageBlob] = useState<Blob | null>(null);
-  const [audioBlob, setAudioBlob] = useState<Blob | null>(null);
+  const [imageBlob, setImageBlob] = useState<File | null | string>(null);
+  const [audioBlob, setAudioBlob] = useState<Blob | null | string>(null);
   const [videoBlob, setVideoBlob] = useState<Blob | string | null>(null);
+
+  useEffect(() => {
+    if (image) {
+      setImageBlob(image);
+    }
+    if (audio) {
+      setAudioBlob(audio);
+    }
+    if (video) {
+      setVideoBlob(video);
+    }
+  }, [image, video, audio]);
 
   const handleImageUpload = () => {
     const input = document.createElement("input");
@@ -21,15 +35,8 @@ const Template1: React.FC<{ content: any; onContentChange: any }> = ({
     input.accept = "image/*";
     input.onchange = (e) => {
       const file = (e.target as HTMLInputElement).files?.[0];
-      setImage(file || null);
       if (file) {
-        const reader = new FileReader();
-        reader.onload = () => {
-          setImageBlob(
-            new Blob([reader.result as ArrayBuffer], { type: file.type })
-          );
-        };
-        reader.readAsArrayBuffer(file);
+        setImageBlob(file);
       } else {
         setImageBlob(null);
       }
@@ -60,25 +67,6 @@ const Template1: React.FC<{ content: any; onContentChange: any }> = ({
       onContentChange(content, imageBlob, audioBlob, null);
     }
   }, [videoBlob]);
-
-  const openPreviewWindow = () => {
-    if (editor.current) {
-      const previewContent = editor.current.value;
-      const previewWindow = window.open("", "_blank");
-      previewWindow?.document.write(`
-        <!DOCTYPE html>
-        <html>
-          <head>
-            <title>Previsualización</title>
-          </head>
-          <body>
-            ${previewContent}
-          </body>
-        </html>
-      `);
-      previewWindow?.document.close();
-    }
-  };
 
   const generateVideoSource = () => {
     if (videoBlob) {
@@ -115,9 +103,13 @@ const Template1: React.FC<{ content: any; onContentChange: any }> = ({
         className="bg-gray-200 h-64 flex items-center justify-center mb-4 cursor-pointer"
         onClick={handleImageUpload}
       >
-        {image ? (
+        {imageBlob ? (
           <img
-            src={URL.createObjectURL(image)}
+            src={
+              imageBlob instanceof File
+                ? URL.createObjectURL(imageBlob as Blob)
+                : imageBlob
+            }
             alt="Imagen"
             className="max-h-full max-w-full"
           />
@@ -179,8 +171,14 @@ const Template1: React.FC<{ content: any; onContentChange: any }> = ({
             <div className="bg-bgColorRight rounded-lg shadow-md p-4">
               <audio controls>
                 <source
-                  src={URL.createObjectURL(audioBlob)}
-                  type={audioBlob.type}
+                  src={
+                    audioBlob instanceof File
+                      ? URL.createObjectURL(audioBlob as Blob)
+                      : audioBlob as string
+                  }
+                  type={
+                    audioBlob instanceof File ? audioBlob.type : "audio/mpeg"
+                  }
                 />
               </audio>
               <ButtonOutlined

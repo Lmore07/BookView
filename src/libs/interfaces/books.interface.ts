@@ -5,7 +5,7 @@ export interface BooksAll {
   bookName: string;
   publicationDate: Date;
   illustrator: string;
-  coverPhoto?: string;
+  coverPhoto?: File | string | null;
   isViewed: boolean;
 }
 
@@ -25,4 +25,15 @@ export interface CoverI {
   bookName: string;
   publicationDate: Date;
   idBook: number;
+}
+
+export interface BookInfo {
+  idBook: number;
+  author: string;
+  bookName: string;
+  publicationDate: Date;
+  illustrator: string;
+  coverPhoto?: string;
+  Pages: PageI[];
+  categoriesIds: number[];
 }

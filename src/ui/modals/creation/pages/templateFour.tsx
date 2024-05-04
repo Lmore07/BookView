@@ -5,12 +5,14 @@ import AudioUpload from "../multimedia/audio/page";
 import VideoUpload from "../multimedia/video/page";
 const JoditEditor = dynamic(() => import("jodit-react"), { ssr: false });
 
-const Template4: React.FC<{ content: any; onContentChange: any }> = ({
-  content,
-  onContentChange,
-}) => {
+const Template4: React.FC<{
+  content: any;
+  onContentChange: any;
+  audio?: any;
+  video?: any;
+}> = ({ content, onContentChange, audio, video }) => {
   const editor = useRef(null);
-  const [audioBlob, setAudioBlob] = useState<Blob | null>(null);
+  const [audioBlob, setAudioBlob] = useState<Blob | null | string>(null);
   const [videoBlob, setVideoBlob] = useState<Blob | string | null>(null);
 
   useEffect(() => {
@@ -20,6 +22,15 @@ const Template4: React.FC<{ content: any; onContentChange: any }> = ({
       onContentChange(content, null, null, videoBlob);
     }
   }, [audioBlob]);
+
+  useEffect(() => {
+    if (audio) {
+      setAudioBlob(audio);
+    }
+    if (video) {
+      setVideoBlob(video);
+    }
+  }, [video, audio]);
 
   useEffect(() => {
     if (videoBlob) {
@@ -114,8 +125,14 @@ const Template4: React.FC<{ content: any; onContentChange: any }> = ({
             <div className="bg-bgColorRight rounded-lg shadow-md p-4">
               <audio controls>
                 <source
-                  src={URL.createObjectURL(audioBlob)}
-                  type={audioBlob.type}
+                  src={
+                    audioBlob instanceof File
+                      ? URL.createObjectURL(audioBlob as Blob)
+                      : (audioBlob as string)
+                  }
+                  type={
+                    audioBlob instanceof File ? audioBlob.type : "audio/mpeg"
+                  }
                 />
               </audio>
               <ButtonOutlined

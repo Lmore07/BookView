@@ -5,14 +5,16 @@ import ButtonOutlined from "@/ui/components/buttons/ButtonOutlined";
 import AudioUpload from "../multimedia/audio/page";
 const JoditEditor = dynamic(() => import("jodit-react"), { ssr: false });
 
-const Template2: React.FC<{ content: any; onContentChange: any }> = ({
-  content,
-  onContentChange,
-}) => {
+const Template2: React.FC<{
+  content: any;
+  onContentChange: any;
+  image?: any;
+  audio?: any;
+  video?: any;
+}> = ({ content, onContentChange, image, video, audio }) => {
   const editor = useRef<any>(null);
-  const [image, setImage] = useState<File | null>(null);
-  const [imageBlob, setImageBlob] = useState<Blob | null>(null);
-  const [audioBlob, setAudioBlob] = useState<Blob | null>(null);
+  const [imageBlob, setImageBlob] = useState<File | null | string>(null);
+  const [audioBlob, setAudioBlob] = useState<Blob | null | string>(null);
   const [videoBlob, setVideoBlob] = useState<Blob | string | null>(null);
 
   const handleImageUpload = () => {
@@ -21,21 +23,26 @@ const Template2: React.FC<{ content: any; onContentChange: any }> = ({
     input.accept = "image/*";
     input.onchange = (e) => {
       const file = (e.target as HTMLInputElement).files?.[0];
-      setImage(file || null);
       if (file) {
-        const reader = new FileReader();
-        reader.onload = () => {
-          setImageBlob(
-            new Blob([reader.result as ArrayBuffer], { type: file.type })
-          );
-        };
-        reader.readAsArrayBuffer(file);
+        setImageBlob(file);
       } else {
         setImageBlob(null);
       }
     };
     input.click();
   };
+
+  useEffect(() => {
+    if (image) {
+      setImageBlob(image);
+    }
+    if (audio) {
+      setAudioBlob(audio);
+    }
+    if (video) {
+      setVideoBlob(video);
+    }
+  }, [image, video, audio]);
 
   useEffect(() => {
     if (imageBlob) {
@@ -96,9 +103,13 @@ const Template2: React.FC<{ content: any; onContentChange: any }> = ({
         className="bg-gray-200 flex items-center justify-center mr-4 cursor-pointer"
         onClick={handleImageUpload}
       >
-        {image ? (
+        {imageBlob ? (
           <img
-            src={URL.createObjectURL(image)}
+            src={
+              imageBlob instanceof File
+                ? URL.createObjectURL(imageBlob as Blob)
+                : imageBlob
+            }
             alt="Imagen"
             className="max-h-full max-w-full"
           />
@@ -160,12 +171,14 @@ const Template2: React.FC<{ content: any; onContentChange: any }> = ({
         <div className="flex items-center">
           {audioBlob ? (
             <div className="bg-bgColorRight rounded-lg shadow-md p-4">
-              <audio controls>
-                <source
-                  src={URL.createObjectURL(audioBlob)}
-                  type={audioBlob.type}
-                />
-              </audio>
+              <source
+                src={
+                  audioBlob instanceof File
+                    ? URL.createObjectURL(audioBlob as Blob)
+                    : (audioBlob as string)
+                }
+                type={audioBlob instanceof File ? audioBlob.type : "audio/mpeg"}
+              />
               <ButtonOutlined
                 onClick={() => {
                   setAudioBlob(null);

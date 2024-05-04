@@ -1,7 +1,7 @@
 import Chip from "@mui/material/Chip";
 import Divider from "@mui/material/Divider";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import template1 from "../../../../public/templates/template1.svg";
 import template2 from "../../../../public/templates/template2.svg";
 import template3 from "../../../../public/templates/template3.svg";
@@ -11,13 +11,18 @@ import Template1 from "./pages/templateOne";
 import Template3 from "./pages/templateThree";
 import Template2 from "./pages/templateTwo";
 
-const BookEditor: React.FC<{ onChangedPages: any }> = ({ onChangedPages }) => {
-  const [pages, setPages] = useState<any>([]);
+const BookEditor: React.FC<{ onChangedPages: any; pagesEdit?: any[] }> = ({
+  onChangedPages,
+  pagesEdit,
+}) => {
+  const [pages, setPages] = useState<any>(pagesEdit ?? []);
+  const didRun = useRef(false);
 
   const addPage = (template: any) => {
     setPages([
       ...pages,
       {
+        idPage: null,
         template,
         content: "",
         image: null,
@@ -50,6 +55,14 @@ const BookEditor: React.FC<{ onChangedPages: any }> = ({ onChangedPages }) => {
   };
 
   useEffect(() => {
+    if (!didRun.current && pagesEdit && pagesEdit.length > 0) {
+      setPages(pagesEdit);
+      didRun.current = true;
+    }
+  }, [pagesEdit]);
+
+  useEffect(() => {
+    console.log("paginas cargadas: ", pages);
     onChangedPages(pages);
   }, [pages]);
 
@@ -68,58 +81,43 @@ const BookEditor: React.FC<{ onChangedPages: any }> = ({ onChangedPages }) => {
                 {page.template === "Template1" && (
                   <Template1
                     content={page.content}
+                    image={page.image}
+                    audio={page.audio}
+                    video={page.video}
                     onContentChange={(
                       content: any,
                       image: any,
                       audio: any,
                       video: any
-                    ) =>
-                      updatePageContent(
-                        index,
-                        content,
-                        image,
-                        audio,
-                        video
-                      )
-                    }
+                    ) => updatePageContent(index, content, image, audio, video)}
                   />
                 )}
                 {page.template === "Template2" && (
                   <Template2
                     content={page.content}
+                    image={page.image}
+                    audio={page.audio}
+                    video={page.video}
                     onContentChange={(
                       content: any,
                       image: any,
                       audio: any,
                       video: any
-                    ) =>
-                      updatePageContent(
-                        index,
-                        content,
-                        image,
-                        audio,
-                        video
-                      )
-                    }
+                    ) => updatePageContent(index, content, image, audio, video)}
                   />
                 )}
                 {page.template === "Template3" && (
                   <Template3
                     content={page.content}
+                    image={page.image}
+                    audio={page.audio}
+                    video={page.video}
                     onContentChange={(
                       content: any,
                       image: any,
                       audio: any,
                       video: any
-                    ) =>
-                      updatePageContent(
-                        index,
-                        content,
-                        image,
-                        audio,
-                        video
-                      )
-                    }
+                    ) => updatePageContent(index, content, image, audio, video)}
                   />
                 )}
                 {page.template === "Template4" && (
@@ -130,15 +128,7 @@ const BookEditor: React.FC<{ onChangedPages: any }> = ({ onChangedPages }) => {
                       image: any,
                       audio: any,
                       video: any
-                    ) =>
-                      updatePageContent(
-                        index,
-                        content,
-                        image,
-                        audio,
-                        video
-                      )
-                    }
+                    ) => updatePageContent(index, content, image, audio, video)}
                   />
                 )}
               </div>

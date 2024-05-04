@@ -13,12 +13,14 @@ interface FlipBookProps {
   }[];
   coverInfo: CoverI;
   startPage?: number;
+  isViewed?: boolean;
 }
 
 const FlipBook: React.FC<FlipBookProps> = ({
   pages,
   startPage = 0,
   coverInfo,
+  isViewed=false,
 }) => {
   const [currentPage, setCurrentPage] = useState(startPage);
   const [currentBook, setCurrentBook] = useState(coverInfo);
@@ -70,10 +72,12 @@ const FlipBook: React.FC<FlipBookProps> = ({
   };
 
   const updateLastPage = async () => {
-    await fetch("../api/books/views?firstOpen=false", {
-      method: "PUT",
-      body: JSON.stringify({ idBook: coverInfo.idBook, lastPage: currentPage }),
-    });
+    if(!isViewed){
+      await fetch("../api/books/views?firstOpen=false", {
+        method: "PUT",
+        body: JSON.stringify({ idBook: coverInfo.idBook, lastPage: currentPage }),
+      });
+    }
   };
 
   useEffect(() => {

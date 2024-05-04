@@ -1,7 +1,8 @@
 "use client";
 
+import { LoadingContext } from "@/libs/contexts/loadingContext";
 import { ToastContext } from "@/libs/contexts/toastContext";
-import { BooksAll } from "@/libs/interfaces/books.interface";
+import { BookInfo, BooksAll, PageI } from "@/libs/interfaces/books.interface";
 import { CategoriesAll } from "@/libs/interfaces/categories.interface";
 import { ResponseData } from "@/libs/interfaces/response.interface";
 import { ToastType } from "@/libs/interfaces/toast.interface";
@@ -18,36 +19,72 @@ import ModalParent from "@/ui/modals/modal";
 import BookViewer from "@/ui/modals/viewBook/bookViewer";
 import { useContext, useEffect, useState } from "react";
 
-export default function Stepper() {
+export default function BookEdit({
+  params,
+}: {
+  readonly params: { readonly id: number };
+}) {
   const [currentStep, setCurrentStep] = useState(0);
   const [categories, setCategories] = useState<CategoriesAll[]>([]);
   const [visible, setVisible] = useState(true);
   const [previsualize, setPrevisualize] = useState(false);
-  const [pages, setPages] = useState<any>([]);
+  const [pages, setPages] = useState<any[]>([]);
   const [filterCategories, setFilterCategories] = useState<number[]>([]);
   const { handleShowToast } = useContext(ToastContext)!;
+  const { setIsLoading } = useContext(LoadingContext)!;
   const [selectedBook, setSelectedBook] = useState<BooksAll | null>(null);
   const [stepOne, setStepOne] = useState<{
     bookName: string;
     author: string;
     illustrator: string;
-    publicationDate: Date;
-    bookImage: File | null;
+    publicationDate: string;
+    bookImage: File | null | string;
   }>({
     bookName: "",
     author: "",
     illustrator: "",
-    publicationDate: new Date(),
+    publicationDate: "",
     bookImage: null,
   });
 
+  const fetchDataCategories = async () => {
+    setIsLoading(true);
+    const response = await fetch("../../../api/categories?limit=10000");
+    const data: ResponseData<CategoriesAll[]> = await response.json();
+    setCategories(data.data ?? []);
+  };
+
+  const fetchDataInfo = async () => {
+    const response = await fetch(`../../../api/books?id=${params.id}`);
+    const data: ResponseData<BookInfo> = await response.json();
+    if (data.data) {
+      setData(data.data);
+    } else {
+      handleShowToast("No se encontró el libro", ToastType.ERROR);
+    }
+    setIsLoading(false);
+  };
+
+  const setData = (data: BookInfo) => {
+    setFilterCategories(data.categoriesIds);
+    const publicationDate = new Date(data.publicationDate);
+    const formattedDate = `${publicationDate.getFullYear()}-${String(
+      publicationDate.getMonth() + 1
+    ).padStart(2, "0")}-${String(publicationDate.getDate()).padStart(2, "0")}`;
+    setStepOne({
+      bookName: data.bookName,
+      author: data.author,
+      illustrator: data.illustrator,
+      bookImage: data.coverPhoto ?? null,
+      publicationDate: formattedDate,
+    });
+    const pages = data.Pages.slice(1);
+    setPages(pages);
+  };
+
   useEffect(() => {
-    const fetchData = async () => {
-      const response = await fetch("../../api/categories?limit=10000");
-      const data: ResponseData<CategoriesAll[]> = await response.json();
-      setCategories(data.data ?? []);
-    };
-    fetchData();
+    fetchDataCategories();
+    fetchDataInfo();
   }, []);
 
   const validateStepOne = () => {
@@ -237,6 +274,7 @@ export default function Stepper() {
         categoriesIds: filterCategories,
         pages: pages,
       };
+      console.log("Edicion de libro: ", body);
       const formData = new FormData();
       formData.append("bookName", body.bookName);
       formData.append("author", body.author);
@@ -244,6 +282,7 @@ export default function Stepper() {
       formData.append("bookCover", body.bookImage!);
       body.pages.forEach((page: any, index: any) => {
         formData.append(`pages[${index}][template]`, page.template);
+        formData.append(`pages[${index}][idPage]`, page.idPage);
         formData.append(`pages[${index}][content]`, page.content);
         formData.append(`pages[${index}][numberPage]`, page.numberPage);
         if (page.image) {
@@ -257,19 +296,18 @@ export default function Stepper() {
         }
       });
       formData.append("categoriesIds", JSON.stringify(body.categoriesIds));
-      console.log(formData.get("bookName"));
-      const response = await fetch("../../api/books", {
-        method: "POST",
+      const response = await fetch(`../../../api/books?id=${params.id}`, {
+        method: "PUT",
         body: formData,
       });
       const data: ResponseData<CategoriesAll[]> = await response.json();
     }
   };
 
-  const handleChangeStepOne = (e: any) => {
+  const handleChangeStepOne = (event: any, fieldName: any) => {
     setStepOne({
       ...stepOne,
-      [e.target.name]: e.target.value,
+      [fieldName]: event.target.value,
     });
   };
 
@@ -317,7 +355,7 @@ export default function Stepper() {
     <div className="shadow-xl rounded-xl p-3">
       <div className="py-2">
         <h1 className="relative text-3xl text-primary-500 font-bold">
-          <span className="ps-2">Creación de Libro</span>
+          <span className="ps-2">Edición de Libro</span>
         </h1>
       </div>
       <div className="flex items-center justify-center flex-wrap gap-3 py-2 px-4 rounded-lg shadow-xl mx-5">
@@ -394,7 +432,7 @@ export default function Stepper() {
                     </g>
                   </svg>
                 }
-                onChange={handleChangeStepOne}
+                onChange={(event) => handleChangeStepOne(event, "bookName")}
                 validations={[validateNotEmpty]}
               ></Input>
               <h3 className="text-primary-500 font-poppins font-semibold text-xl">
@@ -428,7 +466,7 @@ export default function Stepper() {
                     </g>
                   </svg>
                 }
-                onChange={handleChangeStepOne}
+                onChange={(event) => handleChangeStepOne(event, "author")}
                 validations={[validateNotEmpty]}
               ></Input>
               <Input
@@ -459,7 +497,7 @@ export default function Stepper() {
                     </g>
                   </svg>
                 }
-                onChange={handleChangeStepOne}
+                onChange={(event) => handleChangeStepOne(event, "illustrator")}
               ></Input>
               <Input
                 label="Fecha de Publicación"
@@ -490,7 +528,9 @@ export default function Stepper() {
                     </g>
                   </svg>
                 }
-                onChange={handleChangeStepOne}
+                onChange={(event) =>
+                  handleChangeStepOne(event, "publicationDate")
+                }
                 validations={[validateCorrectDate]}
               ></Input>
               <div>
@@ -503,7 +543,11 @@ export default function Stepper() {
                 >
                   {stepOne.bookImage ? (
                     <img
-                      src={URL.createObjectURL(stepOne.bookImage)}
+                      src={
+                        stepOne.bookImage instanceof File
+                          ? URL.createObjectURL(stepOne.bookImage as Blob)
+                          : stepOne.bookImage
+                      }
                       alt="Imagen"
                       className="max-h-full max-w-full"
                     />
@@ -552,8 +596,8 @@ export default function Stepper() {
         )}
         <div style={{ display: currentStep === 2 ? "block" : "none" }}>
           <BookEditor
+            pagesEdit={pages}
             onChangedPages={(pages: any) => {
-              console.log(pages);
               setPages(pages);
             }}
           />
@@ -567,12 +611,11 @@ export default function Stepper() {
               <div className="flex justify-center">
                 <button
                   onClick={() => {
-                    console.log("Paginas al momento: ", pages);
                     setSelectedBook({
                       idBook: 0,
                       author: stepOne.author,
                       bookName: stepOne.bookName,
-                      publicationDate: stepOne.publicationDate,
+                      publicationDate: new Date(stepOne.publicationDate),
                       isFavorite: false,
                       isViewed: false,
                       coverPhoto: stepOne.bookImage,

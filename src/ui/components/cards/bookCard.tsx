@@ -6,7 +6,7 @@ import Button from "../buttons/ButtonFill";
 interface BookCardProps {
   title: string;
   author: string;
-  imageUrl?: string;
+  imageUrl?: string | null;
   isFavorite?: boolean;
   isViewed?: boolean;
   onReadClick: () => void;

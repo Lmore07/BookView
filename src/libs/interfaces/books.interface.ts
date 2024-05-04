@@ -5,7 +5,7 @@ export interface BooksAll {
   bookName: string;
   publicationDate: Date;
   illustrator: string;
-  coverPhoto?: File | string | null;
+  coverPhoto?: any;
   isViewed: boolean;
 }
 

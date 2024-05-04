@@ -9,6 +9,7 @@ import { useRef, useState } from "react";
 import SpeechRecognition, {
   useSpeechRecognition,
 } from "react-speech-recognition";
+import { useRouter } from "next/navigation";
 
 export default function CreatorPage() {
   const commands = [
@@ -36,6 +37,7 @@ export default function CreatorPage() {
     },
   ];
 
+  const router = useRouter();
   const [open, setOpen] = useState(false);
   const { transcript, resetTranscript, listening } = useSpeechRecognition({
     commands: commands,
@@ -228,7 +230,9 @@ export default function CreatorPage() {
                 />
               </svg>
             }
-            onClick={() => {}}
+            onClick={() => {
+              router.push("creator/books/creation");
+            }}
           >
             Nuevo Libro
           </ButtonOutlined>
@@ -256,7 +260,9 @@ export default function CreatorPage() {
                 </g>
               </svg>
             }
-            onClick={() => {}}
+            onClick={() => {
+              router.push("creator/books");
+            }}
           >
             Ver Todos
           </Button>

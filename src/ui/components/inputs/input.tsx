@@ -92,7 +92,7 @@ const Input = ({
     : [];
 
   return (
-    <div className={`input-component ${className}`}>
+    <div className={`input-component w-full ${className}`}>
       {label && (
         <div className="font-open-sans text-sm font-bold text-labelInputText">
           {label}

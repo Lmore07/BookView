@@ -7,6 +7,7 @@ import AccessibilityButton from "@/ui/components/buttons/AccessibilityButton";
 import type { Metadata } from "next";
 import "../ui/globals.css";
 import { ModalProvider } from "@/libs/contexts/modalContext";
+import { cn } from "@/lib/utils"
 
 export const metadata: Metadata = {
   title: "BookView",
@@ -20,7 +21,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es">
-      <body>
+      <body >
         <Providers>
           <LoadingProvider>
             <ModalProvider>

@@ -79,16 +79,11 @@ export default function RootLayout({
     },
   ];
   return (
-    <div className="flex flex-row h-screen">
-      <Sidebar optionsRoutes={optionsRoutes} />
-      <div className="flex flex-col w-full">
-        <Header category="" projectName=""></Header>
-
-        <main className="overflow-y-auto p-10">
-          <DynamicBreadcrumbs />
-          {children}
-        </main>
-      </div>
+    <div>
+      <Sidebar optionsRoutes={optionsRoutes}>
+        <DynamicBreadcrumbs />
+        {children}
+      </Sidebar>
     </div>
   );
 }

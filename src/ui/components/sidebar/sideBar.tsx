@@ -1,11 +1,12 @@
 "use client";
 
-import Image from "next/image";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import logoImg from "../../../../public/imgs/icon.svg";
-import { usePathname, useRouter } from "next/navigation";
-import Cookie from "js-cookie";
 
 interface SidebarProps {
   optionsRoutes: {
@@ -14,16 +15,19 @@ interface SidebarProps {
     key: string;
     icon: React.ReactNode;
   }[];
+  children: React.ReactNode;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ optionsRoutes }) => {
+const Sidebar: React.FC<SidebarProps> = ({ optionsRoutes, children }) => {
   const [selectedOption, setSelectedOption] = useState("Inicio");
   const [showFullSidebar, setShowFullSidebar] = useState(true);
   const pathName = usePathname();
   const router = useRouter();
+  const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
     handleSelectedOption();
+    setIsMounted(true);
   }, []);
 
   const handleSelectedOption = () => {
@@ -37,122 +41,105 @@ const Sidebar: React.FC<SidebarProps> = ({ optionsRoutes }) => {
     }
   };
 
+  if (!isMounted) {
+    return null;
+  }
+
   return (
-    <div
-      className={`${
-        showFullSidebar ? "w-1/5 xl:w-1/5 lg:w-1/5" : "w-1/6"
-      } shadow-2xl border-gray-300 md:w-1/12 sm:w-auto`}
-    >
-      <div className="flex">
-        <div className="p-4 flex gap-1 justify-center items-center">
-          <Image alt="Logo" src={logoImg}></Image>
-          <div
-            className={`font-bold text-lg pe-2 ${
-              showFullSidebar
-                ? "lg:block md:hidden sm:hidden hidden"
-                : "hidden md:hidden"
-            }`}
-          >
-            BookView
-          </div>
+    <>
+      <header className="h-[10dvh] bg-gray-100 border-b border-gray-200 dark:border-gray-700 px-6 py-4 flex items-center justify-between">
+        <div className="flex items-center">
+          <img src={logoImg.src} alt="Imagen" />
+          <h2 className="text-lg pl-3 font-semibold text-gray-800 dark:text-gray-200">
+            BookViewer
+          </h2>
         </div>
-        <button
-          className="xl:block hidden pe-2"
-          onClick={() => setShowFullSidebar(!showFullSidebar)}
-        >
-          {showFullSidebar ? (
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={1.5}
-              stroke="currentColor"
-              className="w-6 h-6"
+        <div className="flex items-center space-x-4">
+          <Sheet>
+            <SheetTrigger>
+              <MenuIcon className="h-5 w-5 lg:hidden text-gray-500 dark:text-gray-400" />
+              <span className="sr-only">Toggle sidebar</span>
+            </SheetTrigger>
+            <SheetContent
+              className="w-64 border-r border-gray-200 dark:border-gray-700"
+              side="left"
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
-              />
-            </svg>
-          ) : (
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={1.5}
-              stroke="currentColor"
-              className="w-6 h-6"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M6 18L18 6M6 6l12 12"
-              />
-            </svg>
-          )}
-        </button>
+              <div className="flex items-center mb-6">
+                <img src={logoImg.src} alt="Imagen" />
+                <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-200">
+                  Acme Inc.
+                </h2>
+              </div>
+              <nav className="space-y-1">
+                {optionsRoutes.map((route) => (
+                  <Link
+                    key={route.key}
+                    href={route.route}
+                    onClick={() => setSelectedOption(route.name)}
+                    className={`flex items-center gap-2 px-3 py-2 bg-transparent cursor-pointer transition-colors ${
+                      selectedOption == route.name
+                        ? "hover:bg-secondary-150 relative font-bold text-primary-500 before:content-[''] before:block before:h-full before:w-1 before:bg-primary-500 before:absolute before:left-0"
+                        : "text-textSidebar hover:bg-secondary-150"
+                    }`}
+                  >
+                    <div>{route.icon}</div>
+                    <span>{route.name}</span>
+                  </Link>
+                ))}
+              </nav>
+            </SheetContent>
+          </Sheet>
+          <Avatar className="h-9 w-9">
+            <AvatarImage alt="@shadcn" src="/placeholder-avatar.jpg" />
+            <AvatarFallback>JP</AvatarFallback>
+          </Avatar>
+        </div>
+      </header>
+      <div className="flex h-[90dvh]">
+        <div className="hidden lg:block pt-10 bg-gray-100 dark:bg-gray-800 w-64 border-r border-gray-200 dark:border-gray-700">
+          <nav className="space-y-1">
+            {optionsRoutes.map((route) => (
+              <Link
+                key={route.key}
+                href={route.route}
+                onClick={() => setSelectedOption(route.name)}
+                className={`flex items-center gap-2 px-3 py-2 bg-transparent cursor-pointer transition-colors ${
+                  selectedOption == route.name
+                    ? "hover:bg-secondary-150 relative font-bold text-primary-500 before:content-[''] before:block before:h-full before:w-1 before:bg-primary-500 before:absolute before:left-0"
+                    : "text-textSidebar hover:bg-secondary-150"
+                }`}
+              >
+                <div>{route.icon}</div>
+                <span>{route.name}</span>
+              </Link>
+            ))}
+          </nav>
+        </div>
+        <div className="flex-1 p-6">{children}</div>
       </div>
-      <hr className="border-gray-300 border-2" />
-      <nav className="mt-3 flex flex-col gap-2 font-open-sans text-lg font-normal">
-        {optionsRoutes.map((route) => (
-          <Link
-            key={route.key}
-            href={route.route}
-            onClick={() => setSelectedOption(route.name)}
-            className={`flex items-center gap-2 px-3 py-2 bg-transparent cursor-pointer transition-colors ${
-              selectedOption == route.name
-                ? "hover:bg-secondary-150 relative font-bold text-primary-500 before:content-[''] before:block before:h-full before:w-1 before:bg-primary-500 before:absolute before:left-0"
-                : "text-textSidebar hover:bg-secondary-150"
-            }`}
-          >
-            <div>{route.icon}</div>
-            <span
-              className={`${
-                showFullSidebar
-                  ? "lg:block md:hidden sm:hidden hidden"
-                  : "hidden md:hidden"
-              }`}
-            >
-              {route.name}
-            </span>
-          </Link>
-        ))}
-        <a
-          href="../login"
-          onClick={() => {
-            Cookie.remove("token");
-            router.replace("/login");
-          }}
-          className="flex gap-1 hover:bg-secondary-150 items-center px-3 py-2 transition-colors text-textSidebar"
-        >
-          <div>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              fill="currentColor"
-              className="w-10"
-            >
-              <path
-                fillRule="evenodd"
-                d="M16.5 3.75a1.5 1.5 0 0 1 1.5 1.5v13.5a1.5 1.5 0 0 1-1.5 1.5h-6a1.5 1.5 0 0 1-1.5-1.5V15a.75.75 0 0 0-1.5 0v3.75a3 3 0 0 0 3 3h6a3 3 0 0 0 3-3V5.25a3 3 0 0 0-3-3h-6a3 3 0 0 0-3 3V9A.75.75 0 1 0 9 9V5.25a1.5 1.5 0 0 1 1.5-1.5h6ZM5.78 8.47a.75.75 0 0 0-1.06 0l-3 3a.75.75 0 0 0 0 1.06l3 3a.75.75 0 0 0 1.06-1.06l-1.72-1.72H15a.75.75 0 0 0 0-1.5H4.06l1.72-1.72a.75.75 0 0 0 0-1.06Z"
-                clipRule="evenodd"
-              />
-            </svg>
-          </div>
-          <span
-            className={`${
-              showFullSidebar
-                ? "lg:block md:hidden sm:hidden hidden"
-                : "hidden md:hidden"
-            }`}
-          >
-            Cerrar Sesión
-          </span>
-        </a>
-      </nav>
-    </div>
+    </>
   );
 };
+
+function MenuIcon(props: any) {
+  return (
+    <svg
+      {...props}
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <line x1="4" x2="20" y1="12" y2="12" />
+      <line x1="4" x2="20" y1="6" y2="6" />
+      <line x1="4" x2="20" y1="18" y2="18" />
+    </svg>
+  );
+}
 
 export default Sidebar;

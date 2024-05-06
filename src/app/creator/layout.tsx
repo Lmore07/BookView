@@ -87,14 +87,10 @@ export default function RootCreatorLayout({
       ),
     },
   ];
-  
+
   return (
-    <div className="flex flex-row h-screen">
-      <Sidebar optionsRoutes={optionsRoutes} />
-      <div className="flex flex-col w-full">
-        <Header category="" projectName=""></Header>
-        <main className="overflow-y-auto p-10">{children}</main>
-      </div>
+    <div>
+      <Sidebar optionsRoutes={optionsRoutes}>{children}</Sidebar>
     </div>
   );
 }

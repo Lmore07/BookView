@@ -21,6 +21,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { callFunction } from "@/libs/services/callFunction";
 
 export default function Home() {
   //Variables declaradas
@@ -33,63 +34,67 @@ export default function Home() {
   const [openHelp, setOpenHelp] = useState(false);
   const { handleShowToast } = useContext(ToastContext)!;
   const router = useRouter();
-  const commands = [
-    {
-      command: [
-        "Filtra por las categorías *",
-        "Filtra por la categoría *",
-        "Elige la categoría *",
-        "Elige las categorías *",
-        "Selecciona las categorías *",
-        "Selecciona la categoría *",
-        "Agrega la categoría *",
-        "Agrega las categorías *",
-      ],
-      callback: (speech: string) => findCategoriesInSpeech(speech),
-    },
-    {
-      command: [
-        "Quita las categorías *",
-        "Quita la categoría *",
-        "Saca la categoría *",
-        "Saca las categorías *",
-      ],
-      callback: (speech: string) => removeCategoriesFromSpeech(speech),
-    },
-  ];
+  const { transcript, resetTranscript, listening } = useSpeechRecognition();
 
-  const { transcript, resetTranscript, listening } = useSpeechRecognition({
-    commands: commands,
-  });
-
-  const findCategoriesInSpeech = (speech: string) => {
-    const lowerCaseSpeech = speech.toLowerCase();
-    categories.forEach((category) => {
-      if (lowerCaseSpeech.includes(category.categoryName.toLowerCase())) {
-        setFilterCategories((prevFilterCategories) => [
-          ...prevFilterCategories,
-          category.idCategory,
-        ]);
+  const addCategoriesToFilter = (categoryNames: string[]) => {
+    categoryNames.map((name) => {
+      const category = categories.find(
+        (category) => category.categoryName.toLowerCase() === name.toLowerCase()
+      );
+      if (!category) {
+        throw new Error(`No se encontró la categoría con el nombre ${name}`);
       }
+      setFilterCategories((prevFilterCategories) => [
+        ...prevFilterCategories,
+        category.idCategory,
+      ]);
     });
   };
 
-  const removeCategoriesFromSpeech = (speech: string) => {
-    const lowerCaseSpeech = speech.toLowerCase();
-    categories.forEach((category) => {
-      if (lowerCaseSpeech.includes(category.categoryName.toLowerCase())) {
-        setFilterCategories((prevFilterCategories) =>
-          prevFilterCategories.filter((id) => id !== category.idCategory)
-        );
+  const removeCategoriesFromFilter = (categoryNames: string[]) => {
+    categoryNames.map((name) => {
+      const category = categories.find(
+        (category) => category.categoryName.toLowerCase() === name.toLowerCase()
+      );
+      if (!category) {
+        throw new Error(`No se encontró la categoría con el nombre ${name}`);
       }
+      setFilterCategories((prevFilterCategories) =>
+        prevFilterCategories.filter((id) => id !== category.idCategory)
+      );
     });
   };
+
+  const functionInterpret = async () => {
+    const call = await callFunction(transcript);
+    if (call.name === "selectCategories") {
+      addCategoriesToFilter(call.args.categories);
+    } else if (call.name == "removeCategories") {
+      removeCategoriesFromFilter(call.args.categories);
+    } else if (call.name == "setInputText") {
+      setSearchTerm(call.args.text);
+    }
+    console.log(call);
+  };
+
+  useEffect(() => {
+    if (!listening && transcript != "") {
+      console.log("Transcript: ", transcript);
+      functionInterpret();
+      resetTranscript();
+    }
+  }, [listening]);
 
   const startListening = () => {
-    SpeechRecognition.startListening({ language: "es-EC" });
+    SpeechRecognition.startListening({
+      language: "es-EC",
+      continuous: false,
+      interimResults: true,
+    });
   };
 
   const stopListening = () => {
+    console.log("stopListening: ", transcript);
     SpeechRecognition.stopListening();
     resetTranscript();
   };

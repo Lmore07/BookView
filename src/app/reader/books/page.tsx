@@ -5,6 +5,7 @@ import { ToastContext } from "@/libs/contexts/toastContext";
 import { BooksAll, CoverI, PageI } from "@/libs/interfaces/books.interface";
 import { ResponseData } from "@/libs/interfaces/response.interface";
 import { ToastType } from "@/libs/interfaces/toast.interface";
+import { callFunction } from "@/libs/services/callFunction";
 import { generateSpeech } from "@/libs/services/generateSpeech";
 import { commandsSearchBooks } from "@/libs/texts/commands/reader/homeReader";
 import BookCard from "@/ui/components/cards/bookCard";
@@ -12,6 +13,7 @@ import AddToFavorite from "@/ui/modals/folders/addToFavorite";
 import Help from "@/ui/modals/help/help";
 import ModalParent from "@/ui/modals/modal";
 import BookViewer from "@/ui/modals/viewBook/bookViewer";
+import FlipBook from "@/ui/modals/viewBook/flipBook";
 import { Tooltip } from "@mui/material";
 import Pagination from "@mui/material/Pagination";
 import Stack from "@mui/material/Stack";
@@ -41,66 +43,7 @@ export default function BookSearch() {
   const [lastPage, setLastPage] = useState(0);
   const [coverInfo, setCoverInfo] = useState<CoverI | null>(null);
 
-  const commands = [
-    {
-      command: ["Ordena por *", "Ordenar por *", "Quiero que ordenes por *"],
-      callback: (speech: string) => orderBySpeech(speech),
-    },
-    {
-      command: [
-        "Avanza una página",
-        "Siguiente página",
-        "Muestra la página siguiente",
-        "Muestra la siguiente página",
-      ],
-      callback: () => {
-        if (page < totalPages) {
-          setPage(page + 1);
-        } else {
-          handleShowToast(
-            "No existen páginas hacia delante",
-            ToastType.WARNING
-          );
-        }
-      },
-    },
-    {
-      command: [
-        "Regresa una página",
-        "Pon la página anterior",
-        "Muestra la página anterior",
-      ],
-      callback: () => {
-        if (page - 1 != 0) {
-          setPage(page - 1);
-        } else {
-          handleShowToast("No existen páginas hacia atrás", ToastType.WARNING);
-        }
-      },
-    },
-    {
-      command: [
-        "Ve hacia la página :page",
-        "Ve a la página :page",
-        "Ponte en la página :page",
-        "Elige la página :page",
-        "Dirígete a la página :page",
-        "Dirígete hacia la página :page",
-      ],
-      callback: (page: number) => {
-        console.log("Page: ", page);
-        if (page > 1 && page <= totalPages) {
-          setPage(page);
-        } else {
-          handleShowToast("La página indicada no existe", ToastType.WARNING);
-        }
-      },
-    },
-  ];
-
-  const { transcript, resetTranscript, listening } = useSpeechRecognition({
-    commands: commands,
-  });
+  const { transcript, resetTranscript, listening } = useSpeechRecognition();
 
   const handleChange = (event: any, value: number) => {
     setPage(value);
@@ -153,39 +96,13 @@ export default function BookSearch() {
     fetchData();
   }, [page, orderBy]);
 
-  //FUNCIONALIDAD DE VOZ A TEXTO Y TEXTO A VOZ
-
-  const orderBySpeech = (speech: string) => {
-    const lowerCaseSpeech = speech.toLowerCase();
-    let orderBy = "";
-    let order = "";
-    if (
-      lowerCaseSpeech.includes("nombre de libro") ||
-      lowerCaseSpeech.includes("nombre del libro")
-    ) {
-      orderBy = "bookName";
-    } else if (
-      lowerCaseSpeech.includes("nombre de autor") ||
-      lowerCaseSpeech.includes("autor") ||
-      lowerCaseSpeech.includes("nombre del autor")
-    ) {
-      orderBy = "author";
-    } else if (
-      lowerCaseSpeech.includes("fecha de publicación") ||
-      lowerCaseSpeech.includes("fecha")
-    ) {
-      orderBy = "publicationDate";
+  useEffect(() => {
+    if (!listening && transcript != "") {
+      console.log("Transcript: ", transcript);
+      functionInterpret();
+      resetTranscript();
     }
-
-    if (lowerCaseSpeech.includes("ascendente")) {
-      order = "asc";
-    } else if (lowerCaseSpeech.includes("descendente")) {
-      order = "desc";
-    }
-    let orderString = `${orderBy}_${order}`;
-    console.log(orderString);
-    setOrderBy(orderString);
-  };
+  }, [listening]);
 
   const startListening = () => {
     SpeechRecognition.startListening({ language: "es-EC" });
@@ -236,6 +153,82 @@ export default function BookSearch() {
       stopSpeech();
     } else {
       startSpeech();
+    }
+  };
+
+  //LOGICA DE FUNCIONES
+  const functionInterpret = async () => {
+    const call = await callFunction(transcript);
+    if (call.name == "sortBooks") {
+      let orderString = `${
+        call.args.sortBy == "book" ? "bookName" : call.args.sortBy
+      }_${call.args.order}`;
+      setOrderBy(orderString);
+    } else if (call.name == "selectBookByName") {
+      openBookByName(call.args.bookName);
+    } else if (call.name == "changePage") {
+      changePage(call.args.action, call.args.pageNumber);
+    }
+    console.log(call);
+  };
+
+  const openBookByName = (bookName: string) => {
+    const bookToOpen = books.find(
+      (book) => book.bookName.toLowerCase() === bookName.toLowerCase()
+    );
+    if (!bookToOpen) {
+      handleShowToast("Lo siento, no encontré el libro 🙁", ToastType.ERROR);
+    } else {
+      openBook(bookToOpen);
+    }
+  };
+
+  const openBook = async (book: any) => {
+    setIsLoading(true);
+    try {
+      const response = await fetch(`../api/books/pages?book=${book.idBook}`);
+      const responseView = await fetch(`../api/books/views`, {
+        method: "POST",
+        body: JSON.stringify({ idBook: book.idBook }),
+      });
+      if (!responseView.ok) {
+        const dataView: ResponseData<any> = await responseView.json();
+        setLastPage(dataView.data[0].lastPage);
+      }
+      const data: ResponseData<any> = await response.json();
+      if (data.error) {
+        handleShowToast(data.message!, ToastType.ERROR);
+      } else {
+        setSelectedBook(book);
+        setPagesBook(data.data);
+        setIsViewBook(true);
+      }
+    } catch (error) {
+      console.log("Error al cargar el libro a leer", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const changePage = (action: string, pageNumber?: number) => {
+    if (action === "next") {
+      if (page + 1 > totalPages) {
+        handleShowToast("No hay más libros", ToastType.ERROR);
+      } else {
+        setPage(page + 1);
+      }
+    } else if (action === "previous") {
+      if (page - 1 < 1) {
+        handleShowToast("No hay más libros", ToastType.ERROR);
+      } else {
+        setPage(page - 1);
+      }
+    } else if (action === "goTo") {
+      if (pageNumber! < 1 || pageNumber! > totalPages) {
+        handleShowToast("Número de página inválido", ToastType.ERROR);
+      } else {
+        setPage(pageNumber!);
+      }
     }
   };
 
@@ -514,33 +507,9 @@ export default function BookSearch() {
             author={book.author}
             title={book.bookName}
             isViewed={book.isViewed}
-            onReadClick={async () => {
-              setIsLoading(true);
-              try {
-                const response = await fetch(
-                  `../api/books/pages?book=${book.idBook}`
-                );
-                const responseView = await fetch(`../api/books/views`, {
-                  method: "POST",
-                  body: JSON.stringify({ idBook: book.idBook }),
-                });
-                if (!responseView.ok) {
-                  const dataView: ResponseData<any> = await responseView.json();
-                  setLastPage(dataView.data[0].lastPage);
-                }
-                const data: ResponseData<any> = await response.json();
-                if (data.error) {
-                  handleShowToast(data.message!, ToastType.ERROR);
-                } else {
-                  setSelectedBook(book);
-                  setPagesBook(data.data);
-                  setIsViewBook(true);
-                }
-              } catch (error) {
-                console.log("Error al cargar el libro a leer", error);
-              } finally {
-                setIsLoading(false);
-              }
+            onReadClick={() => {
+              setSelectedBook(book);
+              openBook(book);
             }}
             imageUrl={book.coverPhoto}
             isFavorite={book.isFavorite}
@@ -644,11 +613,17 @@ export default function BookSearch() {
                   />
                 </svg>
               </button>
-              <BookViewer
-                content={pagesBook ?? []}
-                book={selectedBook!}
-                lastPage={lastPage}
-              ></BookViewer>
+              <FlipBook
+                pages={pagesBook!}
+                startPage={lastPage}
+                coverInfo={{
+                  author: selectedBook!.author,
+                  bookName: selectedBook!.bookName,
+                  coverPhoto: selectedBook!.coverPhoto!,
+                  publicationDate: selectedBook!.publicationDate,
+                  idBook: selectedBook!.idBook,
+                }}
+              />
             </div>
           </div>
         </div>

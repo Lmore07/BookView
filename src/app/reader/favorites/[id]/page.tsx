@@ -5,12 +5,13 @@ import { ToastContext } from "@/libs/contexts/toastContext";
 import { BooksAll, PageI } from "@/libs/interfaces/books.interface";
 import { ResponseData } from "@/libs/interfaces/response.interface";
 import { ToastType } from "@/libs/interfaces/toast.interface";
+import { callFunction } from "@/libs/services/callFunction";
 import { generateSpeech } from "@/libs/services/generateSpeech";
 import { commandsBooksFavorites } from "@/libs/texts/commands/reader/homeReader";
 import { speechFavorites } from "@/libs/texts/messages/reader/homeReader";
 import BookCard from "@/ui/components/cards/bookCard";
 import Help from "@/ui/modals/help/help";
-import BookViewer from "@/ui/modals/viewBook/bookViewer";
+import FlipBook from "@/ui/modals/viewBook/flipBook";
 import { Pagination, Stack, Tooltip } from "@mui/material";
 import { useContext, useEffect, useRef, useState } from "react";
 import SpeechRecognition, {
@@ -36,66 +37,7 @@ export default function Favorite({
   const [pagesBook, setPagesBook] = useState<PageI[] | null | undefined>([]);
   const [selectedBook, setSelectedBook] = useState<BooksAll | null>(null);
 
-  const commands = [
-    {
-      command: [
-        "Avanza una página",
-        "Siguiente página",
-        "Muestra la página siguiente",
-        "Muestra la siguiente página",
-      ],
-      callback: () => {
-        if (page < totalPages) {
-          setPage(page + 1);
-        } else {
-          handleShowToast(
-            "No existen páginas hacia delante",
-            ToastType.WARNING
-          );
-        }
-      },
-    },
-    {
-      command: [
-        "Regresa una página",
-        "Pon la página anterior",
-        "Muestra la página anterior",
-      ],
-      callback: () => {
-        if (page - 1 != 0) {
-          setPage(page - 1);
-        } else {
-          handleShowToast("No existen páginas hacia atrás", ToastType.WARNING);
-        }
-      },
-    },
-    {
-      command: [
-        "Ve hacia la página :page",
-        "Ve a la página :page",
-        "Ponte en la página :page",
-        "Elige la página :page",
-        "Dirígete a la página :page",
-        "Dirígete hacia la página :page",
-      ],
-      callback: (page: number) => {
-        console.log("Page: ", page);
-        if (page > 1 && page <= totalPages) {
-          setPage(page);
-        } else {
-          handleShowToast("La página indicada no existe", ToastType.WARNING);
-        }
-      },
-    },
-    {
-      command: ["Abre el libro *", "Quiero leer el libro *", "Lee el libro *"],
-      callback: (speech: string) => {},
-    },
-  ];
-
-  const { resetTranscript, listening } = useSpeechRecognition({
-    commands: commands,
-  });
+  const { resetTranscript, listening, transcript } = useSpeechRecognition();
 
   const handleChange = (event: any, value: number) => {
     setPage(value);
@@ -174,6 +116,84 @@ export default function Favorite({
       stopSpeech();
     } else {
       startSpeech();
+    }
+  };
+
+  useEffect(() => {
+    if (!listening && transcript != "") {
+      console.log("Transcript: ", transcript);
+      functionInterpret();
+      resetTranscript();
+    }
+  }, [listening]);
+
+  const functionInterpret = async () => {
+    const call = await callFunction(transcript);
+    if (call.name == "selectBookByName") {
+      openBookByName(call.args.bookName);
+    } else if (call.name == "changePage") {
+      changePage(call.args.action, call.args.pageNumber);
+    }
+    console.log(call);
+  };
+
+  const openBookByName = (bookName: string) => {
+    const bookToOpen = books.find(
+      (book) => book.bookName.toLowerCase() === bookName.toLowerCase()
+    );
+    if (!bookToOpen) {
+      handleShowToast("Lo siento, no encontré el libro 🙁", ToastType.ERROR);
+    } else {
+      openBook(bookToOpen);
+    }
+  };
+
+  const openBook = async (book: any) => {
+    setIsLoading(true);
+    try {
+      const response = await fetch(`../../api/books/pages?book=${book.idBook}`);
+      const responseView = await fetch(`../../api/books/views`, {
+        method: "POST",
+        body: JSON.stringify({ idBook: book.idBook }),
+      });
+      if (!responseView.ok) {
+        const dataView: ResponseData<any> = await responseView.json();
+        setLastPage(dataView.data[0].lastPage);
+      }
+      const data: ResponseData<any> = await response.json();
+      if (data.error) {
+        handleShowToast(data.message!, ToastType.ERROR);
+      } else {
+        setSelectedBook(book);
+        setPagesBook(data.data);
+        setIsViewBook(true);
+      }
+    } catch (error) {
+      console.log("Error al cargar el libro a leer", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const changePage = (action: string, pageNumber?: number) => {
+    if (action === "next") {
+      if (page + 1 > totalPages) {
+        handleShowToast("No hay más libros", ToastType.ERROR);
+      } else {
+        setPage(page + 1);
+      }
+    } else if (action === "previous") {
+      if (page - 1 < 1) {
+        handleShowToast("No hay más libros", ToastType.ERROR);
+      } else {
+        setPage(page - 1);
+      }
+    } else if (action === "goTo") {
+      if (pageNumber! < 1 || pageNumber! > totalPages) {
+        handleShowToast("Número de página inválido", ToastType.ERROR);
+      } else {
+        setPage(pageNumber!);
+      }
     }
   };
 
@@ -303,34 +323,9 @@ export default function Favorite({
             onFavoriteClick={() => {
               console.log("Favorito: ", book.bookName);
             }}
-            onReadClick={async () => {
-              console.log("Read: ", book.idBook);
-              setIsLoading(true);
-              try {
-                const response = await fetch(
-                  `../../api/books/pages?book=${book.idBook}`
-                );
-                const responseView = await fetch(`../../api/books/views`, {
-                  method: "POST",
-                  body: JSON.stringify({ idBook: book.idBook }),
-                });
-                if (!responseView.ok) {
-                  const dataView: ResponseData<any> = await responseView.json();
-                  setLastPage(dataView.data[0].lastPage);
-                }
-                const data: ResponseData<any> = await response.json();
-                if (data.error) {
-                  handleShowToast(data.message!, ToastType.ERROR);
-                } else {
-                  setSelectedBook(book);
-                  setPagesBook(data.data);
-                  setIsViewBook(true);
-                }
-              } catch (error) {
-                console.log("Error al cargar el libro a leer", error);
-              } finally {
-                setIsLoading(false);
-              }
+            onReadClick={() => {
+              setSelectedBook(book);
+              openBook(book);
             }}
           ></BookCard>
         ))}
@@ -406,11 +401,17 @@ export default function Favorite({
                   />
                 </svg>
               </button>
-              <BookViewer
-                content={pagesBook ?? []}
-                book={selectedBook!}
-                lastPage={lastPage}
-              ></BookViewer>
+              <FlipBook
+                pages={pagesBook!}
+                startPage={lastPage}
+                coverInfo={{
+                  author: selectedBook!.author,
+                  bookName: selectedBook!.bookName,
+                  coverPhoto: selectedBook!.coverPhoto!,
+                  publicationDate: selectedBook!.publicationDate,
+                  idBook: selectedBook!.idBook,
+                }}
+              />
             </div>
           </div>
         </div>

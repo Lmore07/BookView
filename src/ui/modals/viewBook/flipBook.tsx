@@ -20,7 +20,7 @@ const FlipBook: React.FC<FlipBookProps> = ({
   pages,
   startPage = 0,
   coverInfo,
-  isViewed=false,
+  isViewed = false,
 }) => {
   const [currentPage, setCurrentPage] = useState(startPage);
   const [currentBook, setCurrentBook] = useState(coverInfo);
@@ -37,6 +37,23 @@ const FlipBook: React.FC<FlipBookProps> = ({
       setIsFlipping(true);
     }
   };
+
+  const initView = async () => {
+    if (!isViewed) {
+      await fetch("../api/books/views?firstOpen=true", {
+        method: "PUT",
+        body: JSON.stringify({
+          idBook: coverInfo.idBook,
+          lastPage: currentPage,
+        }),
+      });
+    }
+  };
+
+  useEffect(() => {
+    console.log("Book", coverInfo);
+    initView();
+  }, []);
 
   const handleNextPage = () => {
     if (currentPage < pages.length - 1 && !isFlipping) {
@@ -72,10 +89,13 @@ const FlipBook: React.FC<FlipBookProps> = ({
   };
 
   const updateLastPage = async () => {
-    if(!isViewed){
+    if (!isViewed) {
       await fetch("../api/books/views?firstOpen=false", {
         method: "PUT",
-        body: JSON.stringify({ idBook: coverInfo.idBook, lastPage: currentPage }),
+        body: JSON.stringify({
+          idBook: coverInfo.idBook,
+          lastPage: currentPage,
+        }),
       });
     }
   };

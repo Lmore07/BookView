@@ -1,5 +1,11 @@
 "use client";
 
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+} from "@/components/ui/dialog";
 import { LoadingContext } from "@/libs/contexts/loadingContext";
 import { ModalContext } from "@/libs/contexts/modalContext";
 import { ToastContext } from "@/libs/contexts/toastContext";
@@ -12,7 +18,7 @@ import { messageBooks } from "@/libs/texts/messages/creator/message";
 import ButtonOutlined from "@/ui/components/buttons/ButtonOutlined";
 import Table from "@/ui/components/tabble/table";
 import Help from "@/ui/modals/help/help";
-import BookViewer from "@/ui/modals/viewBook/bookViewer";
+import FlipBook from "@/ui/modals/viewBook/flipBook";
 import { Pagination, Stack, Tooltip } from "@mui/material";
 import { useRouter } from "next/navigation";
 import { useContext, useEffect, useRef, useState } from "react";
@@ -433,47 +439,30 @@ export default function CreatorBooksPage() {
         </div>
       </div>
       {isViewBook && (
-        <div
-          className="fixed z-10 inset-0 overflow-auto w-full"
-          aria-labelledby="modal-title"
-          role="dialog"
-          aria-modal="true"
+        <Dialog
+          open={isViewBook}
+          onOpenChange={(open: boolean) => {
+            setIsViewBook(open);
+          }}
         >
-          <div className="flex items-center justify-center min-h-screen h-screen">
-            <div
-              className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
-              aria-hidden="true"
-            ></div>
-            <div className="inline-block  align-bottom bg-white rounded-lg overflow-hidden shadow-xl transform transition-all sm:my-8 h-screen w-screen">
-              <button
-                onClick={() => {
-                  setIsViewBook(false);
-                }}
-                className="absolute top-0 z-40 right-0 p-2 transform hover:scale-150 transition duration-500 ease-in-out"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  className="h-6 w-6 text-gray-600"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
-              </button>
-              <BookViewer
-                content={pagesBook ?? []}
-                book={selectedBook!}
-                lastPage={0}
-              ></BookViewer>
-            </div>
-          </div>
-        </div>
+          <DialogContent className="bg-bgColorRight">
+            <DialogHeader>
+              <DialogDescription>
+                <FlipBook
+                  pages={pagesBook!}
+                  startPage={0}
+                  coverInfo={{
+                    author: selectedBook?.author ?? "",
+                    bookName: selectedBook!.bookName,
+                    coverPhoto: selectedBook!.coverPhoto!,
+                    publicationDate: selectedBook!.publicationDate,
+                    idBook: selectedBook!.idBook,
+                  }}
+                />
+              </DialogDescription>
+            </DialogHeader>
+          </DialogContent>
+        </Dialog>
       )}
     </div>
   );

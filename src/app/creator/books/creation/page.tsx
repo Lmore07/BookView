@@ -355,7 +355,7 @@ export default function Stepper() {
           </div>
         ))}
       </div>
-      <div className="w-full mt-4 px-5 flex items-center justify-center">
+      <div className="w-full mt-4 flex items-center justify-center">
         {currentStep == 0 && (
           <div className="shadow-2xl w-full rounded-xl p-3">
             <div className="">

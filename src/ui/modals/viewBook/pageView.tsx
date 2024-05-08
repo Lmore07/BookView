@@ -33,12 +33,12 @@ const PageContent: React.FC<PageProps> = ({ page, coverInfo }) => {
   };
 
   useEffect(() => {
-    if(coverInfo){
+    if (coverInfo) {
       const date = new Date(coverInfo!.publicationDate);
-    const day = date.getDate();
-    const month = date.getMonth() + 1;
-    const year = date.getFullYear();
-    setFormatDate(`${day}-${month}-${year}`);
+      const day = date.getDate();
+      const month = date.getMonth() + 1;
+      const year = date.getFullYear();
+      setFormatDate(`${day}-${month}-${year}`);
     }
   }, []);
 
@@ -117,9 +117,7 @@ const PageContent: React.FC<PageProps> = ({ page, coverInfo }) => {
   return (
     <div className="py-5 bg-bgColorDark rounded-lg shadow-md flex flex-col items-center justify-center">
       <Divider className="py-1">
-        {page.numberPage == 0 ? (
-          null
-        ) : (
+        {page.numberPage == 0 ? null : (
           <Chip
             className="font-semibold"
             label={`Página N° ${page.numberPage}`}
@@ -158,7 +156,7 @@ const PageContent: React.FC<PageProps> = ({ page, coverInfo }) => {
                 <img
                   src={page.image}
                   alt="Imagen"
-                  className="max-h-full max-w-full"
+                  className="max-h-[20dvh] max-w-full"
                 />
               )}
             </div>
@@ -179,7 +177,7 @@ const PageContent: React.FC<PageProps> = ({ page, coverInfo }) => {
             <div className="col-span-3">
               <div
                 onMouseUp={handleTextSelection}
-                className="break-words max-w-none"
+                className="break-words max-w-none text-justify"
                 dangerouslySetInnerHTML={{ __html: page.content }}
               ></div>
             </div>

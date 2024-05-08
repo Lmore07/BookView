@@ -1,38 +1,17 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-
-.flip-book {
-    position: relative;
-    display: flex;
-    align-items: center;
-    perspective: 1000px;
-    align-items: center;
-    justify-content: center;
-  }
   
   .pages {
-    position: relative;
-    width: 500px; /* Ajusta el ancho según tus necesidades */
-    height: 90dvh;
-    transform-style: preserve-3d;
+    width: auto; /* Ajusta el ancho según tus necesidades */
+    max-height: 80dvh;
+    height: auto;
   }
   
   .page {
-    position: absolute;
-    width: 100%;
-    height: 90%;
-    margin-top: 15px;
     backface-visibility: hidden;
-  }
-  
-  .front {
-    z-index: 2;
-  }
-  
-  .back {
-    transform: rotateY(180deg);
+    width: 80dvh;
+    height: auto;
   }
   
   .cover {

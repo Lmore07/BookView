@@ -1,5 +1,3 @@
-import DynamicBreadcrumbs from "@/ui/components/breadcumbs/dynamicBreadcumbs";
-import Header from "@/ui/components/header/header";
 import Sidebar from "@/ui/components/sidebar/sideBar";
 
 export default function RootLayout({
@@ -80,10 +78,7 @@ export default function RootLayout({
   ];
   return (
     <div>
-      <Sidebar optionsRoutes={optionsRoutes}>
-        <DynamicBreadcrumbs />
-        {children}
-      </Sidebar>
+      <Sidebar optionsRoutes={optionsRoutes}>{children}</Sidebar>
     </div>
   );
 }

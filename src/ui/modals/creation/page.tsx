@@ -68,7 +68,7 @@ const BookEditor: React.FC<{ onChangedPages: any; pagesEdit?: any[] }> = ({
 
   return (
     <div className="flex flex-col">
-      <div className="p-8">
+      <div>
         <div className="mx-auto">
           {pages.map((page: any, index: any) => (
             <div key={index} className="mb-8">

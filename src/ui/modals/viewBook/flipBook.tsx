@@ -40,7 +40,7 @@ const FlipBook: React.FC<FlipBookProps> = ({
 
   const initView = async () => {
     if (!isViewed) {
-      await fetch("../api/books/views?firstOpen=true", {
+      await fetch("../../api/books/views?firstOpen=true", {
         method: "PUT",
         body: JSON.stringify({
           idBook: coverInfo.idBook,
@@ -90,7 +90,7 @@ const FlipBook: React.FC<FlipBookProps> = ({
 
   const updateLastPage = async () => {
     if (!isViewed) {
-      await fetch("../api/books/views?firstOpen=false", {
+      await fetch("../../api/books/views?firstOpen=false", {
         method: "PUT",
         body: JSON.stringify({
           idBook: coverInfo.idBook,
@@ -137,13 +137,13 @@ const FlipBook: React.FC<FlipBookProps> = ({
   return (
     <div className="flex items-center justify-center flex-col">
       <div
-        className="flip-book"
+        className="flex items-center justify-center"
         ref={bookRef}
         onDragStart={handleDragStart}
         onDragOver={handleDragOver}
         onDrop={handleDrop}
       >
-        <div className="mr-5 my-2 z-30">
+        <div className="mr-5">
           <button
             className="bg-gray-300 p-2 rounded-full focus:outline-none"
             onClick={handlePrevPage}
@@ -165,7 +165,7 @@ const FlipBook: React.FC<FlipBookProps> = ({
             </svg>
           </button>
         </div>
-        <div className="pages">
+        <div className="pages flex items-center justify-center">
           <div className={`page front no-cover`}>
             {currentPage == 0 ? (
               <PageContent page={pages[currentPage]} coverInfo={currentBook} />
@@ -173,16 +173,8 @@ const FlipBook: React.FC<FlipBookProps> = ({
               <PageContent page={pages[currentPage]} />
             )}
           </div>
-          <div className="page back">
-            {flipDirection === "next" && currentPage < pages.length - 1 && (
-              <PageContent page={pages[currentPage + 1]} />
-            )}
-            {flipDirection === "prev" && currentPage > 0 && (
-              <PageContent page={pages[currentPage - 1]} />
-            )}
-          </div>
         </div>
-        <div className="ml-5 my-2 z-40">
+        <div className="ml-5">
           <button
             className="bg-gray-300 p-2 rounded-full focus:outline-none"
             onClick={handleNextPage}

@@ -5,6 +5,7 @@ import { ToastContext } from "@/libs/contexts/toastContext";
 import { BookInfo, BooksAll } from "@/libs/interfaces/books.interface";
 import { CategoriesAll } from "@/libs/interfaces/categories.interface";
 import { ResponseData } from "@/libs/interfaces/response.interface";
+import { useRouter } from "next/navigation";
 import { ToastType } from "@/libs/interfaces/toast.interface";
 import {
   validateCorrectDate,
@@ -44,7 +45,8 @@ export default function BookEdit({
     publicationDate: "",
     bookImage: null,
   });
-
+  const router = useRouter();
+  
   const fetchDataCategories = async () => {
     setIsLoading(true);
     const response = await fetch("../../../api/categories?limit=10000");
@@ -267,6 +269,7 @@ export default function BookEdit({
       handleNext();
     }
     if (currentStep == 3) {
+      setIsLoading(true);
       let body = {
         ...stepOne,
         categoriesIds: filterCategories,
@@ -294,11 +297,18 @@ export default function BookEdit({
         }
       });
       formData.append("categoriesIds", JSON.stringify(body.categoriesIds));
-      const response = await fetch(`../../../api/books?id=${params.id}`, {
-        method: "PUT",
-        body: formData,
-      });
-      const data: ResponseData<CategoriesAll[]> = await response.json();
+      try {
+        const response = await fetch(`../../../api/books?id=${params.id}`, {
+          method: "PUT",
+          body: formData,
+        });
+        handleShowToast("Libro editado con éxito", ToastType.SUCCESS);
+        router.push("/creator/books");
+      } catch (error) {
+        handleShowToast("Error al editar el libro", ToastType.ERROR);
+      } finally {
+        setIsLoading(false);
+      }
     }
   };
 

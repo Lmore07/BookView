@@ -47,7 +47,7 @@ const Sidebar: React.FC<SidebarProps> = ({ optionsRoutes, children }) => {
 
   return (
     <>
-      <header className="h-[10dvh] bg-gray-100 border-b border-gray-200 dark:border-gray-700 px-6 py-4 flex items-center justify-between">
+      <header className="h-[10dvh] bg-bgColorRight shadow-lg dark:border-gray-700 px-6 py-4 flex items-center justify-between">
         <div className="flex items-center">
           <img src={logoImg.src} alt="Imagen" />
           <h2 className="text-lg pl-3 font-semibold text-gray-800 dark:text-gray-200">
@@ -96,7 +96,7 @@ const Sidebar: React.FC<SidebarProps> = ({ optionsRoutes, children }) => {
         </div>
       </header>
       <div className="flex h-[90dvh]">
-        <div className="hidden lg:block pt-10 bg-gray-100 dark:bg-gray-800 w-64 border-r border-gray-200 dark:border-gray-700">
+        <div className="hidden lg:block pt-10 bg-bgColorRight  w-64 border-r shadow-lg">
           <nav className="space-y-1">
             {optionsRoutes.map((route) => (
               <Link

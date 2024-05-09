@@ -8,8 +8,6 @@ const bcrypt = require("bcrypt");
 
 export const POST = apiMiddleware(async (request: NextRequest) => {
   try {
-    //const body = (await request.json()) as UserRegister;
-
     const body = await withValidation(CreateUserDTO, request);
     if (body instanceof NextResponse) {
       return body;

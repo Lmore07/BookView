@@ -23,3 +23,15 @@ export enum RolEnum {
   CREATOR = "CREATOR",
   ADMIN = "ADMIN",
 }
+
+export interface UserInfo {
+  mail: string;
+  profilePicture?: any;
+  Person: Person;
+}
+
+export interface Person {
+  names: string;
+  lastNames: string;
+  birthday: string;
+}

@@ -257,7 +257,6 @@ export default function Stepper() {
         }
       });
       formData.append("categoriesIds", JSON.stringify(body.categoriesIds));
-      console.log(formData.get("bookName"));
       const response = await fetch("../../api/books", {
         method: "POST",
         body: formData,

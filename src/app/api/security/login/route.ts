@@ -47,6 +47,9 @@ export const POST = apiMiddleware(async (request: NextRequest) => {
     cookies().set(`token`, token, {
       expires: new Date(Date.now() + 1000 * 60 * 30),
     });
+    cookies().set(`profile`, user.profilePicture ?? "", {
+      expires: new Date(Date.now() + 1000 * 60 * 30),
+    });
 
     return NextResponse.json(
       {

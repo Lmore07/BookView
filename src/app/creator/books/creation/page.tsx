@@ -9,14 +9,18 @@ import {
   validateCorrectDate,
   validateNotEmpty,
 } from "@/libs/validations/validations";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+} from "@/components/ui/dialog";
 import Button from "@/ui/components/buttons/ButtonFill";
 import ButtonOutlined from "@/ui/components/buttons/ButtonOutlined";
 import Input from "@/ui/components/inputs/input";
 import BookEditor from "@/ui/modals/creation/page";
-import PreviewContent from "@/ui/modals/creation/previewModal/page";
-import ModalParent from "@/ui/modals/modal";
-import BookViewer from "@/ui/modals/viewBook/bookViewer";
 import { useContext, useEffect, useState } from "react";
+import FlipBook from "@/ui/modals/viewBook/flipBook";
 
 export default function Stepper() {
   const [currentStep, setCurrentStep] = useState(0);
@@ -645,49 +649,34 @@ export default function Stepper() {
             )}
             <div>
               {previsualize && (
-                <div
-                  className="fixed z-10 inset-0 overflow-auto w-full"
-                  aria-labelledby="modal-title"
-                  role="dialog"
-                  aria-modal="true"
+                <Dialog
+                  open={previsualize}
+                  onOpenChange={(open: boolean) => {
+                    setPrevisualize(open);
+                    if (!open) {
+                      pages.shift();
+                    }
+                  }}
                 >
-                  <div className="flex items-center justify-center min-h-screen h-screen">
-                    <div
-                      className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
-                      aria-hidden="true"
-                    ></div>
-                    <div className="inline-block  align-bottom bg-white rounded-lg overflow-hidden shadow-xl transform transition-all sm:my-8 h-screen w-screen">
-                      <button
-                        onClick={() => {
-                          pages.shift();
-                          setPrevisualize(false);
-                        }}
-                        className="absolute top-0 z-40 right-0 p-2 transform hover:scale-150 transition duration-500 ease-in-out"
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                          className="h-6 w-6 text-gray-600"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M6 18L18 6M6 6l12 12"
-                          />
-                        </svg>
-                      </button>
-                      <BookViewer
-                        content={pages ?? []}
-                        book={selectedBook!}
-                        isViewed={true}
-                        lastPage={0}
-                      ></BookViewer>
-                    </div>
-                  </div>
-                </div>
+                  <DialogContent className="bg-bgColorRight">
+                    <DialogHeader>
+                      <DialogDescription>
+                        <FlipBook
+                          pages={pages!}
+                          startPage={0}
+                          isViewed={true}
+                          coverInfo={{
+                            author: selectedBook?.author ?? "",
+                            bookName: selectedBook!.bookName,
+                            coverPhoto: selectedBook!.coverPhoto!,
+                            publicationDate: selectedBook!.publicationDate,
+                            idBook: selectedBook!.idBook,
+                          }}
+                        />
+                      </DialogDescription>
+                    </DialogHeader>
+                  </DialogContent>
+                </Dialog>
               )}
             </div>
           </div>

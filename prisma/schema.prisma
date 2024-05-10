@@ -135,12 +135,9 @@ model ViewBooks {
   idBook     Int      @map("id_book")
   idUser     Int      @map("id_user")
   lastPage   Int      @default(1) @map("last_page")
-  countViews Int      @default(1) @map("count_views")
   dateView   DateTime @default(now()) @map("date_view")
   Books      Books    @relation(fields: [idBook], references: [idBook])
   Users      Users    @relation(fields: [idUser], references: [idUser])
-
-  @@unique([idUser, idBook])
   @@map("view_books")
 }
 

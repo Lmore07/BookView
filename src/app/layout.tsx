@@ -14,7 +14,6 @@ export const metadata: Metadata = {
   applicationName: "BookView",
   authors: [{ name: "Luis Moreira" }],
   creator: "Luis Moreira",
-  
 };
 
 export default function RootLayout({

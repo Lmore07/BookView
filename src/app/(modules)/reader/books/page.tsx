@@ -196,9 +196,10 @@ export default function BookSearch() {
         method: "POST",
         body: JSON.stringify({ idBook: book.idBook }),
       });
-      if (!responseView.ok) {
+      if (responseView.ok) {
         const dataView: ResponseData<any> = await responseView.json();
-        setLastPage(dataView.data[0].lastPage);
+        console.log("Data que llega al crear el libro", dataView);
+        setLastPage(dataView.data.lastPage);
       }
       const data: ResponseData<any> = await response.json();
       if (data.error) {

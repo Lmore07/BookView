@@ -3,7 +3,7 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
-  DialogHeader
+  DialogHeader,
 } from "@/components/ui/dialog";
 import { LoadingContext } from "@/libs/contexts/loadingContext";
 import { ModalContext } from "@/libs/contexts/modalContext";
@@ -162,7 +162,7 @@ export default function Favorite({
         method: "POST",
         body: JSON.stringify({ idBook: book.idBook }),
       });
-      if (!responseView.ok) {
+      if (responseView.ok) {
         const dataView: ResponseData<any> = await responseView.json();
         setLastPage(dataView.data[0].lastPage);
       }

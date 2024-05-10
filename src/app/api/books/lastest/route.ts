@@ -20,7 +20,7 @@ export const GET = apiMiddleware(async (request: NextRequest) => {
         publicationDate: true,
         View_Books: {
           select: {
-            countViews: true,
+            idViewBook: true,
           },
         },
       },
@@ -33,26 +33,24 @@ export const GET = apiMiddleware(async (request: NextRequest) => {
       take: 5,
     });
 
-    const booksWithCountViewsSum = books.map((book) => {
+    const booksWithCountViews = books.map((book) => {
+      const countViews = book.View_Books.length;
       const { View_Books, ...otherBookProps } = book;
-      const sumOfCountViews = View_Books.reduce(
-        (sum, viewBook) => sum + viewBook.countViews,
-        0
-      );
-
       return {
         ...otherBookProps,
-        countViews: sumOfCountViews,
+        countViews,
       };
     });
+
     return NextResponse.json(
       {
-        data: booksWithCountViewsSum,
+        data: booksWithCountViews,
         message: "Libros encontrado",
       },
       { status: 200 }
     );
   } catch (error) {
+    console.log(error);
     return NextResponse.json(
       {
         error: "No se encontraron libros",

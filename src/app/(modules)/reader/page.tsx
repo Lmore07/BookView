@@ -1,27 +1,27 @@
 "use client";
-import { commandsHomeReader } from "@/libs/texts/commands/reader/homeReader";
-import { CategoriesAll } from "@/libs/interfaces/categories.interface";
-import { ResponseData } from "@/libs/interfaces/response.interface";
-import { generateSpeech } from "@/libs/services/generateSpeech";
-import ButtonOutlined from "@/ui/components/buttons/ButtonOutlined";
-import Input from "@/ui/components/inputs/input";
-import "@/ui/globals.css";
-import Help from "@/ui/modals/help/help";
-import ModalParent from "@/ui/modals/modal";
-import { useContext, useEffect, useRef, useState } from "react";
-import SpeechRecognition, {
-  useSpeechRecognition,
-} from "react-speech-recognition";
-import { useRouter } from "next/navigation";
-import { ToastContext } from "@/libs/contexts/toastContext";
-import { ToastType } from "@/libs/interfaces/toast.interface";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { ToastContext } from "@/libs/contexts/toastContext";
+import { CategoriesAll } from "@/libs/interfaces/categories.interface";
+import { ResponseData } from "@/libs/interfaces/response.interface";
+import { ToastType } from "@/libs/interfaces/toast.interface";
 import { callFunction } from "@/libs/services/callFunction";
+import { generateSpeech } from "@/libs/services/generateSpeech";
+import { commandsHomeReader } from "@/libs/texts/commands/reader/homeReader";
+import ButtonOutlined from "@/ui/components/buttons/ButtonOutlined";
+import Input from "@/ui/components/inputs/input";
+import "@/ui/globals.css";
+import Help from "@/ui/modals/help/help";
+import ModalParent from "@/ui/modals/modal";
+import { useRouter } from "next/navigation";
+import { useContext, useEffect, useRef, useState } from "react";
+import SpeechRecognition, {
+  useSpeechRecognition,
+} from "react-speech-recognition";
 
 export default function Home() {
   //Variables declaradas

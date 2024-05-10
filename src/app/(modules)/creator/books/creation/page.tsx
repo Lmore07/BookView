@@ -1,5 +1,11 @@
 "use client";
 
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+} from "@/components/ui/dialog";
 import { ToastContext } from "@/libs/contexts/toastContext";
 import { BooksAll } from "@/libs/interfaces/books.interface";
 import { CategoriesAll } from "@/libs/interfaces/categories.interface";
@@ -9,18 +15,12 @@ import {
   validateCorrectDate,
   validateNotEmpty,
 } from "@/libs/validations/validations";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-} from "@/components/ui/dialog";
 import Button from "@/ui/components/buttons/ButtonFill";
 import ButtonOutlined from "@/ui/components/buttons/ButtonOutlined";
 import Input from "@/ui/components/inputs/input";
 import BookEditor from "@/ui/modals/creation/page";
-import { useContext, useEffect, useState } from "react";
 import FlipBook from "@/ui/modals/viewBook/flipBook";
+import { useContext, useEffect, useState } from "react";
 
 export default function Stepper() {
   const [currentStep, setCurrentStep] = useState(0);

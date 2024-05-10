@@ -451,6 +451,7 @@ export default function CreatorBooksPage() {
                 <FlipBook
                   pages={pagesBook!}
                   startPage={0}
+                  isViewed={true}
                   coverInfo={{
                     author: selectedBook?.author ?? "",
                     bookName: selectedBook!.bookName,

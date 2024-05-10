@@ -191,7 +191,7 @@ const Sidebar: React.FC<SidebarProps> = ({ optionsRoutes, children }) => {
             </Link>
           </nav>
         </div>
-        <div className="flex-1 m-6 lg:ps-64 pt-[10dvh] overflow-y-auto">{children}</div>
+        <div className="flex-1 m-6 lg:ps-64 pt-[10dvh] overflow-y-auto overflow-x-hidden">{children}</div>
       </div>
     </>
   );

@@ -5,7 +5,7 @@ const { GoogleGenerativeAI } = require("@google/generative-ai");
 export const POST = apiMiddleware(async (request: NextRequest) => {
   const data = await request.json();
   const genAI = new GoogleGenerativeAI(
-    "AIzaSyDUpQOlXtL6O-Omdab-eBUOA0HHupVZF3o"
+    `${process.env.API_KEY_GEMINI}`
   );
   const model = genAI.getGenerativeModel({
     model: "gemini-pro",
@@ -23,7 +23,6 @@ export const POST = apiMiddleware(async (request: NextRequest) => {
   const prompt = `${data.text}`;
   const result = await model.generateContent(prompt);
   const call = result.response.functionCalls()[0];
-  console.log(call);
   return NextResponse.json({ data: call }, { status: 200 });
 });
 

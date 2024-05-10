@@ -24,7 +24,7 @@ import SpeechRecognition, {
   useSpeechRecognition,
 } from "react-speech-recognition";
 
-export default function Favorites() {
+export default function ProfileCreator() {
   const { setIsLoading } = useContext(LoadingContext)!;
   const { handleShowToast } = useContext(ToastContext)!;
   const [openHelp, setOpenHelp] = useState(false);

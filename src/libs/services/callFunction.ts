@@ -3,9 +3,7 @@ const { GoogleGenerativeAI } = require("@google/generative-ai");
 export async function callFunction(
   text: string
 ): Promise<{ name: string; args: any }> {
-  const genAI = new GoogleGenerativeAI(
-    "AIzaSyDUpQOlXtL6O-Omdab-eBUOA0HHupVZF3o"
-  );
+  const genAI = new GoogleGenerativeAI(`${process.env.API_KEY_GEMINI}`);
   const model = genAI.getGenerativeModel({
     model: "gemini-1.0-pro",
     tools: {

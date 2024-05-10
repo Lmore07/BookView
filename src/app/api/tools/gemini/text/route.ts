@@ -4,9 +4,7 @@ const { GoogleGenerativeAI } = require("@google/generative-ai");
 
 export const POST = apiMiddleware(async (request: NextRequest) => {
   const data = await request.json();
-  const genAI = new GoogleGenerativeAI(
-    "AIzaSyDUpQOlXtL6O-Omdab-eBUOA0HHupVZF3o"
-  );
+  const genAI = new GoogleGenerativeAI(`${process.env.API_KEY_GEMINI}`);
   const model = genAI.getGenerativeModel({
     model: "gemini-1.5-pro-latest",
   });

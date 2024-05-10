@@ -1,30 +1,30 @@
 "use client";
-import FolderCard from "@/ui/components/cards/folderCard";
-import Pagination from "@mui/material/Pagination";
-import Stack from "@mui/material/Stack";
-import { useContext, useEffect, useRef, useState } from "react";
-import { useRouter } from "next/navigation";
-import Button from "@/ui/components/buttons/ButtonFill";
-import CreateFolder from "@/ui/modals/folders/createFolder";
-import ModalParent from "@/ui/modals/modal";
-import { ResponseData } from "@/libs/interfaces/response.interface";
-import { FoldersAll } from "@/libs/interfaces/folders.interface";
-import { LoadingContext } from "@/libs/contexts/loadingContext";
-import { ToastContext } from "@/libs/contexts/toastContext";
-import { ToastType } from "@/libs/interfaces/toast.interface";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { LoadingContext } from "@/libs/contexts/loadingContext";
+import { ToastContext } from "@/libs/contexts/toastContext";
+import { FoldersAll } from "@/libs/interfaces/folders.interface";
+import { ResponseData } from "@/libs/interfaces/response.interface";
+import { ToastType } from "@/libs/interfaces/toast.interface";
+import { callFunction } from "@/libs/services/callFunction";
+import { generateSpeech } from "@/libs/services/generateSpeech";
+import { commandsHomeReader } from "@/libs/texts/commands/reader/homeReader";
+import Button from "@/ui/components/buttons/ButtonFill";
+import FolderCard from "@/ui/components/cards/folderCard";
+import CreateFolder from "@/ui/modals/folders/createFolder";
+import Help from "@/ui/modals/help/help";
+import ModalParent from "@/ui/modals/modal";
+import Pagination from "@mui/material/Pagination";
+import Stack from "@mui/material/Stack";
+import { useRouter } from "next/navigation";
+import { useContext, useEffect, useRef, useState } from "react";
 import SpeechRecognition, {
   useSpeechRecognition,
 } from "react-speech-recognition";
-import { callFunction } from "@/libs/services/callFunction";
-import { commandsHomeReader } from "@/libs/texts/commands/reader/homeReader";
-import Help from "@/ui/modals/help/help";
-import { generateSpeech } from "@/libs/services/generateSpeech";
 
 export default function Favorites() {
   const router = useRouter();

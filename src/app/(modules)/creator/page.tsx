@@ -5,11 +5,15 @@ import Button from "@/ui/components/buttons/ButtonFill";
 import ButtonOutlined from "@/ui/components/buttons/ButtonOutlined";
 import Table from "@/ui/components/tabble/table";
 import { Tooltip } from "@mui/material";
-import { useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import SpeechRecognition, {
   useSpeechRecognition,
 } from "react-speech-recognition";
 import { useRouter } from "next/navigation";
+import { ResponseData } from "@/libs/interfaces/response.interface";
+import { ToastType } from "@/libs/interfaces/toast.interface";
+import { ToastContext } from "@/libs/contexts/toastContext";
+import { LoadingContext } from "@/libs/contexts/loadingContext";
 
 export default function CreatorPage() {
   const commands = [
@@ -46,6 +50,9 @@ export default function CreatorPage() {
   const [isPlaying, setIsPlaying] = useState(false);
   const audioContext = useRef<AudioContext | null>(null);
   const source = useRef<AudioBufferSourceNode | null>(null);
+  const { handleShowToast } = useContext(ToastContext)!;
+  const { setIsLoading } = useContext(LoadingContext)!;
+  const [tableData, setTableData] = useState<any>([]);
 
   const startListening = () => {
     SpeechRecognition.startListening({ language: "es-EC" });
@@ -99,17 +106,39 @@ export default function CreatorPage() {
     }
   };
 
-  const tableData = [
-    { name: "Elizabeth Watson", age: 25, active: "true" },
-    { name: "Elizabeth Allen", age: 30, active: "false" },
-    { name: "Caleb Jones", age: 27, active: "true" },
-  ];
+  const lastestBooks = async () => {
+    try {
+      const response = await fetch(`../api/books/lastest`);
+      const data: ResponseData<any> = await response.json();
+      if (data.error) {
+        handleShowToast(data.message!, ToastType.ERROR);
+      } else {
+        const tableData = data.data.map((item: any) => {
+          const date = new Date(item.publicationDate);
+          const day = date.getDate();
+          const month = date.getMonth() + 1;
+          const year = date.getFullYear();
+          const formatDate = `${day}-${month}-${year}`;
+          return { ...item, publicationDate: formatDate };
+        });
+        setTableData(tableData);
+      }
+    } catch (error) {
+      handleShowToast("", ToastType.ERROR);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const headers = [
-    { key: "name", name: "Nombre" },
-    { key: "age", name: "Edad" },
-    { key: "active", name: "Activo" },
+    { key: "bookName", name: "Nombre del libro" },
+    { key: "publicationDate", name: "Fecha de publicación" },
+    { key: "countViews", name: "Visitas" },
   ];
+
+  useEffect(() => {
+    lastestBooks();
+  }, []);
 
   return (
     <div className="shadow-2xl p-4  rounded-lg">

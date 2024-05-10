@@ -16,7 +16,7 @@ import Select from "@/ui/components/inputs/select";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useContext, useState } from "react";
-import frontPage from "../../../public/imgs/frontPage.png";
+import frontPage from "../../../../../public/imgs/frontPage.png";
 
 export default function Register() {
   //Variables
@@ -163,7 +163,7 @@ export default function Register() {
                 </svg>
               }
               name="names"
-              value={dataUserRegister.email}
+              value={dataUserRegister.names}
               type="text"
               onChange={handleChange}
               validations={[validateNotEmpty]}
@@ -186,7 +186,7 @@ export default function Register() {
                   />
                 </svg>
               }
-              value={dataUserRegister.email}
+              value={dataUserRegister.lastNames}
               type="text"
               onChange={handleChange}
               validations={[validateNotEmpty]}

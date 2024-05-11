@@ -125,6 +125,7 @@ export default function Login() {
               label="Correo electrónico"
               name="email"
               placeholder="lmoreira@gmail.com"
+              maxLength={50}
               value={credentials.email}
               type="email"
               icon={
@@ -146,6 +147,7 @@ export default function Login() {
             <Input
               label="Contraseña"
               name="password"
+              maxLength={20}
               placeholder="********"
               type="password"
               icon={

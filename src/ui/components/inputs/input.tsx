@@ -15,6 +15,7 @@ const Input = ({
   name,
   icon,
   placeholder,
+  maxLength = 10,
   value,
   type,
   onChange,
@@ -27,6 +28,7 @@ const Input = ({
   placeholder: string;
   value: any;
   type: string;
+  maxLength?: number;
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   validations?: ((value: string) => string)[];
   className?: string;
@@ -100,6 +102,7 @@ const Input = ({
       )}
       <div className="relative flex items-center">
         <input
+          maxLength={maxLength}
           type={
             type == "password" ? (showPassword ? "text" : "password") : type
           }
@@ -108,20 +111,20 @@ const Input = ({
           onChange={handleChange}
           onBlur={handleBlur}
           placeholder={placeholder}
-          className={`w-full pl-9 pr-14 font-open-sans bg-bgInputText px-3 py-2 border-0 text-sm font-medium placeholder:text-gray-400 hover:placeholder:text-secondary-400 text-secondary-400 rounded-md outline-none hover:text-secondary-400 hover:border hover:border-black ${
+          className={`w-full pl-9 font-open-sans bg-bgInputText px-3 py-2 border-0 text-sm font-medium placeholder:text-gray-400 hover:placeholder:text-secondary-400 text-secondary-400 rounded-md outline-none hover:text-secondary-400 hover:border hover:border-black ${
             validationErrors.length > 0
-              ? "border-red-500 border focus:ring-2 focus:ring-red-500 hover:border-red-500 hover:border-2"
+              ? "border-red-900 border-2 focus:ring-1 focus:ring-red-900 hover:border-red-900 hover:border-2"
               : "border-0 focus:ring-2 focus:ring-slate-300"
           } ${
             isValid
-              ? "border-green-600 focus:ring-2 focus:ring-green-600 hover:border-2 hover:border-green-600"
-              : ""
+              ? "border-green-600 focus:ring-1 focus:ring-green-600 hover:border-2 border-2 hover:border-green-600"
+              : "focus:ring-slate-300"
           } focus:bg-focusBgInput focus:text-secondary-400`}
         />
         {icon && <div className="absolute left-2">{icon}</div>}
         {type == "password" && (
           <div
-            className="absolute right-2 cursor-pointer"
+            className="absolute right-8 cursor-pointer"
             onClick={handleShowPassword}
           >
             {showPassword ? (
@@ -173,11 +176,11 @@ const Input = ({
           </div>
         )}
         {validationErrors.length > 0 && (
-          <div className="absolute inset-y-0 right-6 pr-3 flex items-center pointer-events-none">
+          <div className="inset-y-0 flex items-center pl-2 pointer-events-none">
             <svg
               viewBox="0 0 24 24"
               fill="currentColor"
-              className="w-5 h-5 text-red-500"
+              className="w-5 h-5 text-red-900"
               xmlns="http://www.w3.org/2000/svg"
             >
               <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
@@ -198,7 +201,7 @@ const Input = ({
           </div>
         )}
         {isValid && (
-          <div className="absolute inset-y-0 right-6 pr-3 flex items-center pointer-events-none">
+          <div className="inset-y-0 flex pl-2 items-center pointer-events-none">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
@@ -215,7 +218,7 @@ const Input = ({
         )}
       </div>
       {validationErrors.length > 0 && (
-        <div className="text-sm font-medium text-red-500 mt-1">
+        <div className="text-sm font-medium text-red-900 mt-1">
           {validationErrors[0]}
         </div>
       )}

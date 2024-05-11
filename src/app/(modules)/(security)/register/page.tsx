@@ -148,6 +148,7 @@ export default function Register() {
             <Input
               label="Nombres"
               placeholder="Luis"
+              maxLength={20}
               icon={
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -171,6 +172,7 @@ export default function Register() {
             <Input
               label="Apellidos"
               placeholder="Moreira"
+              maxLength={30}
               name="lastNames"
               icon={
                 <svg
@@ -215,6 +217,7 @@ export default function Register() {
           </div>
           <div className="py-2 grid px-10">
             <Input
+              maxLength={50}
               label="Correo electrónico"
               placeholder="lmoreira@gmail.com"
               name="email"
@@ -266,6 +269,7 @@ export default function Register() {
               label="Contraseña"
               placeholder="********"
               name="password"
+              maxLength={20}
               type="password"
               icon={
                 <svg

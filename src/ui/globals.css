@@ -132,7 +132,7 @@
     [data-theme="light"] {
       
       /* Principal Page */
-      --bgColorLeft:rgba(168,168,167,0.16);
+      --bgColorLeft:rgba(88, 88, 88, 0.16);
       --bgColorDark: rgb(240, 239, 239);
       --bgColorRight: white;
   
@@ -154,7 +154,7 @@
       --bg--HoverInput: #000;
   
       /* Button Fill */
-      --bg--ButonFill: #1b7505;
+      --bg--ButonFill: #1a6e05;
       --text--ButtonFill: #fff;
   
       /* Button Fill Hover*/
@@ -170,7 +170,7 @@
       --text--ButtonOutlinedHover: #fff;
   
       /* Register label */
-      --text--RegisterLabel: #dba112;
+      --text--RegisterLabel: #000000;
       --text-ForgotPassword: #1b7505;
       --label--Label: #1b7505;
   

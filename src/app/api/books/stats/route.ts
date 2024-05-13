@@ -57,8 +57,8 @@ function formatViews(views: any, range: string) {
       ).length;
 
       return {
-        day: dayName,
-        countViews,
+        name: dayName,
+        value:countViews,
       };
     });
 
@@ -75,8 +75,8 @@ function formatViews(views: any, range: string) {
       ).length;
 
       return {
-        day: dayName,
-        countViews,
+        name: dayName,
+        value:countViews,
       };
     });
 
@@ -94,8 +94,8 @@ function formatViews(views: any, range: string) {
       ).length;
 
       return {
-        month: monthName,
-        countViews,
+        name: monthName,
+        value:countViews,
       };
     });
 

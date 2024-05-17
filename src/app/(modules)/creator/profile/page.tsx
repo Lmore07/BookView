@@ -301,7 +301,7 @@ export default function ProfileCreator() {
               </span>
             </TooltipTrigger>
             <TooltipContent>
-              <p>Ayuda</p>
+              <div>Ayuda</div>
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>

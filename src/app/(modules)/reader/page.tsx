@@ -22,6 +22,7 @@ import { useContext, useEffect, useRef, useState } from "react";
 import SpeechRecognition, {
   useSpeechRecognition,
 } from "react-speech-recognition";
+import { format } from 'date-fns';
 
 export default function Home() {
   //Variables declaradas
@@ -305,7 +306,7 @@ export default function Home() {
               </span>
             </TooltipTrigger>
             <TooltipContent>
-              <p>Ayuda</p>
+              <div>Ayuda</div>
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>

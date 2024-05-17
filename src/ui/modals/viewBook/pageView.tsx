@@ -105,8 +105,10 @@ const PageContent: React.FC<PageProps> = ({ page, coverInfo }) => {
   };
 
   const handleTextSelection = async (event: any) => {
+    console.log(event);
     const selection = window.getSelection();
     const selectedText = selection?.toString().trim();
+    console.log(selectedText);
     setSelectedText(selectedText ?? "vacio");
     if (selectedText != "" && selectedText != null) {
       setTextGenerated(await generateText(selectedText));
@@ -135,17 +137,17 @@ const PageContent: React.FC<PageProps> = ({ page, coverInfo }) => {
               <h1 className="text-3xl font-poppins font-bold pb-5">
                 {coverInfo?.bookName}
               </h1>
-              <p className="text-lg font-poppins font-light pb-5">
+              <div className="text-lg font-poppins font-light pb-5">
                 Autor: {coverInfo?.author}
-              </p>
+              </div>
               <img
                 className="w-[250px] rounded-md"
                 src={coverInfo?.coverPhoto}
                 alt="Portada del libro"
               />
-              <p className="text-lg font-poppins font-light pt-5">
+              <div className="text-lg font-poppins font-light pt-5">
                 Publicado: {formatDate}
-              </p>
+              </div>
             </div>
           </div>
         )}
@@ -176,8 +178,8 @@ const PageContent: React.FC<PageProps> = ({ page, coverInfo }) => {
             </div>
             <div className="col-span-3">
               <div
-                onMouseUp={handleTextSelection}
                 className="break-words max-w-none text-justify"
+                onMouseUp={handleTextSelection}
                 dangerouslySetInnerHTML={{ __html: page.content }}
               ></div>
             </div>

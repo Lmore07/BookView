@@ -23,6 +23,7 @@ import { useContext, useEffect, useRef, useState } from "react";
 import SpeechRecognition, {
   useSpeechRecognition,
 } from "react-speech-recognition";
+import { format } from "date-fns";
 
 export default function ProfileReader() {
   const { setIsLoading } = useContext(LoadingContext)!;
@@ -53,6 +54,49 @@ export default function ProfileReader() {
 
   const functionInterpret = async () => {
     const call = await callFunction(transcript);
+    if (call.name == "setInputText") {
+      switch (call.args.inputName) {
+        case "names":
+          setUserInfo({
+            ...userInfo,
+            Person: {
+              ...userInfo.Person,
+              names: call.args.text,
+            },
+          });
+          break;
+        case "lastNames":
+          setUserInfo({
+            ...userInfo,
+            Person: {
+              ...userInfo.Person,
+              lastNames: call.args.text,
+            },
+          });
+          break;
+        case "birthday":
+          const formattedDate = format(call.args.text, "dd/MM/yyyy");
+
+          console.log(formattedDate);
+          setUserInfo({
+            ...userInfo,
+            Person: {
+              ...userInfo.Person,
+              birthday: call.args.text,
+            },
+          });
+          break;
+        case "mail":
+          setUserInfo({
+            ...userInfo,
+            mail: call.args.text,
+          });
+          break;
+        case "profilePicture":
+          handleImageUpload();
+          break;
+      }
+    }
     console.log(call);
   };
 
@@ -301,7 +345,7 @@ export default function ProfileReader() {
               </span>
             </TooltipTrigger>
             <TooltipContent>
-              <p>Ayuda</p>
+              <div>Ayuda</div>
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>

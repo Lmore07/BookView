@@ -3,7 +3,9 @@ const { GoogleGenerativeAI } = require("@google/generative-ai");
 export async function callFunction(
   text: string
 ): Promise<{ name: string; args: any }> {
-  const genAI = new GoogleGenerativeAI(`${process.env.API_KEY_GEMINI}`);
+  const genAI = new GoogleGenerativeAI(
+    `AIzaSyDUpQOlXtL6O-Omdab-eBUOA0HHupVZF3o`
+  );
   const model = genAI.getGenerativeModel({
     model: "gemini-1.0-pro",
     tools: {
@@ -70,7 +72,8 @@ const setInputText = {
     properties: {
       inputName: {
         type: "STRING",
-        description: "The name of the input to set the text in.",
+        description:
+          "The name of the input to set the text in.Can be 'names' if it detects a name or several names of people, 'lastNames' if it detects that it a last names, can be 'birthday' if it detects the birthday, can be 'mail' if it detects that it is an email, 'profilePicture' if it detects that it is the profile picture, 'bookName' if it is told to search for a book either by author or by book name.",
       },
       text: {
         type: "STRING",

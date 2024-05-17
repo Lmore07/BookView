@@ -299,7 +299,7 @@ export default function Favorites() {
               </span>
             </TooltipTrigger>
             <TooltipContent>
-              <p>Ayuda</p>
+              <div>Ayuda</div>
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>

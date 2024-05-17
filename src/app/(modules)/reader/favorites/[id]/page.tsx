@@ -164,7 +164,7 @@ export default function Favorite({
       });
       if (responseView.ok) {
         const dataView: ResponseData<any> = await responseView.json();
-        setLastPage(dataView.data[0].lastPage);
+        setLastPage(dataView.data.lastPage);
       }
       const data: ResponseData<any> = await response.json();
       if (data.error) {

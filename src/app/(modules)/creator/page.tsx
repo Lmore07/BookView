@@ -15,6 +15,7 @@ import { useContext, useEffect, useRef, useState } from "react";
 import SpeechRecognition, {
   useSpeechRecognition,
 } from "react-speech-recognition";
+import { format } from "date-fns";
 
 export default function CreatorPage() {
   const commands = [
@@ -117,12 +118,8 @@ export default function CreatorPage() {
         handleShowToast(data.message!, ToastType.ERROR);
       } else {
         const tableData = data.data.map((item: any) => {
-          const date = new Date(item.publicationDate);
-          const day = date.getDate();
-          const month = date.getMonth() + 1;
-          const year = date.getFullYear();
-          const formatDate = `${day}-${month}-${year}`;
-          return { ...item, publicationDate: formatDate };
+          const formattedDate = format(item.publicationDate, "dd-MM-yyyy");
+          return { ...item, publicationDate: formattedDate };
         });
         setTableData(tableData);
       }

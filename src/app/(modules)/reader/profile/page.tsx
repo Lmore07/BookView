@@ -23,7 +23,6 @@ import { useContext, useEffect, useRef, useState } from "react";
 import SpeechRecognition, {
   useSpeechRecognition,
 } from "react-speech-recognition";
-import { format } from "date-fns";
 
 export default function ProfileReader() {
   const { setIsLoading } = useContext(LoadingContext)!;
@@ -75,9 +74,7 @@ export default function ProfileReader() {
           });
           break;
         case "birthday":
-          const formattedDate = format(call.args.text, "dd/MM/yyyy");
-
-          console.log(formattedDate);
+          console.log(call.args.text);
           setUserInfo({
             ...userInfo,
             Person: {
@@ -166,7 +163,6 @@ export default function ProfileReader() {
         handleShowToast(data.message!, ToastType.ERROR);
       } else {
         const formatDate = data.data!.Person.birthday.substring(0, 10);
-        console.log("Date format: ", formatDate);
         setUserInfo({
           mail: data.data!.mail,
           profilePicture: data.data!.profilePicture,

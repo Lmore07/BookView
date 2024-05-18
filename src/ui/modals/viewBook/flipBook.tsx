@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import PageContent from "./pageView";
 import { CoverI } from "@/libs/interfaces/books.interface";
+import { Slider } from "@/components/ui/slider";
 
 interface FlipBookProps {
   pages: {
@@ -24,6 +25,7 @@ const FlipBook: React.FC<FlipBookProps> = ({
 }) => {
   const [currentPage, setCurrentPage] = useState(startPage);
   const [currentBook, setCurrentBook] = useState(coverInfo);
+  const [sliderValue, setSliderValue] = useState(startPage);
   const [isFlipping, setIsFlipping] = useState(false);
   const [flipDirection, setFlipDirection] = useState("");
   const bookRef = useRef<HTMLDivElement>(null);
@@ -85,6 +87,7 @@ const FlipBook: React.FC<FlipBookProps> = ({
 
   useEffect(() => {
     updateLastPage();
+    setSliderValue(currentPage);
   }, [currentPage]);
 
   useEffect(() => {
@@ -120,7 +123,7 @@ const FlipBook: React.FC<FlipBookProps> = ({
   return (
     <div className="flex items-center justify-center flex-col">
       <div
-        className="flex items-center justify-center"
+        className="flex items-center justify-center mb-4"
         ref={bookRef}
         onDragStart={handleDragStart}
         onDragOver={handleDragOver}
@@ -179,6 +182,23 @@ const FlipBook: React.FC<FlipBookProps> = ({
             </svg>
           </button>
         </div>
+      </div>
+      <div className="my-2 w-full flex gap-3 items-center justify-center">
+        <span className="w-auto text-nowrap">Portada</span>
+        <Slider
+          onValueCommit={(value: any) => {
+            setCurrentPage(value[0]);
+          }}
+          onValueChange={(value: any) => {
+            setSliderValue(value[0]);
+          }}
+          value={[sliderValue]}
+          defaultValue={[currentPage]}
+          max={pages.length - 1}
+          min={0}
+          step={1}
+        />
+        <span className="w-auto text-nowrap">Página {pages.length - 1}</span>
       </div>
     </div>
   );

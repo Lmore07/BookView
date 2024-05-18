@@ -77,7 +77,8 @@ const setInputText = {
       },
       text: {
         type: "STRING",
-        description: "The text to set in the input.",
+        description:
+          "The text to set in the input. yyyy-MM-dd if it is a birthday.",
       },
     },
   },

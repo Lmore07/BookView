@@ -38,6 +38,7 @@ export const POST = apiMiddleware(async (request: NextRequest) => {
           password: await bcrypt.hash(body.password, 10),
           idPerson: idPerson,
           rol: body.role,
+          status: body.role == "CREATOR" ? false : true,
         },
       });
     });

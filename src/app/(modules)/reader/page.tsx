@@ -149,7 +149,7 @@ export default function Home() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const response = await fetch("../api/categories?limit=10000");
+      const response = await fetch("../api/categories?limit=10000&status=true");
       const data: ResponseData<CategoriesAll[]> = await response.json();
       setCategories(data.data ?? []);
     };

@@ -18,6 +18,10 @@ export async function callFunction(
         selectBookByName,
         changePage,
         selectFolderByName,
+        viewLastData,
+        filterByStatusOrRole,
+        removeFilter,
+        newCategory,
       ],
     },
   });
@@ -161,5 +165,72 @@ const generateDefinition = {
       },
     },
     required: ["text"],
+  },
+};
+
+//ADMIN
+
+//HOME
+const viewLastData = {
+  name: "viewLastData",
+  parameters: {
+    type: "OBJECT",
+    description: "View the last data.",
+    properties: {
+      entity: {
+        type: "STRING",
+        description: "The entity to view the last data.",
+      },
+    },
+  },
+};
+
+//USERS
+const filterByStatusOrRole = {
+  name: "filterByStatusOrRole",
+  parameters: {
+    type: "OBJECT",
+    description: "Filter users by status or role.",
+    properties: {
+      status: {
+        type: "STRING",
+        description:
+          "The status to filter the users. Can be 'true' for actives OR 'false' for inactives.",
+      },
+      role: {
+        type: "STRING",
+        description:
+          "The role to filter the users. Can be 'CREATOR' for creator of books OR 'READER' for reader of books.",
+      },
+    },
+  },
+};
+
+const removeFilter = {
+  name: "removeFilter",
+  parameters: {
+    type: "OBJECT",
+    description: "Remove the filter.",
+    properties: {
+      filter: {
+        type: "STRING",
+        description:
+          "The name of the filter to remove. Can be 'status' OR 'role'",
+      },
+      all: {
+        type: "STRING",
+        description: "Remove all filters. Can be 'true' OR 'false'",
+      },
+    },
+  },
+};
+
+//CATEGORIES
+
+const newCategory = {
+  name: "newCategory",
+  parameters: {
+    type: "OBJECT",
+    description: "Create a new category.",
   },
 };

@@ -1,65 +1,117 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
 } from "@/components/ui/dialog";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { LoadingContext } from "@/libs/contexts/loadingContext";
 import { ToastContext } from "@/libs/contexts/toastContext";
+import { ResponseData } from "@/libs/interfaces/response.interface";
 import { ToastType } from "@/libs/interfaces/toast.interface";
 import { callFunction } from "@/libs/services/callFunction";
 import { generateSpeech } from "@/libs/services/generateSpeech";
-import { commandsHomeAdmin } from "@/libs/texts/commands/admin/commandsAdmin";
+import { commandsUserAdmin } from "@/libs/texts/commands/admin/commandsAdmin";
+import { messageUsersAdmin } from "@/libs/texts/messages/admin/message";
 import Table from "@/ui/components/tabble/table";
+import ConfirmActiveOrDesactive from "@/ui/modals/admin/users/confirm";
 import Help from "@/ui/modals/help/help";
-import { Tooltip } from "@mui/material";
+import { Pagination, Stack, Tooltip } from "@mui/material";
 import { format } from "date-fns";
 import { useContext, useEffect, useRef, useState } from "react";
 import SpeechRecognition, {
   useSpeechRecognition,
 } from "react-speech-recognition";
-import { useRouter } from "next/navigation";
-import Button from "@/ui/components/buttons/ButtonFill";
-import { messageHomeAdmin } from "@/libs/texts/messages/admin/message";
 
-export default function AdminPage() {
-  const router = useRouter();
+export default function UsersAdmin() {
   const { transcript, resetTranscript, listening } = useSpeechRecognition();
   const [openHelp, setOpenHelp] = useState(false);
-  const [openStats, setOpenStats] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const [selectedId, setSelectedId] = useState(0);
+  const [isOpenActiveOrDesactive, setIsOpenActiveOrDesactive] = useState(false);
   const audioContext = useRef<AudioContext | null>(null);
   const source = useRef<AudioBufferSourceNode | null>(null);
   const { handleShowToast } = useContext(ToastContext)!;
   const { setIsLoading } = useContext(LoadingContext)!;
   const [usersData, setUsersData] = useState<any>([]);
-  const [booksData, setBooksData] = useState<any>([]);
-
+  const [action, setAction] = useState<any>();
+  const [statusActiveorDesactive, setStatusActiveorDesactive] = useState<any>();
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
   const startListening = () => {
     SpeechRecognition.startListening({ language: "es-EC" });
   };
-
-  const stopListening = () => {
-    SpeechRecognition.stopListening();
-    resetTranscript();
-  };
+  const [showStatus, setShowStatus] = useState<any>();
+  const [showRol, setShowRol] = useState<any>();
+  const headersUsers = [
+    { key: "names", name: "Nombres" },
+    { key: "mail", name: "Correo electrónico" },
+    { key: "createdAt", name: "Fecha de creación" },
+    { key: "rol", name: "Rol" },
+    { key: "status", name: "Estado" },
+  ];
 
   const functionInterpret = async () => {
     const call = await callFunction(transcript);
-    if (call.name == "viewLastData") {
-      switch (call.args.entity) {
-        case "book":
-          router.push("/admin/books");
-          break;
-        case "user":
-          router.push("/admin/users");
-          break;
-      }
+    switch (call.name) {
+      case "filterByStatusOrRole":
+        if (call.args.status) {
+          setShowStatus(call.args.status);
+        }
+        if (call.args.role) {
+          setShowRol(call.args.role);
+        }
+        break;
+      case "changePage":
+        changePage(call.args.action, call.args.pageNumber);
+        break;
+      case "removeFilter":
+        if (call.args.filter) {
+          if (call.args.filter == "role") {
+            setShowRol(null);
+          } else {
+            setShowStatus(null);
+          }
+        } else {
+          setShowRol(null);
+          setShowStatus(null);
+        }
+        break;
+      default:
+        handleShowToast("No se reconoce el comando", ToastType.ERROR);
     }
     console.log(call);
+  };
+
+  const changePage = (action: string, pageNumber?: number) => {
+    if (action === "next") {
+      if (page + 1 > totalPages) {
+        handleShowToast("No hay más libros", ToastType.ERROR);
+      } else {
+        setPage(page + 1);
+      }
+    } else if (action === "previous") {
+      if (page - 1 < 1) {
+        handleShowToast("No hay más libros", ToastType.ERROR);
+      } else {
+        setPage(page - 1);
+      }
+    } else if (action === "goTo") {
+      if (pageNumber! < 1 || pageNumber! > totalPages) {
+        handleShowToast("Número de página inválido", ToastType.ERROR);
+      } else {
+        setPage(pageNumber!);
+      }
+    }
   };
 
   useEffect(() => {
@@ -70,6 +122,11 @@ export default function AdminPage() {
     }
   }, [listening]);
 
+  const stopListening = () => {
+    SpeechRecognition.stopListening();
+    resetTranscript();
+  };
+
   const handleToggleListening = () => {
     if (listening) {
       stopListening();
@@ -79,7 +136,7 @@ export default function AdminPage() {
   };
 
   const startSpeech = async () => {
-    const audioData = await generateSpeech(messageHomeAdmin);
+    const audioData = await generateSpeech(messageUsersAdmin);
     const ctx = new AudioContext();
     await ctx.decodeAudioData(audioData, (buffer) => {
       const src = ctx.createBufferSource();
@@ -111,34 +168,30 @@ export default function AdminPage() {
     }
   };
 
-  const loadData = () => {
+  const loadData = async () => {
     try {
       setIsLoading(true);
-      const urls = ["../api/admin/books/last", "../api/admin/users/last"];
-      Promise.all(
-        urls.map((url) => fetch(url).then((response) => response.json()))
-      )
-        .then((data) => {
-          handleShowToast("Datos obtenidos correctamente", ToastType.SUCCESS);
-          console.log(data);
-          const books = data[0].data.map((item: any) => {
-            const formattedDate = format(item.publicationDate, "dd-MM-yyyy");
-            return { ...item, publicationDate: formattedDate };
-          });
-          setBooksData(books);
-          const users = data[1].data.map((item: any) => {
-            const formattedDate = format(item.createdAt, "dd-MM-yyyy");
-            return { ...item, createdAt: formattedDate };
-          });
-          setUsersData(users);
-        })
-        .catch((error) => {
-          console.error(error);
-          handleShowToast(
-            "Ocurrió un error al obtener los datos",
-            ToastType.ERROR
-          );
+      const response = await fetch(
+        `../api/admin/users?limit=5&page=${page}&status=${showStatus}&role=${showRol}`
+      );
+      const data: ResponseData<any> = await response.json();
+      if (data.error) {
+        handleShowToast(data.message!, ToastType.ERROR);
+      } else {
+        const tableData = data.data.map((item: any) => {
+          const formattedCreatedAt = format(item.createdAt, "dd-MM-yyyy");
+          const formattedUpdatedAt = format(item.updatedAt, "dd-MM-yyyy");
+
+          return {
+            ...item,
+            createdAt: formattedCreatedAt,
+            updatedAt: formattedUpdatedAt,
+          };
         });
+        setTotalPages(data.pagination?.totalPages ?? 0);
+        setPage(data.pagination?.currentPage ?? 0);
+        setUsersData(tableData);
+      }
     } catch (error) {
       handleShowToast("Ocurrió un error al obtener los datos", ToastType.ERROR);
     } finally {
@@ -146,25 +199,44 @@ export default function AdminPage() {
     }
   };
 
+  const handlePageChange = (event: any, value: number) => {
+    setPage(value);
+  };
+
   useEffect(() => {
     loadData();
-  }, []);
+  }, [page, showStatus, showRol]);
 
-  const headersBooks = [
-    { key: "bookName", name: "Nombre del libro" },
-    { key: "publicationDate", name: "Fecha de publicación" },
-    { key: "author", name: "Autor" },
-    { key: "countViews", name: "Visitas" },
-    { key: "status", name: "Estado" },
-  ];
+  const handleShowStatusChange = (value: any) => {
+    if (value === showStatus) {
+      setShowStatus(null);
+    } else {
+      setShowStatus(value);
+    }
+  };
 
-  const headersUsers = [
-    { key: "names", name: "Nombres" },
-    { key: "mail", name: "Correo electrónico" },
-    { key: "createdAt", name: "Fecha de creación" },
-    { key: "rol", name: "Rol" },
-    { key: "status", name: "Estado" },
-  ];
+  const handleShowRolChange = (value: any) => {
+    if (value === showRol) {
+      setShowRol(null);
+    } else {
+      setShowRol(value);
+    }
+  };
+
+  const handleActiveUser = (item: any) => {
+    console.log(item);
+    setSelectedId(item.idUser);
+    setAction("active");
+    setStatusActiveorDesactive(true);
+    setIsOpenActiveOrDesactive(true);
+  };
+
+  const handleDesactiveUser = (item: any) => {
+    setSelectedId(item.idUser);
+    setAction("desactive");
+    setStatusActiveorDesactive(false);
+    setIsOpenActiveOrDesactive(true);
+  };
 
   return (
     <>
@@ -270,64 +342,19 @@ export default function AdminPage() {
           </Tooltip>
         </div>
         <div className="my-3 border-b border-gray-300"></div>
-        <div className="flex flex-wrap justify-between mb-5 gap-5">
-          <h1 className="relative text-2xl text-primary-500 font-bold before:content-[''] before:block before:absolute before:h-full before:w-1 before:bg-primary-500 before:left-0">
-            <span className="ps-2">Últimos libros</span>
-          </h1>
-          <div className="flex gap-2">
-            <Button
-              icon={
-                <svg
-                  viewBox="0 0 24 24"
-                  fill="currentColor"
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="w-6 h-6"
-                >
-                  <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
-                  <g
-                    id="SVGRepo_tracerCarrier"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  ></g>
-                  <g id="SVGRepo_iconCarrier">
-                    <path
-                      fillRule="evenodd"
-                      clipRule="evenodd"
-                      d="M3.17157 2.17157C2 3.34315 2 5.22876 2 9V13C2 16.7712 2 18.6569 3.17157 19.8284C4.34315 21 6.22876 21 10 21H14C17.7712 21 19.6569 21 20.8284 19.8284C22 18.6569 22 16.7712 22 13V9C22 5.22876 22 3.34315 20.8284 2.17157C19.6569 1 17.7712 1 14 1H10C6.22876 1 4.34315 1 3.17157 2.17157ZM12.5074 15.7223L12.5 15.7262V7.28277L12.5219 7.27042C13.0752 6.95027 13.9685 6.47356 14.7 6.27079C15.2404 6.12099 15.9405 6.05197 16.5568 6.0217C17.3619 5.98216 18 6.64543 18 7.45154V12.9108C18 13.7437 17.3207 14.4151 16.4901 14.477C15.9839 14.5147 15.4375 14.5783 15 14.6852C14.1634 14.8896 13.1174 15.4009 12.5074 15.7223ZM6 7.49649V12.9108C6 13.7437 6.67934 14.4151 7.50991 14.477C8.01608 14.5147 8.56248 14.5783 9 14.6852C9.83655 14.8896 10.8826 15.4009 11.4926 15.7223L11.5 15.7262V7.31094C11.4881 7.30525 11.4763 7.29933 11.4646 7.29318C10.851 6.9711 9.8239 6.4721 9 6.27079C8.55592 6.16228 7.99967 6.09844 7.48717 6.06091C6.66539 6.00074 6 6.67251 6 7.49649Z"
-                    ></path>
-                  </g>
-                </svg>
-              }
-              onClick={() => {
-                router.push("/admin/books");
-              }}
-            >
-              Ver Todos
-            </Button>
-          </div>
-        </div>
-        <Table
-          data={booksData}
-          headers={headersBooks}
-          showActions
-          showStats
-          onStatsClick={(book: any) => {
-            console.log(book);
-            setSelectedId(book.idBook);
-            setOpenStats(true);
-          }}
-        />
         <div className="flex flex-wrap justify-between mb-5 mt-5">
           <h1 className="relative text-2xl text-primary-500 font-bold before:content-[''] before:block before:absolute before:h-full before:w-1 before:bg-primary-500 before:left-0">
-            <span className="ps-2">Últimos usuarios</span>
+            <span className="ps-2">Usuarios</span>
           </h1>
-          <div className="flex gap-2">
-            <Button
-              icon={
+        </div>
+        <div className="flex mb-3 gap-2">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline">
                 <svg
                   viewBox="0 0 24 24"
                   fill="currentColor"
-                  className="w-6 h-6"
+                  className="w-5 h-5 mr-2"
                   xmlns="http://www.w3.org/2000/svg"
                 >
                   <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
@@ -337,22 +364,141 @@ export default function AdminPage() {
                     strokeLinejoin="round"
                   ></g>
                   <g id="SVGRepo_iconCarrier">
-                    <circle cx="9.00098" cy="6" r="4"></circle>
-                    <ellipse cx="9.00098" cy="17.001" rx="7" ry="4"></ellipse>
-                    <path d="M20.9996 17.0005C20.9996 18.6573 18.9641 20.0004 16.4788 20.0004C17.211 19.2001 17.7145 18.1955 17.7145 17.0018C17.7145 15.8068 17.2098 14.8013 16.4762 14.0005C18.9615 14.0005 20.9996 15.3436 20.9996 17.0005Z"></path>
-                    <path d="M17.9996 6.00073C17.9996 7.65759 16.6565 9.00073 14.9996 9.00073C14.6383 9.00073 14.292 8.93687 13.9712 8.81981C14.4443 7.98772 14.7145 7.02522 14.7145 5.99962C14.7145 4.97477 14.4447 4.01294 13.9722 3.18127C14.2927 3.06446 14.6387 3.00073 14.9996 3.00073C16.6565 3.00073 17.9996 4.34388 17.9996 6.00073Z"></path>
+                    <path d="M19 3H5C3.58579 3 2.87868 3 2.43934 3.4122C2 3.8244 2 4.48782 2 5.81466V6.50448C2 7.54232 2 8.06124 2.2596 8.49142C2.5192 8.9216 2.99347 9.18858 3.94202 9.72255L6.85504 11.3624C7.49146 11.7206 7.80967 11.8998 8.03751 12.0976C8.51199 12.5095 8.80408 12.9935 8.93644 13.5872C9 13.8722 9 14.2058 9 14.8729L9 17.5424C9 18.452 9 18.9067 9.25192 19.2613C9.50385 19.6158 9.95128 19.7907 10.8462 20.1406C12.7248 20.875 13.6641 21.2422 14.3321 20.8244C15 20.4066 15 19.4519 15 17.5424V14.8729C15 14.2058 15 13.8722 15.0636 13.5872C15.1959 12.9935 15.488 12.5095 15.9625 12.0976C16.1903 11.8998 16.5085 11.7206 17.145 11.3624L20.058 9.72255C21.0065 9.18858 21.4808 8.9216 21.7404 8.49142C22 8.06124 22 7.54232 22 6.50448V5.81466C22 4.48782 22 3.8244 21.5607 3.4122C21.1213 3 20.4142 3 19 3Z"></path>
                   </g>
                 </svg>
-              }
-              onClick={() => {
-                router.push("/admin/users");
-              }}
-            >
-              Ver Todos
-            </Button>
-          </div>
+                Filtro por estado
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="border shadow-lg">
+              <DropdownMenuRadioGroup
+                value={showStatus}
+                onValueChange={handleShowStatusChange}
+              >
+                <DropdownMenuRadioItem value="true">
+                  Activos
+                </DropdownMenuRadioItem>
+                <DropdownMenuRadioItem value="false">
+                  Inactivos
+                </DropdownMenuRadioItem>
+              </DropdownMenuRadioGroup>
+            </DropdownMenuContent>
+          </DropdownMenu>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  className="w-5 h-5 mr-2"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
+                  <g
+                    id="SVGRepo_tracerCarrier"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  ></g>
+                  <g id="SVGRepo_iconCarrier">
+                    <path d="M19 3H5C3.58579 3 2.87868 3 2.43934 3.4122C2 3.8244 2 4.48782 2 5.81466V6.50448C2 7.54232 2 8.06124 2.2596 8.49142C2.5192 8.9216 2.99347 9.18858 3.94202 9.72255L6.85504 11.3624C7.49146 11.7206 7.80967 11.8998 8.03751 12.0976C8.51199 12.5095 8.80408 12.9935 8.93644 13.5872C9 13.8722 9 14.2058 9 14.8729L9 17.5424C9 18.452 9 18.9067 9.25192 19.2613C9.50385 19.6158 9.95128 19.7907 10.8462 20.1406C12.7248 20.875 13.6641 21.2422 14.3321 20.8244C15 20.4066 15 19.4519 15 17.5424V14.8729C15 14.2058 15 13.8722 15.0636 13.5872C15.1959 12.9935 15.488 12.5095 15.9625 12.0976C16.1903 11.8998 16.5085 11.7206 17.145 11.3624L20.058 9.72255C21.0065 9.18858 21.4808 8.9216 21.7404 8.49142C22 8.06124 22 7.54232 22 6.50448V5.81466C22 4.48782 22 3.8244 21.5607 3.4122C21.1213 3 20.4142 3 19 3Z"></path>
+                  </g>
+                </svg>
+                Filtro por rol
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="border shadow-lg">
+              <DropdownMenuRadioGroup
+                value={showRol}
+                onValueChange={handleShowRolChange}
+              >
+                <DropdownMenuRadioItem value="CREATOR">
+                  Creador
+                </DropdownMenuRadioItem>
+                <DropdownMenuRadioItem value="READER">
+                  Lector
+                </DropdownMenuRadioItem>
+              </DropdownMenuRadioGroup>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
-        <Table data={usersData} headers={headersUsers} />
+        <Table
+          data={usersData}
+          headers={headersUsers}
+          showActions
+          showActivate
+          showDelete
+          onActivateClick={(item: any) => {
+            handleActiveUser(item);
+          }}
+          onDeleteClick={(item: any) => {
+            handleDesactiveUser(item);
+          }}
+        />
+      </div>
+      <div className="mt-5 flex items-center justify-center">
+        <Stack spacing={2}>
+          <Pagination
+            sx={{
+              "& .MuiPaginationItem-page": {
+                backgroundColor: "var(--bg-no-select)",
+                color: "var(--text-no-select)",
+                borderColor: "var(--border-not-select)",
+                "&:hover": {
+                  backgroundColor: "var(--bg-no-select)",
+                  borderColor: "var(--text-no-select)",
+                  color: "var(--hover-text-not-select)",
+                },
+              },
+              "& .MuiPaginationItem-page.Mui-selected": {
+                backgroundColor: "var(--primary--500)",
+                color: "var(--bg-no-select)",
+                "&:hover": {
+                  backgroundColor: "var(--primary--700)",
+                  color: "var(--bg-select)",
+                },
+              },
+              '& [aria-label="Go to next page"], & [aria-label="Go to previous page"]':
+                {
+                  backgroundColor: "#fff",
+                  color: "#000",
+                },
+            }}
+            count={totalPages}
+            size="large"
+            page={page}
+            onChange={handlePageChange}
+            variant="outlined"
+            shape="rounded"
+          />
+        </Stack>
+      </div>
+      <div>
+        {isOpenActiveOrDesactive && (
+          <Dialog
+            open={isOpenActiveOrDesactive}
+            onOpenChange={(open: boolean) => {
+              setIsOpenActiveOrDesactive(open);
+            }}
+          >
+            <DialogContent className="bg-bgColorRight">
+              <DialogHeader>
+                <DialogDescription>
+                  <ConfirmActiveOrDesactive
+                    action={action}
+                    entity="el usuario"
+                    route="users"
+                    status={statusActiveorDesactive}
+                    idItem={selectedId}
+                    onFinish={() => {
+                      setIsOpenActiveOrDesactive(false);
+                      loadData();
+                    }}
+                  ></ConfirmActiveOrDesactive>
+                </DialogDescription>
+              </DialogHeader>
+            </DialogContent>
+          </Dialog>
+        )}
       </div>
       <div>
         {openHelp && (
@@ -365,7 +511,7 @@ export default function AdminPage() {
             <DialogContent className="bg-bgColorRight">
               <DialogHeader>
                 <DialogDescription>
-                  <Help commands={commandsHomeAdmin} page="inicio"></Help>
+                  <Help commands={commandsUserAdmin} page="usuarios"></Help>
                 </DialogDescription>
               </DialogHeader>
             </DialogContent>

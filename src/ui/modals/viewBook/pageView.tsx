@@ -32,16 +32,6 @@ const PageContent: React.FC<PageProps> = ({ page, coverInfo }) => {
     setIsPlayingVideo(true);
   };
 
-  useEffect(() => {
-    if (coverInfo) {
-      const date = new Date(coverInfo!.publicationDate);
-      const day = date.getDate();
-      const month = date.getMonth() + 1;
-      const year = date.getFullYear();
-      setFormatDate(`${day}-${month}-${year}`);
-    }
-  }, []);
-
   const startSpeech = async () => {
     let audioData: any;
     if (page.audio) {
@@ -146,7 +136,7 @@ const PageContent: React.FC<PageProps> = ({ page, coverInfo }) => {
                 alt="Portada del libro"
               />
               <div className="text-lg font-poppins font-light pt-5">
-                Publicado: {formatDate}
+                Publicado: {coverInfo?.publicationDate.toString() ?? ""}
               </div>
             </div>
           </div>

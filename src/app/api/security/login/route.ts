@@ -25,6 +25,16 @@ export const POST = apiMiddleware(async (request: NextRequest) => {
       );
     }
 
+    if (!user.status) {
+      return NextResponse.json(
+        {
+          error:
+            "El usuario no está activo, por favor comunícate con el administrador",
+        },
+        { status: 404 }
+      );
+    }
+
     const isPasswordValid = await bcrypt.compare(body.password, user.password);
 
     if (!isPasswordValid) {

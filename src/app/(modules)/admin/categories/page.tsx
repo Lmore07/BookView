@@ -1,39 +1,51 @@
 "use client";
 
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+} from "@/components/ui/dialog";
 import { LoadingContext } from "@/libs/contexts/loadingContext";
 import { ToastContext } from "@/libs/contexts/toastContext";
 import { ResponseData } from "@/libs/interfaces/response.interface";
 import { ToastType } from "@/libs/interfaces/toast.interface";
+import { callFunction } from "@/libs/services/callFunction";
 import { generateSpeech } from "@/libs/services/generateSpeech";
-import Button from "@/ui/components/buttons/ButtonFill";
+import { commandsCategoriesAdmin } from "@/libs/texts/commands/admin/commandsAdmin";
+import { messageCategoryAdmin } from "@/libs/texts/messages/admin/message";
 import ButtonOutlined from "@/ui/components/buttons/ButtonOutlined";
-import LineChart from "@/ui/components/stats/lineFilter";
 import Table from "@/ui/components/tabble/table";
-import { Tooltip } from "@mui/material";
+import ConfirmActiveOrDesactive from "@/ui/modals/admin/users/confirm";
+import CategoryComponent from "@/ui/modals/categories/category";
+import Help from "@/ui/modals/help/help";
+import { Pagination, Stack, Tooltip } from "@mui/material";
 import { format } from "date-fns";
-import { useRouter } from "next/navigation";
 import { useContext, useEffect, useRef, useState } from "react";
 import SpeechRecognition, {
   useSpeechRecognition,
 } from "react-speech-recognition";
 
-export default function CreatorPage() {
-  const router = useRouter();
-  const [open, setOpen] = useState(false);
+export default function Categories() {
   const { transcript, resetTranscript, listening } = useSpeechRecognition();
   const [openHelp, setOpenHelp] = useState(false);
-  const [openStats, setOpenStats] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const [selectedId, setSelectedId] = useState(0);
+  const [isOpenCreated, setIsOpenCreated] = useState(false);
   const audioContext = useRef<AudioContext | null>(null);
   const source = useRef<AudioBufferSourceNode | null>(null);
   const { handleShowToast } = useContext(ToastContext)!;
   const { setIsLoading } = useContext(LoadingContext)!;
-  const [tableData, setTableData] = useState<any>([]);
-
+  const [categoriesData, setCategoriesData] = useState<any>([]);
+  const [selectedCategory, setSelectedCategory] = useState<any>();
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
   const startListening = () => {
     SpeechRecognition.startListening({ language: "es-EC" });
   };
+  const [action, setAction] = useState<any>();
+  const [statusActiveorDesactive, setStatusActiveorDesactive] = useState<any>();
+  const [isOpenActiveOrDesactive, setIsOpenActiveOrDesactive] = useState(false);
 
   const stopListening = () => {
     SpeechRecognition.stopListening();
@@ -49,9 +61,7 @@ export default function CreatorPage() {
   };
 
   const startSpeech = async () => {
-    const audioData = await generateSpeech(
-      "A continuación, puede realizar la búsqueda de libros por autor y nombre de libro. Además, también puede filtrar por las categorías presentadas, recuerde que puede usar comandos de voz para realizar esto, para ver los comandos de voz haga click en el ícono de ayuda."
-    );
+    const audioData = await generateSpeech(messageCategoryAdmin);
     const ctx = new AudioContext();
     await ctx.decodeAudioData(audioData, (buffer) => {
       const src = ctx.createBufferSource();
@@ -83,35 +93,105 @@ export default function CreatorPage() {
     }
   };
 
-  const lastestBooks = async () => {
+  const loadData = async () => {
     try {
-      const response = await fetch(`../api/books/lastest`);
+      setIsLoading(true);
+      const response = await fetch(
+        `../api/admin/categories?limit=5&page=${page}`
+      );
       const data: ResponseData<any> = await response.json();
       if (data.error) {
         handleShowToast(data.message!, ToastType.ERROR);
       } else {
         const tableData = data.data.map((item: any) => {
-          const formattedDate = format(item.publicationDate, "dd-MM-yyyy");
-          return { ...item, publicationDate: formattedDate };
+          const formattedDate = format(item.createdAt, "dd-MM-yyyy");
+          return { ...item, createdAt: formattedDate };
         });
-        setTableData(tableData);
+        setTotalPages(data.pagination?.totalPages ?? 0);
+        setPage(data.pagination?.currentPage ?? 0);
+        setCategoriesData(tableData);
       }
     } catch (error) {
-      handleShowToast("", ToastType.ERROR);
+      handleShowToast("Ocurrió un error al obtener los datos", ToastType.ERROR);
     } finally {
       setIsLoading(false);
     }
   };
 
-  const headers = [
-    { key: "bookName", name: "Nombre del libro" },
-    { key: "publicationDate", name: "Fecha de publicación" },
-    { key: "countViews", name: "Visitas" },
-  ];
+  const handlePageChange = (event: any, value: number) => {
+    setPage(value);
+  };
+
+  const functionInterpret = async () => {
+    const call = await callFunction(transcript);
+    switch (call.name) {
+      case "changePage":
+        changePage(call.args.action, call.args.pageNumber);
+        break;
+      case "newCategory":
+        setIsOpenCreated(true);
+        break;
+      default:
+        handleShowToast("No se reconoce el comando", ToastType.ERROR);
+    }
+    console.log(call);
+  };
+
+  const changePage = (action: string, pageNumber?: number) => {
+    if (action === "next") {
+      if (page + 1 > totalPages) {
+        handleShowToast("No hay más libros", ToastType.ERROR);
+      } else {
+        setPage(page + 1);
+      }
+    } else if (action === "previous") {
+      if (page - 1 < 1) {
+        handleShowToast("No hay más libros", ToastType.ERROR);
+      } else {
+        setPage(page - 1);
+      }
+    } else if (action === "goTo") {
+      if (pageNumber! < 1 || pageNumber! > totalPages) {
+        handleShowToast("Número de página inválido", ToastType.ERROR);
+      } else {
+        setPage(pageNumber!);
+      }
+    }
+  };
 
   useEffect(() => {
-    lastestBooks();
-  }, []);
+    if (!listening && transcript != "") {
+      console.log("Transcript: ", transcript);
+      functionInterpret();
+      resetTranscript();
+    }
+  }, [listening]);
+
+  useEffect(() => {
+    loadData();
+  }, [page]);
+
+  const headersCategories = [
+    { key: "categoryName", name: "Nombre de la categoría" },
+    { key: "description", name: "Descripción" },
+    { key: "createdAt", name: "Fecha de creación" },
+    { key: "status", name: "Estado" },
+  ];
+
+  const handleActiveCategory = (item: any) => {
+    console.log(item);
+    setSelectedId(item.idCategory);
+    setAction("active");
+    setStatusActiveorDesactive(true);
+    setIsOpenActiveOrDesactive(true);
+  };
+
+  const handleDesactiveCategory = (item: any) => {
+    setSelectedId(item.idCategory);
+    setAction("desactive");
+    setStatusActiveorDesactive(false);
+    setIsOpenActiveOrDesactive(true);
+  };
 
   return (
     <>
@@ -217,9 +297,9 @@ export default function CreatorPage() {
           </Tooltip>
         </div>
         <div className="my-3 border-b border-gray-300"></div>
-        <div className="flex flex-wrap justify-between mb-5">
+        <div className="flex flex-wrap justify-between mb-5 mt-5">
           <h1 className="relative text-2xl text-primary-500 font-bold before:content-[''] before:block before:absolute before:h-full before:w-1 before:bg-primary-500 before:left-0">
-            <span className="ps-2">Últimos libros</span>
+            <span className="ps-2">Categorías</span>
           </h1>
           <div className="flex gap-2">
             <ButtonOutlined
@@ -238,60 +318,150 @@ export default function CreatorPage() {
                 </svg>
               }
               onClick={() => {
-                router.push("creator/books/creation");
+                setIsOpenCreated(true);
+                setSelectedCategory(null);
+                setSelectedId(0);
               }}
             >
-              Nuevo Libro
+              Nueva categoría
             </ButtonOutlined>
-            <Button
-              icon={
-                <svg
-                  viewBox="0 0 24 24"
-                  fill="currentColor"
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="w-6 h-6"
-                >
-                  <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
-                  <g
-                    id="SVGRepo_tracerCarrier"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  ></g>
-                  <g id="SVGRepo_iconCarrier">
-                    {" "}
-                    <path
-                      fillRule="evenodd"
-                      clipRule="evenodd"
-                      d="M3.17157 2.17157C2 3.34315 2 5.22876 2 9V13C2 16.7712 2 18.6569 3.17157 19.8284C4.34315 21 6.22876 21 10 21H14C17.7712 21 19.6569 21 20.8284 19.8284C22 18.6569 22 16.7712 22 13V9C22 5.22876 22 3.34315 20.8284 2.17157C19.6569 1 17.7712 1 14 1H10C6.22876 1 4.34315 1 3.17157 2.17157ZM12.5074 15.7223L12.5 15.7262V7.28277L12.5219 7.27042C13.0752 6.95027 13.9685 6.47356 14.7 6.27079C15.2404 6.12099 15.9405 6.05197 16.5568 6.0217C17.3619 5.98216 18 6.64543 18 7.45154V12.9108C18 13.7437 17.3207 14.4151 16.4901 14.477C15.9839 14.5147 15.4375 14.5783 15 14.6852C14.1634 14.8896 13.1174 15.4009 12.5074 15.7223ZM6 7.49649V12.9108C6 13.7437 6.67934 14.4151 7.50991 14.477C8.01608 14.5147 8.56248 14.5783 9 14.6852C9.83655 14.8896 10.8826 15.4009 11.4926 15.7223L11.5 15.7262V7.31094C11.4881 7.30525 11.4763 7.29933 11.4646 7.29318C10.851 6.9711 9.8239 6.4721 9 6.27079C8.55592 6.16228 7.99967 6.09844 7.48717 6.06091C6.66539 6.00074 6 6.67251 6 7.49649Z"
-                    ></path>{" "}
-                  </g>
-                </svg>
-              }
-              onClick={() => {
-                router.push("creator/books");
-              }}
-            >
-              Ver Todos
-            </Button>
           </div>
         </div>
         <Table
-          data={tableData}
-          headers={headers}
+          data={categoriesData}
+          headers={headersCategories}
           showActions
-          showStats
-          onStatsClick={(book: any) => {
-            console.log(book);
-            setSelectedId(book.idBook);
-            setOpenStats(true);
+          showEdit
+          showActivate
+          showDelete
+          onEditClick={(item: any) => {
+            console.log(item);
+            setSelectedCategory(item);
+            setSelectedId(item.idCategory);
+            setIsOpenCreated(true);
+          }}
+          onActivateClick={(item: any) => {
+            handleActiveCategory(item);
+          }}
+          onDeleteClick={(item: any) => {
+            handleDesactiveCategory(item);
           }}
         />
       </div>
-      {openStats && (
-        <div className="w-full ">
-          <LineChart id={selectedId}></LineChart>
-        </div>
-      )}
+      <div className="mt-5 flex items-center justify-center">
+        <Stack spacing={2}>
+          <Pagination
+            sx={{
+              "& .MuiPaginationItem-page": {
+                backgroundColor: "var(--bg-no-select)",
+                color: "var(--text-no-select)",
+                borderColor: "var(--border-not-select)",
+                "&:hover": {
+                  backgroundColor: "var(--bg-no-select)",
+                  borderColor: "var(--text-no-select)",
+                  color: "var(--hover-text-not-select)",
+                },
+              },
+              "& .MuiPaginationItem-page.Mui-selected": {
+                backgroundColor: "var(--primary--500)",
+                color: "var(--bg-no-select)",
+                "&:hover": {
+                  backgroundColor: "var(--primary--700)",
+                  color: "var(--bg-select)",
+                },
+              },
+              '& [aria-label="Go to next page"], & [aria-label="Go to previous page"]':
+                {
+                  backgroundColor: "#fff",
+                  color: "#000",
+                },
+            }}
+            count={totalPages}
+            size="large"
+            page={page}
+            onChange={handlePageChange}
+            variant="outlined"
+            shape="rounded"
+          />
+        </Stack>
+      </div>
+      <div>
+        {isOpenCreated && (
+          <Dialog
+            open={isOpenCreated}
+            onOpenChange={(open: boolean) => {
+              setIsOpenCreated(open);
+            }}
+          >
+            <DialogContent className="bg-bgColorRight">
+              <DialogHeader>
+                <DialogDescription>
+                  <CategoryComponent
+                    category={{
+                      name: selectedCategory?.categoryName,
+                      description: selectedCategory?.description,
+                    }}
+                    idCategory={selectedId}
+                    onFinish={() => {
+                      setIsOpenCreated(false);
+                      loadData();
+                    }}
+                  ></CategoryComponent>
+                </DialogDescription>
+              </DialogHeader>
+            </DialogContent>
+          </Dialog>
+        )}
+      </div>
+      <div>
+        {isOpenActiveOrDesactive && (
+          <Dialog
+            open={isOpenActiveOrDesactive}
+            onOpenChange={(open: boolean) => {
+              setIsOpenActiveOrDesactive(open);
+            }}
+          >
+            <DialogContent className="bg-bgColorRight">
+              <DialogHeader>
+                <DialogDescription>
+                  <ConfirmActiveOrDesactive
+                    action={action}
+                    entity="la categoría"
+                    route="categories"
+                    status={statusActiveorDesactive}
+                    idItem={selectedId}
+                    onFinish={() => {
+                      setIsOpenActiveOrDesactive(false);
+                      loadData();
+                    }}
+                  ></ConfirmActiveOrDesactive>
+                </DialogDescription>
+              </DialogHeader>
+            </DialogContent>
+          </Dialog>
+        )}
+      </div>
+      <div>
+        {openHelp && (
+          <Dialog
+            open={openHelp}
+            onOpenChange={(open: boolean) => {
+              setOpenHelp(open);
+            }}
+          >
+            <DialogContent className="bg-bgColorRight">
+              <DialogHeader>
+                <DialogDescription>
+                  <Help
+                    commands={commandsCategoriesAdmin}
+                    page="categorías"
+                  ></Help>
+                </DialogDescription>
+              </DialogHeader>
+            </DialogContent>
+          </Dialog>
+        )}
+      </div>
     </>
   );
 }

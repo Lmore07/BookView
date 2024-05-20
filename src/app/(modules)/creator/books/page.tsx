@@ -131,6 +131,7 @@ export default function CreatorBooksPage() {
     { key: "bookName", name: "Nombre del libro" },
     { key: "publicationDate", name: "Fecha de publicación" },
     { key: "author", name: "Autor" },
+    { key: "status", name: "Estado" },
   ];
 
   const handlePageChange = (event: any, value: number) => {

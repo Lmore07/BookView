@@ -1,7 +1,8 @@
 import React from "react";
+import { Badge } from "@/components/ui/badge";
 
 interface TableData {
-  [key: string]: string | number | boolean;
+  [key: string]: any;
 }
 
 interface TableHeader {
@@ -17,10 +18,12 @@ interface TableProps {
   showDelete?: boolean;
   showView?: boolean;
   showStats?: boolean;
+  showActivate?: boolean;
   onViewClick?: (item: TableData) => void;
   onEditClick?: (item: TableData) => void;
   onStatsClick?: (item: TableData) => void;
   onDeleteClick?: (item: TableData) => void;
+  onActivateClick?: (item: TableData) => void;
 }
 
 const Table: React.FC<TableProps> = ({
@@ -31,10 +34,12 @@ const Table: React.FC<TableProps> = ({
   showDelete = false,
   showView = false,
   showStats = false,
+  showActivate = false,
   onViewClick,
   onEditClick,
   onDeleteClick,
   onStatsClick,
+  onActivateClick,
 }) => {
   const handleViewClick = (item: TableData) => {
     onViewClick?.(item);
@@ -50,6 +55,10 @@ const Table: React.FC<TableProps> = ({
 
   const handleStatsClick = (item: TableData) => {
     onStatsClick?.(item);
+  };
+
+  const handleActivateClick = (item: TableData) => {
+    onActivateClick?.(item);
   };
 
   return (
@@ -87,11 +96,23 @@ const Table: React.FC<TableProps> = ({
                         key={index}
                         className="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
                       >
-                        {item[header.key]}
+                        {header.key === "status" ? (
+                          // Aquí va el código para mostrar el contenido cuando el header es 'status'
+                          <span>
+                            {item[header.key] === true ? (
+                              <Badge variant="success">Activo</Badge>
+                            ) : (
+                              <Badge variant="destructive">Inactivo</Badge>
+                            )}
+                          </span>
+                        ) : (
+                          // Aquí va el código para mostrar el contenido cuando el header no es 'status'
+                          item[header.key]
+                        )}
                       </td>
                     ))}
                     {showActions && (
-                      <td className="px-6 py-4 flex flex-wrap gap-2 text-sm font-medium">
+                      <td className="px-6 py-4 flex flex-wrap gap-2 flex-col text-sm font-medium">
                         {showView && (
                           <button
                             className="flex items-center text-indigo-600 hover:text-indigo-900 mr-2"
@@ -121,7 +142,36 @@ const Table: React.FC<TableProps> = ({
                             Ver
                           </button>
                         )}
-                        {showEdit && (
+                        {showActivate && !item.status && (
+                          <button
+                            className="text-primary-500 hover:primary-800 flex items-center"
+                            onClick={() => handleActivateClick(item)}
+                          >
+                            <svg
+                              viewBox="0 0 24 24"
+                              fill="currentColor"
+                              className="w-4 h-4 mr-1"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
+                              <g
+                                id="SVGRepo_tracerCarrier"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                              ></g>
+                              <g id="SVGRepo_iconCarrier">
+                                <path d="M20.5348 3.46447C19.0704 2 16.7133 2 11.9993 2C7.28525 2 4.92823 2 3.46377 3.46447C2.70628 4.22195 2.3406 5.21824 2.16406 6.65598C2.69473 6.06532 3.33236 5.57328 4.04836 5.20846C4.82984 4.81027 5.66664 4.6488 6.59316 4.5731C7.48829 4.49997 8.58971 4.49998 9.93646 4.5H14.0621C15.4089 4.49998 16.5103 4.49997 17.4054 4.5731C18.332 4.6488 19.1688 4.81027 19.9502 5.20846C20.6662 5.57328 21.3039 6.06532 21.8345 6.65598C21.658 5.21824 21.2923 4.22195 20.5348 3.46447Z"></path>
+                                <path
+                                  fill-rule="evenodd"
+                                  clip-rule="evenodd"
+                                  d="M2 14C2 11.1997 2 9.79961 2.54497 8.73005C3.02433 7.78924 3.78924 7.02433 4.73005 6.54497C5.79961 6 7.19974 6 10 6H14C16.8003 6 18.2004 6 19.27 6.54497C20.2108 7.02433 20.9757 7.78924 21.455 8.73005C22 9.79961 22 11.1997 22 14C22 16.8003 22 18.2004 21.455 19.27C20.9757 20.2108 20.2108 20.9757 19.27 21.455C18.2004 22 16.8003 22 14 22H10C7.19974 22 5.79961 22 4.73005 21.455C3.78924 20.9757 3.02433 20.2108 2.54497 19.27C2 18.2004 2 16.8003 2 14ZM12.5303 10.4697C12.3897 10.329 12.1989 10.25 12 10.25C11.8011 10.25 11.6103 10.329 11.4697 10.4697L8.96967 12.9697C8.67678 13.2626 8.67678 13.7374 8.96967 14.0303C9.26256 14.3232 9.73744 14.3232 10.0303 14.0303L11.25 12.8107V17C11.25 17.4142 11.5858 17.75 12 17.75C12.4142 17.75 12.75 17.4142 12.75 17V12.8107L13.9697 14.0303C14.2626 14.3232 14.7374 14.3232 15.0303 14.0303C15.3232 13.7374 15.3232 13.2626 15.0303 12.9697L12.5303 10.4697Z"
+                                ></path>
+                              </g>
+                            </svg>
+                            Activar
+                          </button>
+                        )}
+                        {showEdit && item.status && (
                           <button
                             className="text-yellow-600 hover:text-yellow-900 mr-2 flex items-center"
                             onClick={() => handleEditClick(item)}
@@ -146,7 +196,7 @@ const Table: React.FC<TableProps> = ({
                             Editar
                           </button>
                         )}
-                        {showDelete && (
+                        {showDelete && item.status && (
                           <button
                             className="text-red-600 hover:text-red-900 flex items-center"
                             onClick={() => handleDeleteClick(item)}

@@ -62,7 +62,6 @@ const BookEditor: React.FC<{ onChangedPages: any; pagesEdit?: any[] }> = ({
   }, [pagesEdit]);
 
   useEffect(() => {
-    console.log("paginas cargadas: ", pages);
     onChangedPages(pages);
   }, [pages]);
 

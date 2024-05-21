@@ -74,7 +74,6 @@ export default function ProfileReader() {
           });
           break;
         case "birthday":
-          console.log(call.args.text);
           setUserInfo({
             ...userInfo,
             Person: {
@@ -106,7 +105,6 @@ export default function ProfileReader() {
   };
 
   const stopListening = () => {
-    console.log("stopListening: ", transcript);
     SpeechRecognition.stopListening();
     resetTranscript();
   };
@@ -210,7 +208,6 @@ export default function ProfileReader() {
   };
 
   const handleClick = async () => {
-    console.log(userInfo);
     const formData = new FormData();
     formData.append("mail", userInfo.mail);
     formData.append("names", userInfo.Person.names);

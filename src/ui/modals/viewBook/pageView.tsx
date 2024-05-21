@@ -77,7 +77,6 @@ const PageContent: React.FC<PageProps> = ({ page, coverInfo }) => {
   };
 
   const stopSpeech = () => {
-    console.log("stopSpeech", source.current);
     if (source.current) {
       source.current.stop();
       audioContext.current?.close();
@@ -87,7 +86,6 @@ const PageContent: React.FC<PageProps> = ({ page, coverInfo }) => {
 
   const handleSpeech = () => {
     if (isPlayingAudio) {
-      console.log("Speech is stopped");
       stopSpeech();
     } else {
       startSpeech();
@@ -95,10 +93,8 @@ const PageContent: React.FC<PageProps> = ({ page, coverInfo }) => {
   };
 
   const handleTextSelection = async (event: any) => {
-    console.log(event);
     const selection = window.getSelection();
     const selectedText = selection?.toString().trim();
-    console.log(selectedText);
     setSelectedText(selectedText ?? "vacio");
     if (selectedText != "" && selectedText != null) {
       setTextGenerated(await generateText(selectedText));

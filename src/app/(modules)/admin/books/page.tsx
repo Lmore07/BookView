@@ -174,7 +174,6 @@ export default function BooksAdmin() {
         `../api/admin/books?limit=5&page=${page}&status=${showStatus}`
       );
       const data: ResponseData<any> = await response.json();
-      console.log(data);
       if (data.error) {
         handleShowToast(data.message!, ToastType.ERROR);
       } else {
@@ -185,7 +184,6 @@ export default function BooksAdmin() {
             "dd-MM-yyyy"
           );
           const categoriesString = item.categoryNames.join(", ");
-          console.log(categoriesString);
           return {
             ...item,
             createdAt: formattedCreatedAt,

@@ -46,7 +46,6 @@ const AddToFavorite: React.FC<DeleteToFavoriteProps> = ({
           body: JSON.stringify(body),
         });
         const data: ResponseData<any> = await response.json();
-        console.log(data);
         if (data.error) {
           handleShowToast(data.message!, ToastType.ERROR);
         } else {

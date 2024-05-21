@@ -95,7 +95,6 @@ export default function Home() {
   };
 
   const stopListening = () => {
-    console.log("stopListening: ", transcript);
     SpeechRecognition.stopListening();
     resetTranscript();
   };
@@ -180,7 +179,6 @@ export default function Home() {
       );
       return;
     }
-    console.log("Click", searchTerm);
     router.push(
       "/reader/books?searchTerm=" +
         searchTerm +

@@ -229,7 +229,6 @@ export default function UsersAdmin() {
   };
 
   const handleActiveUser = (item: any) => {
-    console.log(item);
     setSelectedId(item.idUser);
     setAction("active");
     setStatusActiveorDesactive(true);

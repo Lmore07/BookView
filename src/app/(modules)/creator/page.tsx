@@ -284,7 +284,6 @@ export default function CreatorPage() {
           showActions
           showStats
           onStatsClick={(book: any) => {
-            console.log(book);
             setSelectedId(book.idBook);
             setOpenStats(true);
           }}

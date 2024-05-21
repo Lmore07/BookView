@@ -80,7 +80,6 @@ export default function Favorites() {
   };
 
   const stopListening = () => {
-    console.log("stopListening: ", transcript);
     SpeechRecognition.stopListening();
     resetTranscript();
   };

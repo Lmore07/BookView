@@ -72,7 +72,6 @@ export default function BookSearch() {
       return;
     }
     try {
-      console.log(categories);
       const response = await fetch(
         `../api/books/search/?limit=8&page=${page}&orderBy=${orderBy}&searchTerm=${searchTerm}${
           categoriesIds.length > 0
@@ -198,7 +197,6 @@ export default function BookSearch() {
       });
       if (responseView.ok) {
         const dataView: ResponseData<any> = await responseView.json();
-        console.log("Data que llega al crear el libro", dataView);
         setLastPage(dataView.data.lastPage);
       }
       const data: ResponseData<any> = await response.json();
@@ -473,7 +471,6 @@ export default function BookSearch() {
             imageUrl={book.coverPhoto}
             isFavorite={book.isFavorite}
             onFavoriteClick={() => {
-              console.log("Favorito: ", book.bookName);
               if (!book.isFavorite) {
                 setSelectedBook(book);
                 setIsFavorite(true);

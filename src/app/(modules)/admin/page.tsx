@@ -120,14 +120,11 @@ export default function AdminPage() {
       )
         .then((data) => {
           handleShowToast("Datos obtenidos correctamente", ToastType.SUCCESS);
-          console.log(data);
           const books = data[0].data.map((item: any) => {
             const formattedDate = format(
               add(item.publicationDate, { hours: 5 }),
               "dd-MM-yyyy"
             );
-            const authorString = item.authors.join(", ");
-            console.log(authorString);
             return {
               ...item,
               publicationDate: formattedDate,
@@ -323,7 +320,6 @@ export default function AdminPage() {
           showActions
           showStats
           onStatsClick={(book: any) => {
-            console.log(book);
             setSelectedId(book.idBook);
             setOpenStats(true);
           }}

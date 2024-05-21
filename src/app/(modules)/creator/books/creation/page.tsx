@@ -268,7 +268,6 @@ export default function Stepper() {
         }
       });
       formData.append("categoriesIds", JSON.stringify(body.categoriesIds));
-      console.log(body);
       try {
         setIsLoading(true);
         const response = await fetch("../../api/books", {
@@ -711,7 +710,6 @@ export default function Stepper() {
         <div style={{ display: currentStep === 2 ? "block" : "none" }}>
           <BookEditor
             onChangedPages={(pages: any) => {
-              console.log(pages);
               setPages(pages);
             }}
           />
@@ -725,7 +723,6 @@ export default function Stepper() {
               <div className="flex justify-center">
                 <button
                   onClick={() => {
-                    console.log("Paginas al momento: ", pages);
                     setSelectedBook({
                       idBook: 0,
                       authors: stepOne.authors,

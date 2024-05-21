@@ -182,7 +182,6 @@ export default function Categories() {
   ];
 
   const handleActiveCategory = (item: any) => {
-    console.log(item);
     setSelectedId(item.idCategory);
     setAction("active");
     setStatusActiveorDesactive(true);
@@ -338,7 +337,6 @@ export default function Categories() {
           showActivate
           showDelete
           onEditClick={(item: any) => {
-            console.log(item);
             setSelectedCategory(item);
             setSelectedId(item.idCategory);
             setIsOpenCreated(true);

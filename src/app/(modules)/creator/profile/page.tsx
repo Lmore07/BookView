@@ -65,7 +65,6 @@ export default function ProfileCreator() {
   };
 
   const stopListening = () => {
-    console.log("stopListening: ", transcript);
     SpeechRecognition.stopListening();
     resetTranscript();
   };
@@ -122,7 +121,6 @@ export default function ProfileCreator() {
         handleShowToast(data.message!, ToastType.ERROR);
       } else {
         const formatDate = data.data!.Person.birthday.substring(0, 10);
-        console.log("Date format: ", formatDate);
         setUserInfo({
           mail: data.data!.mail,
           profilePicture: data.data!.profilePicture,
@@ -170,7 +168,6 @@ export default function ProfileCreator() {
   };
 
   const handleClick = async () => {
-    console.log(userInfo);
     const formData = new FormData();
     formData.append("mail", userInfo.mail);
     formData.append("names", userInfo.Person.names);

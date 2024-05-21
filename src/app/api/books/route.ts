@@ -194,8 +194,6 @@ export const POST = apiMiddleware(async (request: NextRequest) => {
     }
   }
 
-  console.log("data que llega: ", data);
-
   const book = await prisma.books.create({
     select: {
       idBook: true,
@@ -288,12 +286,9 @@ export const PUT = apiMiddleware(async (request: NextRequest) => {
   if (typeof data.categoriesIds === "string") {
     data.categoriesIds = JSON.parse(data.categoriesIds);
   }
-
-  console.log("Date antes: ", data.publicationDate);
   if (typeof data.publicationDate === "string") {
     data.publicationDate = new Date(data.publicationDate);
   }
-  console.log("Date despues: ", data.publicationDate);
 
   for (let i = 0, j = 1; data[`pages[${i}][template]`]; i++, j++) {
     data.pages.push({

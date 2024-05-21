@@ -20,8 +20,6 @@ export const POST = apiMiddleware(async (request: NextRequest) => {
     },
   });
 
-  console.log("Last Book", lastBook);
-
   const bookView = await prisma.viewBooks.create({
     select: {
       idViewBook: true,
@@ -33,9 +31,6 @@ export const POST = apiMiddleware(async (request: NextRequest) => {
       lastPage: lastBook?.lastPage,
     },
   });
-
-  console.log("Book View", bookView);
-
   return NextResponse.json(
     {
       data: bookView,

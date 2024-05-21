@@ -196,7 +196,6 @@ export default function CreatorBooksPage() {
   }, [transcript]);
 
   const handleClickNewBook = () => {
-    console.log("agregar nuevo libro");
     router.push("/creator/books/creation");
   };
 
@@ -374,12 +373,10 @@ export default function CreatorBooksPage() {
           showEdit
           showView
           onEditClick={(item: any) => {
-            console.log("Editar libro: ", item);
             router.push(`/creator/books/edition/${item.idBook}`);
           }}
           showActions
           onViewClick={async (item: any) => {
-            console.log("Ver libro: ", item);
             setIsLoading(true);
             try {
               const response = await fetch(

@@ -76,7 +76,6 @@ export default function BookEdit({
   };
 
   const setData = (data: BookInfo) => {
-    console.log("setDat", data);
     setFilterCategories(data.categoriesIds);
     const formattedDate = format(
       add(data.publicationDate, { hours: 5 }),
@@ -309,7 +308,6 @@ export default function BookEdit({
         categoriesIds: filterCategories,
         pages: pages,
       };
-      console.log("Edicion de libro: ", body);
       const formData = new FormData();
       formData.append("illustrator", body.illustrator);
       formData.append("editorial", body.editorial);

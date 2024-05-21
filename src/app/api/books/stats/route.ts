@@ -112,7 +112,6 @@ function subDay(date: Date, days: number) {
 function subMonth(date: Date, months: number) {
   const result = new Date(date);
   result.setMonth(result.getMonth() - months);
-  console.log("finalDate", result);
   return result;
 }
 

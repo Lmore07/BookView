@@ -5,7 +5,7 @@ import Button from "../buttons/ButtonFill";
 
 interface BookCardProps {
   title: string;
-  author: string;
+  authors: string[];
   imageUrl?: string | null;
   isFavorite?: boolean;
   isViewed?: boolean;
@@ -15,7 +15,7 @@ interface BookCardProps {
 
 const BookCard: React.FC<BookCardProps> = ({
   title,
-  author,
+  authors,
   imageUrl,
   isFavorite = false,
   isViewed = false,
@@ -33,7 +33,7 @@ const BookCard: React.FC<BookCardProps> = ({
         />
       </div>
       <div className="p-4 flex flex-col flex-wrap">
-        <p className=" font-open-sans text-sm">Autor: {author}</p>
+        <p className=" font-open-sans text-sm">Autores: {authors.join(", ")}</p>
         <h3 className=" font-bold font-open-sans capitalize text-xl">
           {title}
         </h3>

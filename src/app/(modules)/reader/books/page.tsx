@@ -410,53 +410,6 @@ export default function BookSearch() {
           </button>
           <button
             className={`flex items-center mr-2 ${
-              orderBy === "author_asc"
-                ? "text-blue-500"
-                : orderBy === "author_desc"
-                ? "text-blue-500"
-                : "text-gray-500 hover:text-blue-500"
-            }`}
-            onClick={() =>
-              setOrderBy(
-                orderBy === "author_asc" ? "author_desc" : "author_asc"
-              )
-            }
-          >
-            <span>Autor</span>
-            {orderBy === "author_asc" ? (
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-4 w-4 ml-1"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M5 15l7-7 7 7"
-                />
-              </svg>
-            ) : orderBy === "author_desc" ? (
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-4 w-4 ml-1"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M19 9l-7 7-7-7"
-                />
-              </svg>
-            ) : null}
-          </button>
-          <button
-            className={`flex items-center mr-2 ${
               orderBy === "publicationDate_asc"
                 ? "text-blue-500"
                 : orderBy === "publicationDate_desc"
@@ -510,7 +463,7 @@ export default function BookSearch() {
         {books.map((book) => (
           <BookCard
             key={book.idBook}
-            author={book.author}
+            authors={book.authors}
             title={book.bookName}
             isViewed={book.isViewed}
             onReadClick={() => {
@@ -599,7 +552,7 @@ export default function BookSearch() {
                   pages={pagesBook!}
                   startPage={lastPage}
                   coverInfo={{
-                    author: selectedBook?.author ?? "",
+                    authors: selectedBook?.authors ?? [],
                     bookName: selectedBook!.bookName,
                     coverPhoto: selectedBook!.coverPhoto!,
                     publicationDate: selectedBook!.publicationDate,

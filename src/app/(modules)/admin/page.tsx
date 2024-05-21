@@ -15,7 +15,7 @@ import { commandsHomeAdmin } from "@/libs/texts/commands/admin/commandsAdmin";
 import Table from "@/ui/components/tabble/table";
 import Help from "@/ui/modals/help/help";
 import { Tooltip } from "@mui/material";
-import { format } from "date-fns";
+import { add, format, sub } from "date-fns";
 import { useContext, useEffect, useRef, useState } from "react";
 import SpeechRecognition, {
   useSpeechRecognition,
@@ -122,12 +122,23 @@ export default function AdminPage() {
           handleShowToast("Datos obtenidos correctamente", ToastType.SUCCESS);
           console.log(data);
           const books = data[0].data.map((item: any) => {
-            const formattedDate = format(item.publicationDate, "dd-MM-yyyy");
-            return { ...item, publicationDate: formattedDate };
+            const formattedDate = format(
+              add(item.publicationDate, { hours: 5 }),
+              "dd-MM-yyyy"
+            );
+            const authorString = item.authors.join(", ");
+            console.log(authorString);
+            return {
+              ...item,
+              publicationDate: formattedDate,
+            };
           });
           setBooksData(books);
           const users = data[1].data.map((item: any) => {
-            const formattedDate = format(item.createdAt, "dd-MM-yyyy");
+            const formattedDate = format(
+              sub(item.createdAt, { hours: 5 }),
+              "dd-MM-yyyy"
+            );
             return { ...item, createdAt: formattedDate };
           });
           setUsersData(users);
@@ -153,7 +164,7 @@ export default function AdminPage() {
   const headersBooks = [
     { key: "bookName", name: "Nombre del libro" },
     { key: "publicationDate", name: "Fecha de publicación" },
-    { key: "author", name: "Autor" },
+    { key: "authors", name: "Autores" },
     { key: "countViews", name: "Visitas" },
     { key: "status", name: "Estado" },
   ];

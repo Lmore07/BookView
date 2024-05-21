@@ -102,7 +102,7 @@ export const GET = apiMiddleware(async (request: NextRequest) => {
       take: limit,
       select: {
         idBook: true,
-        author: true,
+        authors: true,
         bookName: true,
         publicationDate: true,
         illustrator: true,

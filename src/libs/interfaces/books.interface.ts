@@ -1,6 +1,6 @@
 export interface BooksAll {
   idBook: number;
-  author: string;
+  authors: string[];
   isFavorite: boolean;
   bookName: string;
   publicationDate: Date;
@@ -21,7 +21,7 @@ export interface PageI {
 
 export interface CoverI {
   coverPhoto: string;
-  author: string;
+  authors: string[];
   bookName: string;
   publicationDate: Date;
   idBook: number;
@@ -29,9 +29,10 @@ export interface CoverI {
 
 export interface BookInfo {
   idBook: number;
-  author: string;
+  authors: string[];
   bookName: string;
   publicationDate: Date;
+  editorial: string;
   illustrator: string;
   coverPhoto?: string;
   Pages: PageI[];

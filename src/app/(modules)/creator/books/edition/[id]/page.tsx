@@ -23,6 +23,7 @@ import BookEditor from "@/ui/modals/creation/page";
 import FlipBook from "@/ui/modals/viewBook/flipBook";
 import { useRouter } from "next/navigation";
 import { useContext, useEffect, useState } from "react";
+import { add, format } from "date-fns";
 
 export default function BookEdit({
   params,
@@ -37,18 +38,21 @@ export default function BookEdit({
   const [filterCategories, setFilterCategories] = useState<number[]>([]);
   const { handleShowToast } = useContext(ToastContext)!;
   const { setIsLoading } = useContext(LoadingContext)!;
+  const [authors, setAuthors] = useState([{ value: "" }]);
   const [selectedBook, setSelectedBook] = useState<BooksAll | null>(null);
   const [stepOne, setStepOne] = useState<{
     bookName: string;
-    author: string;
+    authors: string[];
     illustrator: string;
     publicationDate: string;
     bookImage: File | null | string;
+    editorial: string;
   }>({
     bookName: "",
-    author: "",
+    authors: [""],
     illustrator: "",
     publicationDate: "",
+    editorial: "",
     bookImage: null,
   });
   const router = useRouter();
@@ -72,18 +76,21 @@ export default function BookEdit({
   };
 
   const setData = (data: BookInfo) => {
+    console.log("setDat", data);
     setFilterCategories(data.categoriesIds);
-    const publicationDate = new Date(data.publicationDate);
-    const formattedDate = `${publicationDate.getFullYear()}-${String(
-      publicationDate.getMonth() + 1
-    ).padStart(2, "0")}-${String(publicationDate.getDate()).padStart(2, "0")}`;
+    const formattedDate = format(
+      add(data.publicationDate, { hours: 5 }),
+      "yyyy-MM-dd"
+    );
     setStepOne({
       bookName: data.bookName,
-      author: data.author,
+      authors: data.authors,
       illustrator: data.illustrator,
       bookImage: data.coverPhoto ?? null,
       publicationDate: formattedDate,
+      editorial: data.editorial,
     });
+    setAuthors(data.authors.map((author) => ({ value: author })));
     const pages = data.Pages.slice(1);
     setPages(pages);
   };
@@ -92,6 +99,31 @@ export default function BookEdit({
     fetchDataCategories();
     fetchDataInfo();
   }, []);
+
+  const addAuthor = () => {
+    setAuthors([...authors, { value: "" }]);
+  };
+
+  const handleAuthorChange = (index: any, value: any) => {
+    const updatedAuthors = [...authors];
+    updatedAuthors[index].value = value;
+    setAuthors(updatedAuthors);
+  };
+
+  const removeAuthor = (index: any) => {
+    const updatedAuthors = [...authors];
+    updatedAuthors.splice(index, 1);
+    setAuthors(updatedAuthors);
+  };
+
+  useEffect(() => {
+    if (authors.length != 0) {
+      setStepOne({
+        ...stepOne,
+        authors: authors.map((author) => author.value),
+      });
+    }
+  }, [authors]);
 
   const validateStepOne = () => {
     const validations = [
@@ -102,7 +134,7 @@ export default function BookEdit({
       },
       {
         fieldName: "author",
-        value: stepOne.author,
+        value: stepOne.authors,
         validations: [validateNotEmpty],
       },
       {
@@ -228,10 +260,6 @@ export default function BookEdit({
     setCurrentStep(currentStep + 1);
   };
 
-  const handlePrev = () => {
-    setCurrentStep(currentStep - 1);
-  };
-
   const handlePageValidation = (obj: any) => {
     if (obj.content === null || obj.content === "") {
       handleShowToast(
@@ -283,8 +311,12 @@ export default function BookEdit({
       };
       console.log("Edicion de libro: ", body);
       const formData = new FormData();
+      formData.append("illustrator", body.illustrator);
+      formData.append("editorial", body.editorial);
       formData.append("bookName", body.bookName);
-      formData.append("author", body.author);
+      body.authors.forEach((author: any, index: any) => {
+        formData.append(`authors[${index}]`, author);
+      });
       formData.append("publicationDate", body.publicationDate.toString());
       formData.append("bookCover", body.bookImage!);
       body.pages.forEach((page: any, index: any) => {
@@ -318,10 +350,10 @@ export default function BookEdit({
     }
   };
 
-  const handleChangeStepOne = (event: any, fieldName: any) => {
+  const handleChangeStepOne = (e: any) => {
     setStepOne({
       ...stepOne,
-      [fieldName]: event.target.value,
+      [e.target.name]: e.target.value,
     });
   };
 
@@ -446,43 +478,112 @@ export default function BookEdit({
                     </g>
                   </svg>
                 }
-                onChange={(event) => handleChangeStepOne(event, "bookName")}
+                onChange={handleChangeStepOne}
                 validations={[validateNotEmpty]}
               ></Input>
               <h3 className="text-primary-500 font-poppins font-semibold text-xl">
                 Metadatos
               </h3>
-              <Input
-                label="Autor del libro"
-                name="author"
-                placeholder="Gabriel Garcia Marquez"
-                value={stepOne.author}
-                type="text"
-                icon={
-                  <svg
-                    viewBox="0 0 24 24"
-                    fill="currentColor"
-                    className="w-5 h-5 text-iconBgColor"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
-                    <g
-                      id="SVGRepo_tracerCarrier"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    ></g>
-                    <g id="SVGRepo_iconCarrier">
-                      <path
-                        fillRule="evenodd"
-                        clipRule="evenodd"
-                        d="M22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12ZM15 9C15 10.6569 13.6569 12 12 12C10.3431 12 9 10.6569 9 9C9 7.34315 10.3431 6 12 6C13.6569 6 15 7.34315 15 9ZM12 20.5C13.784 20.5 15.4397 19.9504 16.8069 19.0112C17.4108 18.5964 17.6688 17.8062 17.3178 17.1632C16.59 15.8303 15.0902 15 11.9999 15C8.90969 15 7.40997 15.8302 6.68214 17.1632C6.33105 17.8062 6.5891 18.5963 7.19296 19.0111C8.56018 19.9503 10.2159 20.5 12 20.5Z"
-                      ></path>
-                    </g>
-                  </svg>
-                }
-                onChange={(event) => handleChangeStepOne(event, "author")}
-                validations={[validateNotEmpty]}
-              ></Input>
+              <div>
+                {authors.map((author, index) => (
+                  <div key={index} className="flex items-end gap-2">
+                    <Input
+                      label={
+                        index === 0 ? "Autor del libro" : `Autor ${index + 1}`
+                      }
+                      name={`author-${index}`}
+                      placeholder="Gabriel García Márquez"
+                      value={author.value}
+                      maxLength={60}
+                      type="text"
+                      className="py-1"
+                      icon={
+                        <svg
+                          viewBox="0 0 24 24"
+                          fill="currentColor"
+                          className="w-5 h-5 text-iconBgColor"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
+                          <g
+                            id="SVGRepo_tracerCarrier"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          ></g>
+                          <g id="SVGRepo_iconCarrier">
+                            <circle cx="12" cy="6" r="4"></circle>
+                            <path d="M20 17.5C20 19.9853 20 22 12 22C4 22 4 19.9853 4 17.5C4 15.0147 7.58172 13 12 13C16.4183 13 20 15.0147 20 17.5Z"></path>
+                          </g>
+                        </svg>
+                      }
+                      onChange={(e) =>
+                        handleAuthorChange(index, e.target.value)
+                      }
+                      validations={[validateNotEmpty]}
+                    />
+                    {index !== 0 && (
+                      <button
+                        type="button"
+                        onClick={() => removeAuthor(index)}
+                        className="text-red-700 p-1 rounded-full border hover:text-red-700"
+                      >
+                        <svg
+                          viewBox="0 0 24 24"
+                          fill="currentColor"
+                          className="w-5 h-5"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
+                          <g
+                            id="SVGRepo_tracerCarrier"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          ></g>
+                          <g id="SVGRepo_iconCarrier">
+                            <circle cx="12" cy="6" r="4"></circle>
+                            <path d="M15.4147 13.5074C14.4046 13.1842 13.24 13 12 13C8.13401 13 5 14.7909 5 17C5 19.1406 7.94244 20.8884 11.6421 20.9949C11.615 20.8686 11.594 20.7432 11.5775 20.6201C11.4998 20.0424 11.4999 19.3365 11.5 18.586V18.414C11.4999 17.6635 11.4998 16.9576 11.5775 16.3799C11.6639 15.737 11.8705 15.0333 12.4519 14.4519C13.0334 13.8705 13.737 13.6639 14.3799 13.5774C14.6919 13.5355 15.0412 13.5162 15.4147 13.5074Z"></path>
+                            <path
+                              fillRule="evenodd"
+                              clipRule="evenodd"
+                              d="M16.5 22C14.8501 22 14.0251 22 13.5126 21.4874C13 20.9749 13 20.1499 13 18.5C13 16.8501 13 16.0251 13.5126 15.5126C14.0251 15 14.8501 15 16.5 15C18.1499 15 18.9749 15 19.4874 15.5126C20 16.0251 20 16.8501 20 18.5C20 20.1499 20 20.9749 19.4874 21.4874C18.9749 22 18.1499 22 16.5 22ZM15.3569 16.532C15.1291 16.3042 14.7598 16.3042 14.532 16.532C14.3042 16.7598 14.3042 17.1291 14.532 17.3569L15.675 18.5L14.532 19.6431C14.3042 19.8709 14.3042 20.2402 14.532 20.468C14.7598 20.6958 15.1291 20.6958 15.3569 20.468L16.5 19.325L17.6431 20.468C17.8709 20.6958 18.2402 20.6958 18.468 20.468C18.6958 20.2402 18.6958 19.8709 18.468 19.6431L17.325 18.5L18.468 17.3569C18.6958 17.1291 18.6958 16.7598 18.468 16.532C18.2402 16.3042 17.8709 16.3042 17.6431 16.532L16.5 17.675L15.3569 16.532Z"
+                            ></path>
+                          </g>
+                        </svg>
+                      </button>
+                    )}
+                    {index === authors.length - 1 && (
+                      <button
+                        type="button"
+                        onClick={addAuthor}
+                        className="text-primary p-1 border rounded-full hover:text-green-700"
+                      >
+                        <svg
+                          viewBox="0 0 24 24"
+                          fill="currentColor"
+                          className="w-5 h-5"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
+                          <g
+                            id="SVGRepo_tracerCarrier"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          ></g>
+                          <g id="SVGRepo_iconCarrier">
+                            <circle cx="12" cy="6" r="4"></circle>
+                            <path
+                              fillRule="evenodd"
+                              clipRule="evenodd"
+                              d="M16.5 22C14.8501 22 14.0251 22 13.5126 21.4874C13 20.9749 13 20.1499 13 18.5C13 16.8501 13 16.0251 13.5126 15.5126C14.0251 15 14.8501 15 16.5 15C18.1499 15 18.9749 15 19.4874 15.5126C20 16.0251 20 16.8501 20 18.5C20 20.1499 20 20.9749 19.4874 21.4874C18.9749 22 18.1499 22 16.5 22ZM17.0833 16.9444C17.0833 16.6223 16.8222 16.3611 16.5 16.3611C16.1778 16.3611 15.9167 16.6223 15.9167 16.9444V17.9167H14.9444C14.6223 17.9167 14.3611 18.1778 14.3611 18.5C14.3611 18.8222 14.6223 19.0833 14.9444 19.0833H15.9167V20.0556C15.9167 20.3777 16.1778 20.6389 16.5 20.6389C16.8222 20.6389 17.0833 20.3777 17.0833 20.0556V19.0833H18.0556C18.3777 19.0833 18.6389 18.8222 18.6389 18.5C18.6389 18.1778 18.3777 17.9167 18.0556 17.9167H17.0833V16.9444Z"
+                            ></path>
+                            <path d="M15.4147 13.5074C14.4046 13.1842 13.24 13 12 13C8.13401 13 5 14.7909 5 17C5 19.1406 7.94244 20.8884 11.6421 20.9949C11.615 20.8686 11.594 20.7432 11.5775 20.6201C11.4998 20.0424 11.4999 19.3365 11.5 18.586V18.414C11.4999 17.6635 11.4998 16.9576 11.5775 16.3799C11.6639 15.737 11.8705 15.0333 12.4519 14.4519C13.0334 13.8705 13.737 13.6639 14.3799 13.5774C14.6919 13.5355 15.0412 13.5162 15.4147 13.5074Z"></path>
+                          </g>
+                        </svg>
+                      </button>
+                    )}
+                  </div>
+                ))}
+              </div>
               <Input
                 label="Ilustrador del libro"
                 name="illustrator"
@@ -511,7 +612,39 @@ export default function BookEdit({
                     </g>
                   </svg>
                 }
-                onChange={(event) => handleChangeStepOne(event, "illustrator")}
+                onChange={handleChangeStepOne}
+              ></Input>
+              <Input
+                label="Editorial del libro"
+                name="editorial"
+                placeholder="Editorial Planeta"
+                value={stepOne.editorial}
+                type="text"
+                maxLength={50}
+                className="py-1"
+                icon={
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                    className="w-5 h-5 text-iconBgColor"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
+                    <g
+                      id="SVGRepo_tracerCarrier"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    ></g>
+                    <g id="SVGRepo_iconCarrier">
+                      <path
+                        fillRule="evenodd"
+                        clipRule="evenodd"
+                        d="M22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12ZM15 9C15 10.6569 13.6569 12 12 12C10.3431 12 9 10.6569 9 9C9 7.34315 10.3431 6 12 6C13.6569 6 15 7.34315 15 9ZM12 20.5C13.784 20.5 15.4397 19.9504 16.8069 19.0112C17.4108 18.5964 17.6688 17.8062 17.3178 17.1632C16.59 15.8303 15.0902 15 11.9999 15C8.90969 15 7.40997 15.8302 6.68214 17.1632C6.33105 17.8062 6.5891 18.5963 7.19296 19.0111C8.56018 19.9503 10.2159 20.5 12 20.5Z"
+                      ></path>
+                    </g>
+                  </svg>
+                }
+                onChange={handleChangeStepOne}
               ></Input>
               <Input
                 label="Fecha de Publicación"
@@ -542,9 +675,7 @@ export default function BookEdit({
                     </g>
                   </svg>
                 }
-                onChange={(event) =>
-                  handleChangeStepOne(event, "publicationDate")
-                }
+                onChange={handleChangeStepOne}
                 validations={[validateCorrectDate]}
               ></Input>
               <div>
@@ -627,7 +758,7 @@ export default function BookEdit({
                   onClick={() => {
                     setSelectedBook({
                       idBook: 0,
-                      author: stepOne.author,
+                      authors: stepOne.authors,
                       bookName: stepOne.bookName,
                       publicationDate: new Date(stepOne.publicationDate),
                       isFavorite: false,
@@ -714,7 +845,7 @@ export default function BookEdit({
                           startPage={0}
                           isViewed={true}
                           coverInfo={{
-                            author: selectedBook?.author ?? "",
+                            authors: selectedBook?.authors ?? [],
                             bookName: selectedBook!.bookName,
                             coverPhoto: selectedBook!.coverPhoto!,
                             publicationDate: selectedBook!.publicationDate,

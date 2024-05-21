@@ -38,10 +38,10 @@ export const GET = apiMiddleware(async (request: NextRequest) => {
       orderByOption.bookName = "desc";
       break;
     case "author_asc":
-      orderByOption.author = "asc";
+      orderByOption.authors = "asc";
       break;
     case "author_desc":
-      orderByOption.author = "desc";
+      orderByOption.authors = "desc";
       break;
     case "publicationDate_asc":
       orderByOption.publicationDate = "asc";
@@ -58,7 +58,7 @@ export const GET = apiMiddleware(async (request: NextRequest) => {
     take: limit,
     select: {
       idBook: true,
-      author: true,
+      authors: true,
       bookName: true,
       publicationDate: true,
       illustrator: true,
@@ -73,7 +73,11 @@ export const GET = apiMiddleware(async (request: NextRequest) => {
       status: true,
       OR: [
         { bookName: { contains: searchTerm, mode: "insensitive" } },
-        { author: { contains: searchTerm, mode: "insensitive" } },
+        {
+          authors: {
+            hasSome: searchTerm.split(" "),
+          },
+        },
       ],
       BookCategories: categoriesIds
         ? {
@@ -116,8 +120,6 @@ export const GET = apiMiddleware(async (request: NextRequest) => {
     },
   });
 
-  console.log("Vistos: ",userViewedBooks);
-
   const booksWithIsFavorite = books.map((book) => ({
     ...book,
     isFavorite: userFavoriteBooks.some(
@@ -133,7 +135,7 @@ export const GET = apiMiddleware(async (request: NextRequest) => {
       status: true,
       OR: [
         { bookName: { contains: searchTerm, mode: "insensitive" } },
-        { author: { contains: searchTerm, mode: "insensitive" } },
+        { authors: { hasSome: searchTerm.split(" ") } },
       ],
       BookCategories: categoriesIds
         ? {

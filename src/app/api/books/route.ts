@@ -24,11 +24,13 @@ export const GET = apiMiddleware(async (request: NextRequest) => {
       take: limit,
       select: {
         idBook: true,
-        author: true,
+        authors: true,
         bookName: true,
         publicationDate: true,
         illustrator: true,
         coverPhoto: true,
+        status: true,
+        editorial: true,
       },
       where: {
         status: status,
@@ -81,10 +83,12 @@ export const GET = apiMiddleware(async (request: NextRequest) => {
       },
       select: {
         idBook: true,
-        author: true,
+        authors: true,
         bookName: true,
         coverPhoto: true,
         illustrator: true,
+        editorial: true,
+        status: true,
         publicationDate: true,
         Pages: {
           where: {
@@ -130,8 +134,10 @@ export const POST = apiMiddleware(async (request: NextRequest) => {
 
   const data: {
     bookName?: string;
-    author?: string;
+    authors?: string[];
+    illustrator?: string;
     publicationDate?: Date;
+    editorial?: string;
     bookCover?: Blob;
     pages: {
       template?: string;
@@ -147,8 +153,9 @@ export const POST = apiMiddleware(async (request: NextRequest) => {
   Object.assign(data, Object.fromEntries(formData.entries()));
   if (
     !data.bookName ||
-    !data.author ||
     !data.publicationDate ||
+    !data.illustrator ||
+    !data.editorial ||
     !data.bookCover
   ) {
     throw new Error("Faltan campos requeridos");
@@ -158,7 +165,7 @@ export const POST = apiMiddleware(async (request: NextRequest) => {
   data.pages.push({
     template: "Cover",
     numberPage: 0,
-    content: `Hola, el nombre del libro es: ${data.bookName} el autor es: ${data.author} y lo publicó el: ${data.publicationDate}`,
+    content: `Hola, el nombre del libro es: ${data.bookName} los autores son:  y lo publicó el: ${data.publicationDate}`,
   });
   for (let i = 0, j = 1; data[`pages[${i}][template]`]; i++, j++) {
     data.pages.push({
@@ -170,6 +177,11 @@ export const POST = apiMiddleware(async (request: NextRequest) => {
       video: data[`pages[${i}][video]`],
     });
   }
+  data.authors = [];
+  for (let i = 0; data[`authors[${i}]`]; i++) {
+    data.authors.push(data[`authors[${i}]`]);
+  }
+
   if (typeof data.categoriesIds === "string") {
     data.categoriesIds = JSON.parse(data.categoriesIds);
   }
@@ -177,25 +189,29 @@ export const POST = apiMiddleware(async (request: NextRequest) => {
     data.publicationDate = new Date(data.publicationDate);
   }
   for (const key in data) {
-    if (key.startsWith("pages[")) {
+    if (key.startsWith("pages[") || key.startsWith("authors[")) {
       delete data[key];
     }
   }
 
+  console.log("data que llega: ", data);
+
   const book = await prisma.books.create({
     select: {
       idBook: true,
-      author: true,
+      authors: true,
       bookName: true,
       publicationDate: true,
       coverPhoto: true,
       Pages: true,
     },
     data: {
-      author: data.author,
+      authors: data.authors,
       bookName: data.bookName,
       publicationDate: data.publicationDate,
       createdBy: authResult.userId,
+      illustrator: data.illustrator,
+      editorial: data.editorial,
       coverPhoto: await saveImage(data.bookCover),
       BookCategories: {
         create: data.categoriesIds?.map((idCategory: any) => ({
@@ -235,9 +251,11 @@ export const PUT = apiMiddleware(async (request: NextRequest) => {
   const formData = await request.formData();
   const data: {
     bookName?: string;
-    author?: string;
+    authors?: string[];
+    illustrator?: string;
     publicationDate?: Date;
     bookCover?: Blob;
+    editorial?: string;
     pages: {
       idPage?: number;
       template?: string;
@@ -254,8 +272,9 @@ export const PUT = apiMiddleware(async (request: NextRequest) => {
 
   if (
     !data.bookName ||
-    !data.author ||
     !data.publicationDate ||
+    !data.editorial ||
+    !data.illustrator ||
     !data.bookCover
   ) {
     throw new Error("Faltan campos requeridos");
@@ -270,9 +289,11 @@ export const PUT = apiMiddleware(async (request: NextRequest) => {
     data.categoriesIds = JSON.parse(data.categoriesIds);
   }
 
+  console.log("Date antes: ", data.publicationDate);
   if (typeof data.publicationDate === "string") {
     data.publicationDate = new Date(data.publicationDate);
   }
+  console.log("Date despues: ", data.publicationDate);
 
   for (let i = 0, j = 1; data[`pages[${i}][template]`]; i++, j++) {
     data.pages.push({
@@ -286,8 +307,13 @@ export const PUT = apiMiddleware(async (request: NextRequest) => {
     });
   }
 
+  data.authors = [];
+  for (let i = 0; data[`authors[${i}]`]; i++) {
+    data.authors.push(data[`authors[${i}]`]);
+  }
+
   for (const key in data) {
-    if (key.startsWith("pages[")) {
+    if (key.startsWith("pages[") || key.startsWith("authors[")) {
       delete data[key];
     }
   }
@@ -312,7 +338,7 @@ export const PUT = apiMiddleware(async (request: NextRequest) => {
       },
     },
     data: {
-      content: `Hola, el nombre del libro es: ${data.bookName} el autor es: ${data.author} y lo publicó el: ${data.publicationDate}`,
+      content: `Hola, el nombre del libro es: ${data.bookName} el autor es: ${data.authors} y lo publicó el: ${data.publicationDate}`,
     },
   });
 
@@ -345,14 +371,18 @@ export const PUT = apiMiddleware(async (request: NextRequest) => {
       where: { idBook },
       select: {
         idBook: true,
-        author: true,
+        authors: true,
         bookName: true,
         publicationDate: true,
         coverPhoto: true,
+        editorial: true,
+        illustrator: true,
         Pages: true,
       },
       data: {
-        author: data.author,
+        authors: data.authors,
+        editorial: data.editorial,
+        illustrator: data.illustrator,
         bookName: data.bookName,
         publicationDate: data.publicationDate,
         updatedBy: authResult.userId,

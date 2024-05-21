@@ -26,7 +26,7 @@ import Table from "@/ui/components/tabble/table";
 import ConfirmActiveOrDesactive from "@/ui/modals/admin/users/confirm";
 import Help from "@/ui/modals/help/help";
 import { Pagination, Stack, Tooltip } from "@mui/material";
-import { format } from "date-fns";
+import { add, format, sub } from "date-fns";
 import { useContext, useEffect, useRef, useState } from "react";
 import SpeechRecognition, {
   useSpeechRecognition,
@@ -179,9 +179,14 @@ export default function UsersAdmin() {
         handleShowToast(data.message!, ToastType.ERROR);
       } else {
         const tableData = data.data.map((item: any) => {
-          const formattedCreatedAt = format(item.createdAt, "dd-MM-yyyy");
-          const formattedUpdatedAt = format(item.updatedAt, "dd-MM-yyyy");
-
+          const formattedCreatedAt = format(
+            sub(item.createdAt, { hours: 5 }),
+            "dd-MM-yyyy"
+          );
+          const formattedUpdatedAt = format(
+            sub(item.updatedAt, { hours: 5 }),
+            "dd-MM-yyyy"
+          );
           return {
             ...item,
             createdAt: formattedCreatedAt,

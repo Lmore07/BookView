@@ -20,7 +20,7 @@ import ConfirmActiveOrDesactive from "@/ui/modals/admin/users/confirm";
 import CategoryComponent from "@/ui/modals/categories/category";
 import Help from "@/ui/modals/help/help";
 import { Pagination, Stack, Tooltip } from "@mui/material";
-import { format } from "date-fns";
+import { format, sub } from "date-fns";
 import { useContext, useEffect, useRef, useState } from "react";
 import SpeechRecognition, {
   useSpeechRecognition,
@@ -104,7 +104,10 @@ export default function Categories() {
         handleShowToast(data.message!, ToastType.ERROR);
       } else {
         const tableData = data.data.map((item: any) => {
-          const formattedDate = format(item.createdAt, "dd-MM-yyyy");
+          const formattedDate = format(
+            sub(item.createdAt, { hours: 5 }),
+            "dd-MM-yyyy"
+          );          
           return { ...item, createdAt: formattedDate };
         });
         setTotalPages(data.pagination?.totalPages ?? 0);

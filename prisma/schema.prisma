@@ -69,8 +69,9 @@ model Favorite_Books {
 model Books {
   idBook          Int              @id @default(autoincrement()) @map("id_book")
   bookName        String           @map("book_name")
-  author          String           @map("author")
+  authors         String[]         @map("authors")
   coverPhoto      String?          @map("cover_photo")
+  editorial       String?          @map("editorial")
   illustrator     String?          @map("illustrator")
   publicationDate DateTime?        @map("publication_date")
   createdAt       DateTime?        @default(now()) @map("created_at")
@@ -138,6 +139,7 @@ model ViewBooks {
   dateView   DateTime @default(now()) @map("date_view")
   Books      Books    @relation(fields: [idBook], references: [idBook])
   Users      Users    @relation(fields: [idUser], references: [idUser])
+
   @@map("view_books")
 }
 

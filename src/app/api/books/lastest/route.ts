@@ -13,7 +13,7 @@ export const GET = apiMiddleware(async (request: NextRequest) => {
     const books = await prisma.books.findMany({
       select: {
         idBook: true,
-        author: true,
+        authors: true,
         bookName: true,
         coverPhoto: true,
         illustrator: true,

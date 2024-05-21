@@ -59,7 +59,7 @@ export default function BooksAdmin() {
   const [showStatus, setShowStatus] = useState<any>();
   const headersBooks = [
     { key: "bookName", name: "Nombre de libro" },
-    { key: "author", name: "Autor" },
+    { key: "authors", name: "Autores" },
     { key: "categoryNames", name: "Categorias" },
     { key: "countViews", name: "Vistas" },
     { key: "status", name: "Estado" },
@@ -517,7 +517,7 @@ export default function BooksAdmin() {
                     startPage={0}
                     isViewed={true}
                     coverInfo={{
-                      author: selectedBook?.author ?? "",
+                      authors: selectedBook?.authors ?? [],
                       bookName: selectedBook!.bookName,
                       coverPhoto: selectedBook!.coverPhoto!,
                       publicationDate: selectedBook!.publicationDate,

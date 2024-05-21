@@ -10,7 +10,7 @@ import ButtonOutlined from "@/ui/components/buttons/ButtonOutlined";
 import LineChart from "@/ui/components/stats/lineFilter";
 import Table from "@/ui/components/tabble/table";
 import { Tooltip } from "@mui/material";
-import { format } from "date-fns";
+import { add, format } from "date-fns";
 import { useRouter } from "next/navigation";
 import { useContext, useEffect, useRef, useState } from "react";
 import SpeechRecognition, {
@@ -91,7 +91,10 @@ export default function CreatorPage() {
         handleShowToast(data.message!, ToastType.ERROR);
       } else {
         const tableData = data.data.map((item: any) => {
-          const formattedDate = format(item.publicationDate, "dd-MM-yyyy");
+          const formattedDate = format(
+            add(item.publicationDate, { hours: 5 }),
+            "dd-MM-yyyy"
+          );
           return { ...item, publicationDate: formattedDate };
         });
         setTableData(tableData);

@@ -6,6 +6,7 @@ import {
   DialogDescription,
   DialogHeader,
 } from "@/components/ui/dialog";
+import { LoadingContext } from "@/libs/contexts/loadingContext";
 import { ToastContext } from "@/libs/contexts/toastContext";
 import { BooksAll } from "@/libs/interfaces/books.interface";
 import { CategoriesAll } from "@/libs/interfaces/categories.interface";
@@ -30,24 +31,30 @@ export default function Stepper() {
   const [pages, setPages] = useState<any>([]);
   const [filterCategories, setFilterCategories] = useState<number[]>([]);
   const { handleShowToast } = useContext(ToastContext)!;
+  const [authors, setAuthors] = useState([{ value: "" }]);
+  const { setIsLoading } = useContext(LoadingContext)!;
   const [selectedBook, setSelectedBook] = useState<BooksAll | null>(null);
   const [stepOne, setStepOne] = useState<{
     bookName: string;
-    author: string;
+    authors: string[];
     illustrator: string;
     publicationDate: Date;
     bookImage: File | null;
+    editorial: string;
   }>({
     bookName: "",
-    author: "",
+    authors: [""],
     illustrator: "",
     publicationDate: new Date(),
     bookImage: null,
+    editorial: "",
   });
 
   useEffect(() => {
     const fetchData = async () => {
-      const response = await fetch("../../api/categories?limit=10000&status=true");
+      const response = await fetch(
+        "../../api/categories?limit=10000&status=true"
+      );
       const data: ResponseData<CategoriesAll[]> = await response.json();
       setCategories(data.data ?? []);
     };
@@ -63,7 +70,7 @@ export default function Stepper() {
       },
       {
         fieldName: "author",
-        value: stepOne.author,
+        value: stepOne.authors,
         validations: [validateNotEmpty],
       },
       {
@@ -189,10 +196,6 @@ export default function Stepper() {
     setCurrentStep(currentStep + 1);
   };
 
-  const handlePrev = () => {
-    setCurrentStep(currentStep - 1);
-  };
-
   const handlePageValidation = (obj: any) => {
     if (obj.content === null || obj.content === "") {
       handleShowToast(
@@ -243,7 +246,11 @@ export default function Stepper() {
       };
       const formData = new FormData();
       formData.append("bookName", body.bookName);
-      formData.append("author", body.author);
+      formData.append("illustrator", body.illustrator);
+      formData.append("editorial", body.editorial);
+      body.authors.forEach((author: any, index: any) => {
+        formData.append(`authors[${index}]`, author);
+      });
       formData.append("publicationDate", body.publicationDate.toString());
       formData.append("bookCover", body.bookImage!);
       body.pages.forEach((page: any, index: any) => {
@@ -261,11 +268,25 @@ export default function Stepper() {
         }
       });
       formData.append("categoriesIds", JSON.stringify(body.categoriesIds));
-      const response = await fetch("../../api/books", {
-        method: "POST",
-        body: formData,
-      });
-      const data: ResponseData<CategoriesAll[]> = await response.json();
+      console.log(body);
+      try {
+        setIsLoading(true);
+        const response = await fetch("../../api/books", {
+          method: "POST",
+          body: formData,
+        });
+        const data: ResponseData<CategoriesAll[]> = await response.json();
+        if (data.error) {
+          handleShowToast(data.error, ToastType.ERROR);
+        } else {
+          handleShowToast(data.message!, ToastType.SUCCESS);
+        }
+      } catch (error) {
+        console.error(error);
+        handleShowToast("Error al crear el libro", ToastType.ERROR);
+      } finally {
+        setIsLoading(false);
+      }
     }
   };
 
@@ -275,6 +296,31 @@ export default function Stepper() {
       [e.target.name]: e.target.value,
     });
   };
+
+  const addAuthor = () => {
+    setAuthors([...authors, { value: "" }]);
+  };
+
+  const handleAuthorChange = (index: any, value: any) => {
+    const updatedAuthors = [...authors];
+    updatedAuthors[index].value = value;
+    setAuthors(updatedAuthors);
+  };
+
+  const removeAuthor = (index: any) => {
+    const updatedAuthors = [...authors];
+    updatedAuthors.splice(index, 1);
+    setAuthors(updatedAuthors);
+  };
+
+  useEffect(() => {
+    if (authors.length != 0) {
+      setStepOne({
+        ...stepOne,
+        authors: authors.map((author) => author.value),
+      });
+    }
+  }, [authors]);
 
   const handleCategoryChange = (event: any) => {
     const selectedCategoryId = event.target.value;
@@ -373,6 +419,7 @@ export default function Stepper() {
                   name="bookName"
                   placeholder="100 años de soledad"
                   value={stepOne.bookName}
+                  maxLength={60}
                   type="text"
                   className="py-1"
                   icon={
@@ -405,12 +452,113 @@ export default function Stepper() {
                 <h3 className="text-primary-500 font-poppins font-semibold text-xl">
                   Metadatos
                 </h3>
+                <div>
+                  {authors.map((author, index) => (
+                    <div key={index} className="flex items-end gap-2">
+                      <Input
+                        label={
+                          index === 0 ? "Autor del libro" : `Autor ${index + 1}`
+                        }
+                        name={`author-${index}`}
+                        placeholder="Gabriel García Márquez"
+                        value={author.value}
+                        maxLength={60}
+                        type="text"
+                        className="py-1"
+                        icon={
+                          <svg
+                            viewBox="0 0 24 24"
+                            fill="currentColor"
+                            className="w-5 h-5 text-iconBgColor"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
+                            <g
+                              id="SVGRepo_tracerCarrier"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            ></g>
+                            <g id="SVGRepo_iconCarrier">
+                              <circle cx="12" cy="6" r="4"></circle>
+                              <path d="M20 17.5C20 19.9853 20 22 12 22C4 22 4 19.9853 4 17.5C4 15.0147 7.58172 13 12 13C16.4183 13 20 15.0147 20 17.5Z"></path>
+                            </g>
+                          </svg>
+                        }
+                        onChange={(e) =>
+                          handleAuthorChange(index, e.target.value)
+                        }
+                        validations={[validateNotEmpty]}
+                      />
+                      {index !== 0 && (
+                        <button
+                          type="button"
+                          onClick={() => removeAuthor(index)}
+                          className="text-red-700 p-1 rounded-full border hover:text-red-700"
+                        >
+                          <svg
+                            viewBox="0 0 24 24"
+                            fill="currentColor"
+                            className="w-5 h-5"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
+                            <g
+                              id="SVGRepo_tracerCarrier"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            ></g>
+                            <g id="SVGRepo_iconCarrier">
+                              <circle cx="12" cy="6" r="4"></circle>
+                              <path d="M15.4147 13.5074C14.4046 13.1842 13.24 13 12 13C8.13401 13 5 14.7909 5 17C5 19.1406 7.94244 20.8884 11.6421 20.9949C11.615 20.8686 11.594 20.7432 11.5775 20.6201C11.4998 20.0424 11.4999 19.3365 11.5 18.586V18.414C11.4999 17.6635 11.4998 16.9576 11.5775 16.3799C11.6639 15.737 11.8705 15.0333 12.4519 14.4519C13.0334 13.8705 13.737 13.6639 14.3799 13.5774C14.6919 13.5355 15.0412 13.5162 15.4147 13.5074Z"></path>
+                              <path
+                                fillRule="evenodd"
+                                clipRule="evenodd"
+                                d="M16.5 22C14.8501 22 14.0251 22 13.5126 21.4874C13 20.9749 13 20.1499 13 18.5C13 16.8501 13 16.0251 13.5126 15.5126C14.0251 15 14.8501 15 16.5 15C18.1499 15 18.9749 15 19.4874 15.5126C20 16.0251 20 16.8501 20 18.5C20 20.1499 20 20.9749 19.4874 21.4874C18.9749 22 18.1499 22 16.5 22ZM15.3569 16.532C15.1291 16.3042 14.7598 16.3042 14.532 16.532C14.3042 16.7598 14.3042 17.1291 14.532 17.3569L15.675 18.5L14.532 19.6431C14.3042 19.8709 14.3042 20.2402 14.532 20.468C14.7598 20.6958 15.1291 20.6958 15.3569 20.468L16.5 19.325L17.6431 20.468C17.8709 20.6958 18.2402 20.6958 18.468 20.468C18.6958 20.2402 18.6958 19.8709 18.468 19.6431L17.325 18.5L18.468 17.3569C18.6958 17.1291 18.6958 16.7598 18.468 16.532C18.2402 16.3042 17.8709 16.3042 17.6431 16.532L16.5 17.675L15.3569 16.532Z"
+                              ></path>
+                            </g>
+                          </svg>
+                        </button>
+                      )}
+                      {index === authors.length - 1 && (
+                        <button
+                          type="button"
+                          onClick={addAuthor}
+                          className="text-primary p-1 border rounded-full hover:text-green-700"
+                        >
+                          <svg
+                            viewBox="0 0 24 24"
+                            fill="currentColor"
+                            className="w-5 h-5"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
+                            <g
+                              id="SVGRepo_tracerCarrier"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            ></g>
+                            <g id="SVGRepo_iconCarrier">
+                              <circle cx="12" cy="6" r="4"></circle>
+                              <path
+                                fillRule="evenodd"
+                                clipRule="evenodd"
+                                d="M16.5 22C14.8501 22 14.0251 22 13.5126 21.4874C13 20.9749 13 20.1499 13 18.5C13 16.8501 13 16.0251 13.5126 15.5126C14.0251 15 14.8501 15 16.5 15C18.1499 15 18.9749 15 19.4874 15.5126C20 16.0251 20 16.8501 20 18.5C20 20.1499 20 20.9749 19.4874 21.4874C18.9749 22 18.1499 22 16.5 22ZM17.0833 16.9444C17.0833 16.6223 16.8222 16.3611 16.5 16.3611C16.1778 16.3611 15.9167 16.6223 15.9167 16.9444V17.9167H14.9444C14.6223 17.9167 14.3611 18.1778 14.3611 18.5C14.3611 18.8222 14.6223 19.0833 14.9444 19.0833H15.9167V20.0556C15.9167 20.3777 16.1778 20.6389 16.5 20.6389C16.8222 20.6389 17.0833 20.3777 17.0833 20.0556V19.0833H18.0556C18.3777 19.0833 18.6389 18.8222 18.6389 18.5C18.6389 18.1778 18.3777 17.9167 18.0556 17.9167H17.0833V16.9444Z"
+                              ></path>
+                              <path d="M15.4147 13.5074C14.4046 13.1842 13.24 13 12 13C8.13401 13 5 14.7909 5 17C5 19.1406 7.94244 20.8884 11.6421 20.9949C11.615 20.8686 11.594 20.7432 11.5775 20.6201C11.4998 20.0424 11.4999 19.3365 11.5 18.586V18.414C11.4999 17.6635 11.4998 16.9576 11.5775 16.3799C11.6639 15.737 11.8705 15.0333 12.4519 14.4519C13.0334 13.8705 13.737 13.6639 14.3799 13.5774C14.6919 13.5355 15.0412 13.5162 15.4147 13.5074Z"></path>
+                            </g>
+                          </svg>
+                        </button>
+                      )}
+                    </div>
+                  ))}
+                </div>
                 <Input
-                  label="Autor del libro"
-                  name="author"
-                  placeholder="Gabriel Garcia Marquez"
-                  value={stepOne.author}
+                  label="Ilustrador del libro"
+                  name="illustrator"
+                  placeholder="Luisa Rivera"
+                  value={stepOne.illustrator}
                   type="text"
+                  maxLength={40}
                   className="py-1"
                   icon={
                     <svg
@@ -435,14 +583,14 @@ export default function Stepper() {
                     </svg>
                   }
                   onChange={handleChangeStepOne}
-                  validations={[validateNotEmpty]}
                 ></Input>
                 <Input
-                  label="Ilustrador del libro"
-                  name="illustrator"
-                  placeholder="Luisa Rivera"
-                  value={stepOne.illustrator}
+                  label="Editorial del libro"
+                  name="editorial"
+                  placeholder="Editorial Planeta"
+                  value={stepOne.editorial}
                   type="text"
+                  maxLength={50}
                   className="py-1"
                   icon={
                     <svg
@@ -475,6 +623,7 @@ export default function Stepper() {
                   value={stepOne.publicationDate}
                   type="date"
                   className="py-1"
+                  maxLength={10}
                   icon={
                     <svg
                       viewBox="0 0 24 24"
@@ -579,7 +728,7 @@ export default function Stepper() {
                     console.log("Paginas al momento: ", pages);
                     setSelectedBook({
                       idBook: 0,
-                      author: stepOne.author,
+                      authors: stepOne.authors,
                       bookName: stepOne.bookName,
                       publicationDate: stepOne.publicationDate,
                       isFavorite: false,
@@ -666,7 +815,7 @@ export default function Stepper() {
                           startPage={0}
                           isViewed={true}
                           coverInfo={{
-                            author: selectedBook?.author ?? "",
+                            authors: selectedBook?.authors ?? [],
                             bookName: selectedBook!.bookName,
                             coverPhoto: selectedBook!.coverPhoto!,
                             publicationDate: selectedBook!.publicationDate,

@@ -321,7 +321,7 @@ export default function Favorite({
         {books.map((book) => (
           <BookCard
             key={book.idBook}
-            author={book.author}
+            authors={book.authors}
             title={book.bookName}
             imageUrl={book.coverPhoto}
             isViewed={book.isViewed}
@@ -387,7 +387,7 @@ export default function Favorite({
                   pages={pagesBook!}
                   startPage={lastPage}
                   coverInfo={{
-                    author: selectedBook?.author ?? "",
+                    authors: selectedBook?.authors ?? [],
                     bookName: selectedBook!.bookName,
                     coverPhoto: selectedBook!.coverPhoto!,
                     publicationDate: selectedBook!.publicationDate,

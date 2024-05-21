@@ -97,7 +97,6 @@ const Table: React.FC<TableProps> = ({
                         className="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
                       >
                         {header.key === "status" ? (
-                          // Aquí va el código para mostrar el contenido cuando el header es 'status'
                           <span>
                             {item[header.key] === true ? (
                               <Badge variant="success">Activo</Badge>
@@ -105,8 +104,15 @@ const Table: React.FC<TableProps> = ({
                               <Badge variant="destructive">Inactivo</Badge>
                             )}
                           </span>
+                        ) : header.key === "authors" ? (
+                          <div className="flex flex-wrap gap-2">
+                            {item[header.key].map((author: any, index: any) => (
+                              <Badge key={index} variant="outline">
+                                {author}
+                              </Badge>
+                            ))}
+                          </div>
                         ) : (
-                          // Aquí va el código para mostrar el contenido cuando el header no es 'status'
                           item[header.key]
                         )}
                       </td>

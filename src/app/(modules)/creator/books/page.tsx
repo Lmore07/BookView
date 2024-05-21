@@ -20,6 +20,7 @@ import Table from "@/ui/components/tabble/table";
 import Help from "@/ui/modals/help/help";
 import FlipBook from "@/ui/modals/viewBook/flipBook";
 import { Pagination, Stack, Tooltip } from "@mui/material";
+import { add, format } from "date-fns";
 import { useRouter } from "next/navigation";
 import { useContext, useEffect, useRef, useState } from "react";
 import SpeechRecognition, {
@@ -130,7 +131,7 @@ export default function CreatorBooksPage() {
   const headers = [
     { key: "bookName", name: "Nombre del libro" },
     { key: "publicationDate", name: "Fecha de publicación" },
-    { key: "author", name: "Autor" },
+    { key: "authors", name: "Autores" },
     { key: "status", name: "Estado" },
   ];
 
@@ -157,12 +158,11 @@ export default function CreatorBooksPage() {
         setTotalPages(data.pagination?.totalPages ?? 0);
         setPage(data.pagination?.currentPage ?? 0);
         const tableData = data.data.map((item: any) => {
-          const date = new Date(item.publicationDate);
-          const day = date.getDate();
-          const month = date.getMonth() + 1;
-          const year = date.getFullYear();
-          const formatDate = `${day}-${month}-${year}`;
-          return { ...item, publicationDate: formatDate };
+          const formattedDate = format(
+            add(item.publicationDate, { hours: 5 }),
+            "dd-MM-yyyy"
+          );
+          return { ...item, publicationDate: formattedDate };
         });
         setTableData(tableData);
       }
@@ -454,7 +454,7 @@ export default function CreatorBooksPage() {
                   startPage={0}
                   isViewed={true}
                   coverInfo={{
-                    author: selectedBook?.author ?? "",
+                    authors: selectedBook?.authors ?? [],
                     bookName: selectedBook!.bookName,
                     coverPhoto: selectedBook!.coverPhoto!,
                     publicationDate: selectedBook!.publicationDate,

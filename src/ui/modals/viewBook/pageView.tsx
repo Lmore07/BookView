@@ -128,7 +128,7 @@ const PageContent: React.FC<PageProps> = ({ page, coverInfo }) => {
                 {coverInfo?.bookName}
               </h1>
               <div className="text-lg font-poppins font-light pb-5">
-                Autor: {coverInfo?.author}
+                Autores: {coverInfo?.authors.join(",")}
               </div>
               <img
                 className="w-[250px] rounded-md"

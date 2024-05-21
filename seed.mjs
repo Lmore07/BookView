@@ -20,7 +20,7 @@ async function main() {
       const newUser = await prisma.users.create({
         data: {
           mail: process.env.ADMIN_MAIL ?? "",
-          password: await bcrypt.hash(process.env.PASSWORD ?? "", 10),
+          password: await bcrypt.hash(process.env.ADMIN_PASSWORD ?? "12345", 10),
           Person: {
             create: {
               names: process.env.ADMIN_NAME || "",

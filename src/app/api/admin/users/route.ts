@@ -1,4 +1,3 @@
-import { RolEnum } from "@/libs/interfaces/user.interface";
 import { apiMiddleware } from "@/libs/middleware/apiMiddleware";
 import { toBoolean, toRolEnum } from "@/libs/pipes/toBoolean";
 import prisma from "@/libs/services/prisma";

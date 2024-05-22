@@ -1,4 +1,5 @@
 import { Chip, Divider } from "@mui/material";
+import Image from "next/image";
 import React from "react";
 
 const PreviewContent: React.FC<{ content: any[] }> = ({ content }) => {
@@ -18,7 +19,7 @@ const PreviewContent: React.FC<{ content: any[] }> = ({ content }) => {
               {page.template == "Template1" && (
                 <div className="overflow-hidden">
                   <div className="flex items-center justify-center mb-2">
-                    <img
+                    <Image
                       src={URL.createObjectURL(page.image)}
                       alt="Imagen"
                       className="max-h-full max-w-full"
@@ -33,7 +34,7 @@ const PreviewContent: React.FC<{ content: any[] }> = ({ content }) => {
               {page.template == "Template2" && (
                 <div className="grid grid-cols-5 gap-3 overflow-hidden">
                   <div className="flex items-center justify-center col-span-2">
-                    <img
+                    <Image
                       src={URL.createObjectURL(page.image)}
                       alt="Imagen 2"
                       className="object-cover"
@@ -56,7 +57,7 @@ const PreviewContent: React.FC<{ content: any[] }> = ({ content }) => {
                     ></div>
                   </div>
                   <div className="flex items-center justify-center col-span-2">
-                    <img
+                    <Image
                       src={URL.createObjectURL(page.image)}
                       alt="Imagen 2"
                       className="object-cover"

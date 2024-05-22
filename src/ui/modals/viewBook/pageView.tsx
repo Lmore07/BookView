@@ -1,9 +1,11 @@
+//TODO: AGREGAR PLANTILLA DE SOLO IMAGEN
 import { CoverI } from "@/libs/interfaces/books.interface";
 import { generateSpeech } from "@/libs/services/generateSpeech";
 import { generateText } from "@/libs/services/generateText";
 import { parseHtmlToText } from "@/libs/services/parseHtmlToText";
 import { Chip, Divider, Snackbar } from "@mui/material";
-import React, { useEffect, useRef, useState } from "react";
+import Image from "next/image";
+import React, { useRef, useState } from "react";
 
 interface PageProps {
   page: {
@@ -126,9 +128,9 @@ const PageContent: React.FC<PageProps> = ({ page, coverInfo }) => {
               <div className="text-lg font-poppins font-light pb-5">
                 Autores: {coverInfo?.authors.join(",")}
               </div>
-              <img
+              <Image
                 className="w-[250px] rounded-md"
-                src={coverInfo?.coverPhoto}
+                src={coverInfo!.coverPhoto}
                 alt="Portada del libro"
               />
               <div className="text-lg font-poppins font-light pt-5">
@@ -141,7 +143,7 @@ const PageContent: React.FC<PageProps> = ({ page, coverInfo }) => {
           <div className="overflow-hidden">
             <div className="flex items-center justify-center mb-2">
               {page.image && (
-                <img
+                <Image
                   src={page.image}
                   alt="Imagen"
                   className="max-h-[20dvh] max-w-full"
@@ -159,7 +161,11 @@ const PageContent: React.FC<PageProps> = ({ page, coverInfo }) => {
           <div className="grid grid-cols-5 gap-3 overflow-hidden">
             <div className="flex items-center justify-center col-span-2">
               {page.image && (
-                <img src={page.image} alt="Imagen 2" className="object-cover" />
+                <Image
+                  src={page.image}
+                  alt="Imagen 2"
+                  className="object-cover"
+                />
               )}
             </div>
             <div className="col-span-3">
@@ -182,7 +188,11 @@ const PageContent: React.FC<PageProps> = ({ page, coverInfo }) => {
             </div>
             <div className="flex items-center justify-center col-span-2">
               {page.image && (
-                <img src={page.image} alt="Imagen 2" className="object-cover" />
+                <Image
+                  src={page.image}
+                  alt="Imagen 2"
+                  className="object-cover"
+                />
               )}
             </div>
           </div>

@@ -3,6 +3,7 @@ import AudioUpload from "../multimedia/audio/page";
 import dynamic from "next/dynamic";
 import VideoUpload from "../multimedia/video/page";
 import ButtonOutlined from "@/ui/components/buttons/ButtonOutlined";
+import Image from "next/image";
 const JoditEditor = dynamic(() => import("jodit-react"), { ssr: false });
 
 const Template1: React.FC<{
@@ -104,7 +105,7 @@ const Template1: React.FC<{
         onClick={handleImageUpload}
       >
         {imageBlob ? (
-          <img
+          <Image
             src={
               imageBlob instanceof File
                 ? URL.createObjectURL(imageBlob as Blob)

@@ -24,6 +24,7 @@ import FlipBook from "@/ui/modals/viewBook/flipBook";
 import { useRouter } from "next/navigation";
 import { useContext, useEffect, useState } from "react";
 import { add, format } from "date-fns";
+import Image from "next/image";
 
 export default function BookEdit({
   params,
@@ -685,7 +686,7 @@ export default function BookEdit({
                   onClick={handleImageUpload}
                 >
                   {stepOne.bookImage ? (
-                    <img
+                    <Image
                       src={
                         stepOne.bookImage instanceof File
                           ? URL.createObjectURL(stepOne.bookImage as Blob)

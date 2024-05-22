@@ -8,6 +8,7 @@ import { usePathname, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import logoImg from "../../../../public/imgs/icon.svg";
 import userImg from "../../../../public/imgs/user.svg";
+import Image from "next/image";
 
 interface SidebarProps {
   optionsRoutes: {
@@ -49,7 +50,7 @@ const Sidebar: React.FC<SidebarProps> = ({ optionsRoutes, children }) => {
     <>
       <header className="h-[10dvh] bg-bgColorRight shadow-lg dark:border-gray-700 px-6 py-4 flex items-center justify-between fixed top-0 left-0 right-0 z-50">
         <div className="flex items-center">
-          <img src={logoImg.src} alt="Imagen" />
+          <Image src={logoImg.src} alt="Imagen" />
           <h2 className="text-lg pl-3 font-semibold text-gray-800 dark:text-gray-200">
             BookViewer
           </h2>
@@ -65,7 +66,7 @@ const Sidebar: React.FC<SidebarProps> = ({ optionsRoutes, children }) => {
               side="left"
             >
               <div className="flex items-center mb-6">
-                <img src={logoImg.src} alt="Imagen" />
+                <Image src={logoImg.src} alt="Imagen" />
                 <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-200">
                   Acme Inc.
                 </h2>
@@ -129,7 +130,7 @@ const Sidebar: React.FC<SidebarProps> = ({ optionsRoutes, children }) => {
           <Avatar className="h-9 w-9 bg-slate-400">
             <AvatarImage src={Cookie.get("profile")} />
             <AvatarFallback>
-              <img src={userImg.src} alt="" />
+              <Image src={userImg.src} alt="" />
             </AvatarFallback>
           </Avatar>
         </div>

@@ -1,3 +1,5 @@
+// FIXME: CORREGIR LLEGADA DE DATA Y ACTUALIZATION DE DATOS DEL PERFIL
+
 "use client";
 import {
   Tooltip,
@@ -18,6 +20,7 @@ import ButtonOutlined from "@/ui/components/buttons/ButtonOutlined";
 import Input from "@/ui/components/inputs/input";
 import Help from "@/ui/modals/help/help";
 import ModalParent from "@/ui/modals/modal";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useContext, useEffect, useRef, useState } from "react";
 import SpeechRecognition, {
@@ -315,7 +318,7 @@ export default function ProfileCreator() {
         </div>
         <div className="flex gap-5 py-1">
           <div className="bg-bgInputText rounded-md h-64 w-1/3 flex items-center justify-center hover:text-secondary-400 hover:border hover:border-black">
-            <img
+            <Image
               src={
                 userInfo.profilePicture instanceof File
                   ? URL.createObjectURL(userInfo.profilePicture as Blob)

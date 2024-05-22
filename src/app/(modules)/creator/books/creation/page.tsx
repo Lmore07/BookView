@@ -21,6 +21,7 @@ import ButtonOutlined from "@/ui/components/buttons/ButtonOutlined";
 import Input from "@/ui/components/inputs/input";
 import BookEditor from "@/ui/modals/creation/page";
 import FlipBook from "@/ui/modals/viewBook/flipBook";
+import Image from "next/image";
 import { useContext, useEffect, useState } from "react";
 
 export default function Stepper() {
@@ -659,11 +660,11 @@ export default function Stepper() {
                   onClick={handleImageUpload}
                 >
                   {stepOne.bookImage ? (
-                    <img
+                    <Image
                       src={URL.createObjectURL(stepOne.bookImage)}
                       alt="Imagen"
                       className="max-h-full max-w-full"
-                    />
+                    ></Image>
                   ) : (
                     <span className="text-gray-500">
                       Haga clic para agregar la portada

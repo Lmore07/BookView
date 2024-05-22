@@ -465,7 +465,6 @@ export default function BookSearch() {
             title={book.bookName}
             isViewed={book.isViewed}
             onReadClick={() => {
-              setSelectedBook(book);
               openBook(book);
             }}
             imageUrl={book.coverPhoto}

@@ -40,6 +40,7 @@ const FlipBook: React.FC<FlipBookProps> = ({
     }
   };
 
+
   const handleNextPage = () => {
     if (currentPage < pages.length - 1 && !isFlipping) {
       setFlipDirection("next");

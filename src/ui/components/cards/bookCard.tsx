@@ -28,7 +28,7 @@ const BookCard: React.FC<BookCardProps> = ({
         <Image
           src={imageUrl == null || imageUrl == "" ? NoImage : imageUrl}
           alt={`${title} book cover`}
-          fill
+          fill          
           className="object-cover"
         />
       </div>

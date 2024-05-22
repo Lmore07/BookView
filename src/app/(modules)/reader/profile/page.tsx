@@ -36,7 +36,7 @@ export default function ProfileReader() {
   const { transcript, resetTranscript, listening } = useSpeechRecognition();
   const [userInfo, setUserInfo] = useState<UserInfo>({
     mail: "",
-    profilePicture: null,
+    profilePicture: "",
     Person: {
       names: "",
       lastNames: "",
@@ -189,10 +189,22 @@ export default function ProfileReader() {
   }, []);
 
   const handleChange = (e: any) => {
-    setUserInfo({
-      ...userInfo,
-      [e.target.name]: e.target.value,
-    });
+    const parts = e.target.name.split(".");
+    if (parts.length === 2) {
+      const [object, key] = parts;
+      setUserInfo((prevState: any) => ({
+        ...prevState,
+        [object]: {
+          ...prevState[object],
+          [key]: e.target.value,
+        },
+      }));
+    } else {
+      setUserInfo((prevState) => ({
+        ...prevState,
+        [e.target.name]: e.target.value,
+      }));
+    }
   };
 
   const handleImageUpload = () => {
@@ -363,6 +375,8 @@ export default function ProfileReader() {
                   ? URL.createObjectURL(userInfo.profilePicture as Blob)
                   : userInfo.profilePicture
               }
+              width={300}
+              height={150}
               alt="Imagen de perfil"
               className="max-h-full max-w-full"
             />
@@ -440,7 +454,8 @@ export default function ProfileReader() {
         <div className="py-1 grid">
           <Input
             label="Nombres"
-            name="names"
+            name="Person.names"
+            maxLength={50}
             placeholder="Luis"
             value={userInfo.Person.names}
             type="text"
@@ -461,8 +476,9 @@ export default function ProfileReader() {
         <div className="py-1 grid">
           <Input
             label="Apellidos"
-            name="lastNames"
+            name="Person.lastNames"
             placeholder="Moreira"
+            maxLength={50}
             value={userInfo.Person.lastNames}
             type="text"
             icon={
@@ -482,7 +498,7 @@ export default function ProfileReader() {
         <div className="py-1 grid">
           <Input
             label="Fecha de nacimiento"
-            name="birthday"
+            name="Person.birthday"
             placeholder="lmoreira@gmail.com"
             value={userInfo.Person.birthday}
             type="date"
@@ -503,9 +519,10 @@ export default function ProfileReader() {
         <div className="py-1 grid">
           <Input
             label="Correo electrónico"
-            name="email"
+            name="mail"
             placeholder="lmoreira@gmail.com"
             value={userInfo.mail}
+            maxLength={150}
             type="email"
             icon={
               <svg

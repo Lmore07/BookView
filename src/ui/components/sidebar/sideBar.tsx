@@ -50,7 +50,7 @@ const Sidebar: React.FC<SidebarProps> = ({ optionsRoutes, children }) => {
     <>
       <header className="h-[10dvh] bg-bgColorRight shadow-lg dark:border-gray-700 px-6 py-4 flex items-center justify-between fixed top-0 left-0 right-0 z-50">
         <div className="flex items-center">
-          <Image src={logoImg.src} alt="Imagen" />
+          <Image src={logoImg.src} alt="Imagen" width={40} height={40} />
           <h2 className="text-lg pl-3 font-semibold text-gray-800 dark:text-gray-200">
             BookViewer
           </h2>
@@ -66,9 +66,9 @@ const Sidebar: React.FC<SidebarProps> = ({ optionsRoutes, children }) => {
               side="left"
             >
               <div className="flex items-center mb-6">
-                <Image src={logoImg.src} alt="Imagen" />
-                <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-200">
-                  Acme Inc.
+                <Image src={logoImg.src} alt="Imagen" width={40} height={40} />
+                <h2 className="text-lg ms-2 font-semibold text-gray-800 dark:text-gray-200">
+                  BookViewer
                 </h2>
               </div>
               <nav className="space-y-1">
@@ -91,7 +91,7 @@ const Sidebar: React.FC<SidebarProps> = ({ optionsRoutes, children }) => {
                   href={"../login"}
                   onClick={() => {
                     Cookie.remove("token");
-                    router.replace("/login");
+                    window.location.reload()
                   }}
                   className={`flex items-center gap-2 px-3 py-2 bg-transparent cursor-pointer transition-colors ${
                     selectedOption == "logOut"
@@ -130,7 +130,7 @@ const Sidebar: React.FC<SidebarProps> = ({ optionsRoutes, children }) => {
           <Avatar className="h-9 w-9 bg-slate-400">
             <AvatarImage src={Cookie.get("profile")} />
             <AvatarFallback>
-              <Image src={userImg.src} alt="" />
+              <Image src={userImg.src} alt="" width={300} height={100} />
             </AvatarFallback>
           </Avatar>
         </div>
@@ -192,7 +192,9 @@ const Sidebar: React.FC<SidebarProps> = ({ optionsRoutes, children }) => {
             </Link>
           </nav>
         </div>
-        <div className="flex-1 m-6 lg:ps-64 pt-[10dvh] overflow-y-auto overflow-x-hidden">{children}</div>
+        <div className="flex-1 m-6 lg:ps-64 pt-[10dvh] overflow-y-auto overflow-x-hidden">
+          {children}
+        </div>
       </div>
     </>
   );

@@ -326,6 +326,7 @@ export default function ProfileCreator() {
               }
               alt="Imagen de perfil"
               className="max-h-full max-w-full"
+              width={300}
             />
           </div>
           <div className="flex flex-col content-end justify-end gap-y-3">

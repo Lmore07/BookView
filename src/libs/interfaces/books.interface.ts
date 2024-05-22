@@ -20,10 +20,10 @@ export interface PageI {
 }
 
 export interface CoverI {
-  coverPhoto: string;
+  coverPhoto: any;
   authors: string[];
   bookName: string;
-  publicationDate: Date;
+  publicationDate: any;
   idBook: number;
 }
 

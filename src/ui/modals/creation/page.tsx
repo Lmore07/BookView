@@ -155,24 +155,32 @@ const BookEditor: React.FC<{ onChangedPages: any; pagesEdit?: any[] }> = ({
             alt="Logo"
             className="cursor-pointer"
             src={template1}
+            width={200}
+            height={100}
           ></Image>
           <Image
             onClick={() => addPage("Template2")}
             alt="Logo"
             className="cursor-pointer"
             src={template2}
+            width={200}
+            height={100}
           ></Image>
           <Image
             onClick={() => addPage("Template3")}
             alt="Logo"
             className="cursor-pointer"
             src={template3}
+            width={200}
+            height={100}
           ></Image>
           <Image
             onClick={() => addPage("Template4")}
             alt="Logo"
             className="cursor-pointer"
             src={template4}
+            width={200}
+            height={100}
           ></Image>
         </div>
       </div>

@@ -4,17 +4,18 @@ import { generateSpeech } from "@/libs/services/generateSpeech";
 import { generateText } from "@/libs/services/generateText";
 import { parseHtmlToText } from "@/libs/services/parseHtmlToText";
 import { Chip, Divider, Snackbar } from "@mui/material";
+import { add, format } from "date-fns";
 import Image from "next/image";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 interface PageProps {
   page: {
     numberPage: number;
     template: string;
     content: string;
-    image: string | null;
-    audio: string | null;
-    video: string | null;
+    image: any;
+    audio: any;
+    video: any;
   };
   coverInfo?: CoverI;
 }
@@ -33,6 +34,24 @@ const PageContent: React.FC<PageProps> = ({ page, coverInfo }) => {
   const handlePlayVideo = () => {
     setIsPlayingVideo(true);
   };
+
+  useEffect(() => {
+    console.log(
+      "Date es string?: ",
+      typeof coverInfo?.publicationDate == "string"
+    );
+    console.log("Info: ", coverInfo);
+    if (
+      typeof coverInfo?.publicationDate != "string" &&
+      coverInfo?.publicationDate
+    ) {
+      setFormatDate(
+        format(add(coverInfo.publicationDate, { hours: 5 }), "dd-MM-yyyy")
+      );
+    } else {
+      setFormatDate(coverInfo?.publicationDate ?? "S/F");
+    }
+  }, []);
 
   const startSpeech = async () => {
     let audioData: any;
@@ -126,15 +145,21 @@ const PageContent: React.FC<PageProps> = ({ page, coverInfo }) => {
                 {coverInfo?.bookName}
               </h1>
               <div className="text-lg font-poppins font-light pb-5">
-                Autores: {coverInfo?.authors.join(",")}
+                Autores: {coverInfo?.authors.join(", ")}
               </div>
               <Image
-                className="w-[250px] rounded-md"
-                src={coverInfo!.coverPhoto}
+                className="rounded-md"
+                src={
+                  coverInfo!.coverPhoto instanceof File
+                    ? URL.createObjectURL(coverInfo!.coverPhoto as Blob)
+                    : coverInfo!.coverPhoto
+                }
                 alt="Portada del libro"
+                width={200}
+                height={200}
               />
               <div className="text-lg font-poppins font-light pt-5">
-                Publicado: {coverInfo?.publicationDate.toString() ?? ""}
+                Publicado: {formatDate}
               </div>
             </div>
           </div>
@@ -144,15 +169,21 @@ const PageContent: React.FC<PageProps> = ({ page, coverInfo }) => {
             <div className="flex items-center justify-center mb-2">
               {page.image && (
                 <Image
-                  src={page.image}
+                  src={
+                    page.image instanceof File
+                      ? URL.createObjectURL(page.image as Blob)
+                      : page.image
+                  }
                   alt="Imagen"
-                  className="max-h-[20dvh] max-w-full"
+                  className="max-h-40 max-w-64"
+                  width={300}
+                  height={150}
                 />
               )}
             </div>
             <div
               onMouseUp={handleTextSelection}
-              className="break-words max-w-none"
+              className="break-words max-w-none max-h-72 overflow-y-auto"
               dangerouslySetInnerHTML={{ __html: page.content }}
             ></div>
           </div>
@@ -162,15 +193,21 @@ const PageContent: React.FC<PageProps> = ({ page, coverInfo }) => {
             <div className="flex items-center justify-center col-span-2">
               {page.image && (
                 <Image
-                  src={page.image}
+                  src={
+                    page.image instanceof File
+                      ? URL.createObjectURL(page.image as Blob)
+                      : page.image
+                  }
                   alt="Imagen 2"
                   className="object-cover"
+                  width={200}
+                  height={300}
                 />
               )}
             </div>
             <div className="col-span-3">
               <div
-                className="break-words max-w-none text-justify"
+                className="break-words max-w-none text-justify max-h-96 overflow-y-scroll scroll-ms-1"
                 onMouseUp={handleTextSelection}
                 dangerouslySetInnerHTML={{ __html: page.content }}
               ></div>
@@ -181,7 +218,7 @@ const PageContent: React.FC<PageProps> = ({ page, coverInfo }) => {
           <div className="grid grid-cols-5 gap-3 overflow-hidden">
             <div className="col-span-3">
               <div
-                className="break-words max-w-none"
+                className="break-words max-w-none max-h-96 overflow-y-auto"
                 onMouseUp={handleTextSelection}
                 dangerouslySetInnerHTML={{ __html: page.content }}
               ></div>
@@ -189,9 +226,15 @@ const PageContent: React.FC<PageProps> = ({ page, coverInfo }) => {
             <div className="flex items-center justify-center col-span-2">
               {page.image && (
                 <Image
-                  src={page.image}
+                  src={
+                    page.image instanceof File
+                      ? URL.createObjectURL(page.image as Blob)
+                      : page.image
+                  }
                   alt="Imagen 2"
                   className="object-cover"
+                  width={200}
+                  height={300}
                 />
               )}
             </div>
@@ -201,7 +244,7 @@ const PageContent: React.FC<PageProps> = ({ page, coverInfo }) => {
           <div>
             <div
               onMouseUp={handleTextSelection}
-              className="break-words max-w-none"
+              className="break-words max-w-none max-h-96 overflow-y-auto"
               dangerouslySetInnerHTML={{ __html: page.content }}
             ></div>
           </div>

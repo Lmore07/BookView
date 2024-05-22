@@ -111,6 +111,8 @@ const Template1: React.FC<{
                 ? URL.createObjectURL(imageBlob as Blob)
                 : imageBlob
             }
+            width={400}
+            height={100}
             alt="Imagen"
             className="max-h-full max-w-full"
           />

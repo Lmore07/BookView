@@ -60,7 +60,9 @@ export default function BookEdit({
 
   const fetchDataCategories = async () => {
     setIsLoading(true);
-    const response = await fetch("../../../api/categories?limit=10000");
+    const response = await fetch(
+      "../../../api/categories?limit=10000&status=true"
+    );
     const data: ResponseData<CategoriesAll[]> = await response.json();
     setCategories(data.data ?? []);
   };
@@ -693,6 +695,8 @@ export default function BookEdit({
                           : stepOne.bookImage
                       }
                       alt="Imagen"
+                      width={200}
+                      height={100}
                       className="max-h-full max-w-full"
                     />
                   ) : (

@@ -6,10 +6,12 @@ import template1 from "../../../../public/templates/template1.svg";
 import template2 from "../../../../public/templates/template2.svg";
 import template3 from "../../../../public/templates/template3.svg";
 import template4 from "../../../../public/templates/template4.svg";
+import template5 from "../../../../public/templates/template5.svg";
 import Template4 from "./pages/templateFour";
 import Template1 from "./pages/templateOne";
 import Template3 from "./pages/templateThree";
 import Template2 from "./pages/templateTwo";
+import Template5 from "./pages/templateFive";
 
 const BookEditor: React.FC<{ onChangedPages: any; pagesEdit?: any[] }> = ({
   onChangedPages,
@@ -46,7 +48,9 @@ const BookEditor: React.FC<{ onChangedPages: any; pagesEdit?: any[] }> = ({
     audio?: any,
     video?: any
   ) => {
+    console.log("Paginas antes: ", pages);
     const newPages = [...pages];
+    console.log("Paginas despues: ", newPages);
     newPages[index].content = content;
     newPages[index].image = image;
     newPages[index].audio = audio;
@@ -63,6 +67,7 @@ const BookEditor: React.FC<{ onChangedPages: any; pagesEdit?: any[] }> = ({
 
   useEffect(() => {
     onChangedPages(pages);
+    console.log("pages: ", pages);
   }, [pages]);
 
   return (
@@ -122,12 +127,24 @@ const BookEditor: React.FC<{ onChangedPages: any; pagesEdit?: any[] }> = ({
                 {page.template === "Template4" && (
                   <Template4
                     content={page.content}
+                    audio={page.audio}
+                    video={page.video}
                     onContentChange={(
                       content: any,
                       image: any,
                       audio: any,
                       video: any
                     ) => updatePageContent(index, content, image, audio, video)}
+                  />
+                )}
+                {page.template === "Template5" && (
+                  <Template5
+                    image={page.image}
+                    audio={page.audio}
+                    video={page.video}
+                    onContentChange={(image: any, audio: any, video: any) =>
+                      updatePageContent(index, null, image, audio, video)
+                    }
                   />
                 )}
               </div>
@@ -179,6 +196,14 @@ const BookEditor: React.FC<{ onChangedPages: any; pagesEdit?: any[] }> = ({
             alt="Logo"
             className="cursor-pointer"
             src={template4}
+            width={200}
+            height={100}
+          ></Image>
+          <Image
+            onClick={() => addPage("Template5")}
+            alt="Logo"
+            className="cursor-pointer"
+            src={template5}
             width={200}
             height={100}
           ></Image>

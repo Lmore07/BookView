@@ -1,26 +1,34 @@
-import React, { useEffect, useRef, useState } from "react";
-import dynamic from "next/dynamic";
 import ButtonOutlined from "@/ui/components/buttons/ButtonOutlined";
+import Image from "next/image";
+import React, { useEffect, useState } from "react";
 import AudioUpload from "../multimedia/audio/page";
 import VideoUpload from "../multimedia/video/page";
-import { Editor } from "@tinymce/tinymce-react";
 
-const Template4: React.FC<{
-  content: any;
+const Template5: React.FC<{
   onContentChange: any;
   audio?: any;
   video?: any;
-}> = ({ content, onContentChange, audio, video }) => {
+  image?: any;
+}> = ({ onContentChange, audio, video, image }) => {
   const [audioBlob, setAudioBlob] = useState<Blob | null | string>(null);
   const [videoBlob, setVideoBlob] = useState<Blob | string | null>(null);
+  const [imageBlob, setImageBlob] = useState<File | null | string>(null);
 
   useEffect(() => {
     if (audioBlob) {
-      onContentChange(content, null, audioBlob, videoBlob);
+      onContentChange(imageBlob, audioBlob, videoBlob);
     } else {
-      onContentChange(content, null, null, videoBlob);
+      onContentChange(imageBlob, null, videoBlob);
     }
   }, [audioBlob]);
+
+  useEffect(() => {
+    if (imageBlob) {
+      onContentChange(imageBlob, audioBlob, videoBlob);
+    } else {
+      onContentChange(null, audioBlob, videoBlob);
+    }
+  }, [imageBlob]);
 
   useEffect(() => {
     if (audio) {
@@ -29,15 +37,33 @@ const Template4: React.FC<{
     if (video) {
       setVideoBlob(video);
     }
+    if (image) {
+      setImageBlob(image);
+    }
   }, [video, audio]);
 
   useEffect(() => {
     if (videoBlob) {
-      onContentChange(content, null, audioBlob, videoBlob);
+      onContentChange(imageBlob, audioBlob, videoBlob);
     } else {
-      onContentChange(content, null, audioBlob, null);
+      onContentChange(imageBlob, audioBlob, null);
     }
   }, [videoBlob]);
+
+  const handleImageUpload = () => {
+    const input = document.createElement("input");
+    input.type = "file";
+    input.accept = "image/*";
+    input.onchange = (e) => {
+      const file = (e.target as HTMLInputElement).files?.[0];
+      if (file) {
+        setImageBlob(file);
+      } else {
+        setImageBlob(null);
+      }
+    };
+    input.click();
+  };
 
   const generateVideoSource = () => {
     if (videoBlob) {
@@ -70,45 +96,33 @@ const Template4: React.FC<{
 
   return (
     <div className="bg-bgColorDark p-8 rounded shadow-md w-full mx-auto flex flex-col items-center">
-      <div className="max-w-2xl">
-        <Editor
-          apiKey="pxp94q2uamitsp5ok6hrdctn5uu10ei9emrfbozu7576fwa4"
-          onEditorChange={(newContent) => {
-            console.log(newContent);
-            onContentChange(newContent, null, audioBlob, videoBlob);
-          }}
-          init={{
-            plugins: "wordcount advlist lists help",
-            language: "es",
-            menu: {
-              format: {
-                title: "Formato",
-                items:
-                  "blocks fontfamily fontsize | bold italic underline strikethrough  align lineheight | numlist bullist | forecolor backcolor",
-              },
-              edit: {
-                title: "Edición",
-                items: "cut copy paste | selectall | searchreplace",
-              },
-              help: {
-                title: "Ayuda",
-                items: "help",
-              },
-            },
-            menubar: "format | edit | help",
-            help_tabs: ["shortcuts", "keyboardnav"],
-            toolbar_mode: "sliding",
-            branding: false,
-            placeholder: "Ingrese el texto de su página",
-            toolbar:
-              "undo redo | blocks fontfamily fontsize | forecolor backcolor | bold italic underline strikethrough  | align lineheight | numlist bullist",
-          }}
-          value={content}
-        />
+      <div className="flex">
+        <div
+          className="bg-gray-200 flex items-center justify-center h-96 w-80 cursor-pointer"
+          onClick={handleImageUpload}
+        >
+          {imageBlob ? (
+            <Image
+              src={
+                imageBlob instanceof File
+                  ? URL.createObjectURL(imageBlob as Blob)
+                  : imageBlob
+              }
+              width={400}
+              height={200}
+              alt="Imagen"
+              className="max-h-full max-w-full"
+            />
+          ) : (
+            <span className="text-gray-600 text-center">
+              Haga clic para agregar una imagen
+            </span>
+          )}
+        </div>
       </div>
       <div className="mt-4 gap-4 flex flex-wrap items-center justify-center">
         <div className="flex items-center">
-          {audioBlob ? (
+          {audioBlob != null ? (
             <div className="bg-bgColorRight rounded-lg shadow-md p-4">
               <audio controls>
                 <source
@@ -142,7 +156,7 @@ const Template4: React.FC<{
           )}
         </div>
         <div className="flex items-center">
-          {videoBlob ? (
+          {videoBlob != null ? (
             <div className="bg-bgColorRight rounded-lg shadow-md p-4">
               {typeof videoBlob === "string" ? (
                 videoBlob.includes("youtube") ||
@@ -197,4 +211,4 @@ const Template4: React.FC<{
   );
 };
 
-export default Template4;
+export default Template5;

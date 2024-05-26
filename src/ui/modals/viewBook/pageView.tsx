@@ -249,6 +249,21 @@ const PageContent: React.FC<PageProps> = ({ page, coverInfo }) => {
             ></div>
           </div>
         )}
+        {page.template === "Template5" && (
+          <div className="w-full h-full overflow-y-auto">
+            <Image
+              src={
+                page.image instanceof File
+                  ? URL.createObjectURL(page.image as Blob)
+                  : page.image
+              }
+              alt="Imagen 2"
+              className="object-cover"
+              width={300}
+              height={400}
+            />
+          </div>
+        )}
         <div className="flex justify-end mt-4">
           <button
             className={`mr-4 p-2 rounded-full focus:outline-none ${

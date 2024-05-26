@@ -4,7 +4,7 @@ import VideoUpload from "../multimedia/video/page";
 import ButtonOutlined from "@/ui/components/buttons/ButtonOutlined";
 import AudioUpload from "../multimedia/audio/page";
 import Image from "next/image";
-const JoditEditor = dynamic(() => import("jodit-react"), { ssr: false });
+import { Editor } from "@tinymce/tinymce-react";
 
 const Template3: React.FC<{
   content: any;
@@ -13,7 +13,6 @@ const Template3: React.FC<{
   audio?: any;
   video?: any;
 }> = ({ content, onContentChange, image, video, audio }) => {
-  const editor = useRef<any>(null);
   const [imageBlob, setImageBlob] = useState<File | null | string>(null);
   const [audioBlob, setAudioBlob] = useState<Blob | null | string>(null);
   const [videoBlob, setVideoBlob] = useState<Blob | string | null>(null);
@@ -101,51 +100,39 @@ const Template3: React.FC<{
   return (
     <div className="bg-white p-8 rounded shadow-md w-full mx-auto grid grid-cols-3">
       <div className="flex-wrap col-span-2">
-        <JoditEditor
-          ref={editor}
-          value={content}
-          config={{
-            readonly: false,
-            toolbarButtonSize: "middle",
-            toolbar: true,
-            language: "es",
-            buttons: [
-              "bold",
-              "italic",
-              "underline",
-              "strikethrough",
-              "font",
-              "fontsize",
-              "ul",
-              "ol",
-              "outdent",
-              "indent",
-              "table",
-              "link",
-              "align",
-              "undo",
-              "redo",
-            ],
-            safeMode: true,
-            useSplitMode: false,
-            removeButtons: [
-              "about",
-              "eraser",
-              "selectall",
-              "print",
-              "copyformat",
-              "speechRecognize",
-              "hr",
-              "brush",
-              "paragraph",
-              "image",
-              "video",
-            ],
+        <Editor
+          apiKey="pxp94q2uamitsp5ok6hrdctn5uu10ei9emrfbozu7576fwa4"
+          onEditorChange={(newContent) => {
+            console.log(newContent);
+            onContentChange(newContent, imageBlob, audioBlob, videoBlob);
           }}
-          onBlur={(newContent) =>
-            onContentChange(newContent, imageBlob, audioBlob, videoBlob)
-          }
-          onChange={(newContent) => {}}
+          init={{
+            plugins: "wordcount advlist lists help",
+            language: "es",
+            menu: {
+              format: {
+                title: "Formato",
+                items:
+                  "blocks fontfamily fontsize | bold italic underline strikethrough  align lineheight | numlist bullist | forecolor backcolor",
+              },
+              edit: {
+                title: "Edición",
+                items: "cut copy paste | selectall | searchreplace",
+              },
+              help: {
+                title: "Ayuda",
+                items: "help",
+              },
+            },
+            menubar: "format | edit | help",
+            help_tabs: ["shortcuts", "keyboardnav"],
+            toolbar_mode: "sliding",
+            branding: false,
+            placeholder: "Ingrese el texto de su página",
+            toolbar:
+              "undo redo | blocks fontfamily fontsize | forecolor backcolor | bold italic underline strikethrough  | align lineheight | numlist bullist",
+          }}
+          value={content}
         />
       </div>
       <div
@@ -159,8 +146,8 @@ const Template3: React.FC<{
                 ? URL.createObjectURL(imageBlob as Blob)
                 : imageBlob
             }
-            width={200}
-            height={100}
+            width={400}
+            height={200}
             alt="Imagen"
             className="max-h-full max-w-full"
           />

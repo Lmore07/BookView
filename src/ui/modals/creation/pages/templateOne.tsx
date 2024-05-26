@@ -4,7 +4,7 @@ import dynamic from "next/dynamic";
 import VideoUpload from "../multimedia/video/page";
 import ButtonOutlined from "@/ui/components/buttons/ButtonOutlined";
 import Image from "next/image";
-const JoditEditor = dynamic(() => import("jodit-react"), { ssr: false });
+import { Editor } from "@tinymce/tinymce-react";
 
 const Template1: React.FC<{
   content: any;
@@ -13,7 +13,6 @@ const Template1: React.FC<{
   audio?: any;
   video?: any;
 }> = ({ content, onContentChange, image, audio, video }) => {
-  const editor = useRef<any>(null);
   const [imageBlob, setImageBlob] = useState<File | null | string>(null);
   const [audioBlob, setAudioBlob] = useState<Blob | null | string>(null);
   const [videoBlob, setVideoBlob] = useState<Blob | string | null>(null);
@@ -101,7 +100,7 @@ const Template1: React.FC<{
   return (
     <div className="bg-bgColorDark p-8 rounded shadow-md w-full max-w-4xl mx-auto flex flex-col items-center justify-center">
       <div
-        className="bg-gray-200 h-64 flex items-center justify-center mb-4 cursor-pointer"
+        className="bg-gray-200 h-64 w-full flex items-center justify-center mb-4 cursor-pointer"
         onClick={handleImageUpload}
       >
         {imageBlob ? (
@@ -122,50 +121,40 @@ const Template1: React.FC<{
           </span>
         )}
       </div>
-      <div className=" max-w-2xl col-span-2">
-        <JoditEditor
-          ref={editor}
-          value={content}
-          config={{
-            readonly: false,
-            toolbarButtonSize: "middle",
-            toolbar: true,
-            language: "es",
-            buttons: [
-              "bold",
-              "italic",
-              "underline",
-              "strikethrough",
-              "font",
-              "brush",
-              "fontsize",
-              "ul",
-              "ol",
-              "outdent",
-              "indent",
-              "table",
-              "link",
-              "align",
-              "undo",
-              "redo",
-            ],
-            safeMode: true,
-            useSplitMode: false,
-            removeButtons: [
-              "about",
-              "eraser",
-              "selectall",
-              "print",
-              "copyformat",
-              "speechRecognize",
-              "hr",
-              "paragraph",
-              "video",
-            ],
+      <div className=" max-w-2xl w-full col-span-2">
+        <Editor
+          apiKey="pxp94q2uamitsp5ok6hrdctn5uu10ei9emrfbozu7576fwa4"
+          onEditorChange={(newContent) => {
+            console.log(newContent);
+            onContentChange(newContent, imageBlob, audioBlob, videoBlob);
           }}
-          onBlur={(newContent) =>
-            onContentChange(newContent, imageBlob, audioBlob, videoBlob)
-          }
+          init={{
+            plugins: "wordcount advlist lists help",
+            language: "es",
+            menu: {
+              format: {
+                title: "Formato",
+                items:
+                  "blocks fontfamily fontsize | bold italic underline strikethrough  align lineheight | numlist bullist | forecolor backcolor",
+              },
+              edit: {
+                title: "Edición",
+                items: "cut copy paste | selectall | searchreplace",
+              },
+              help: {
+                title: "Ayuda",
+                items: "help",
+              },
+            },
+            menubar: "format | edit | help",
+            help_tabs: ["shortcuts", "keyboardnav"],
+            toolbar_mode: "sliding",
+            branding: false,
+            placeholder: "Ingrese el texto de su página",
+            toolbar:
+              "undo redo | blocks fontfamily fontsize | forecolor backcolor | bold italic underline strikethrough  | align lineheight | numlist bullist",
+          }}
+          value={content}
         />
       </div>
       <div className="mt-4 gap-4 flex flex-wrap items-center justify-center">
@@ -177,7 +166,7 @@ const Template1: React.FC<{
                   src={
                     audioBlob instanceof File
                       ? URL.createObjectURL(audioBlob as Blob)
-                      : audioBlob as string
+                      : (audioBlob as string)
                   }
                   type={
                     audioBlob instanceof File ? audioBlob.type : "audio/mpeg"

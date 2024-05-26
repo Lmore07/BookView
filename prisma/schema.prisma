@@ -116,7 +116,7 @@ model Pages {
   idBook     Int       @map("id_book")
   numberPage Int       @map("number_page")
   template   String    @map("template")
-  content    String    @map("content")
+  content    String?   @map("content")
   audio      String?   @map("audio")
   video      String?   @map("video")
   image      String?   @map("image")

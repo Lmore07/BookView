@@ -17,7 +17,6 @@ class TokenService {
   public verify(token: string): boolean {
     try {
       return jwt.verify(token, this.secretKey);
-      return true;
     } catch (error) {
       return false;
     }

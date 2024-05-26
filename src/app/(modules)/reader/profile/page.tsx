@@ -13,7 +13,10 @@ import { ToastType } from "@/libs/interfaces/toast.interface";
 import { UserInfo } from "@/libs/interfaces/user.interface";
 import { callFunction } from "@/libs/services/callFunction";
 import { generateSpeech } from "@/libs/services/generateSpeech";
-import { commandsHomeReader } from "@/libs/texts/commands/reader/homeReader";
+import {
+  commandsProfile
+} from "@/libs/texts/commands/reader/homeReader";
+import { profileMessage } from "@/libs/texts/messages/reader/homeReader";
 import Button from "@/ui/components/buttons/ButtonFill";
 import ButtonOutlined from "@/ui/components/buttons/ButtonOutlined";
 import Input from "@/ui/components/inputs/input";
@@ -121,7 +124,7 @@ export default function ProfileReader() {
 
   const startSpeech = async () => {
     const audioData = await generateSpeech(
-      "A continuación, puede realizar la búsqueda de libros por autor y nombre de libro. Además, también puede filtrar por las categorías presentadas, recuerde que puede usar comandos de voz para realizar esto, para ver los comandos de voz haga click en el ícono de ayuda."
+      profileMessage
     );
     const ctx = new AudioContext();
     await ctx.decodeAudioData(audioData, (buffer) => {
@@ -558,7 +561,7 @@ export default function ProfileReader() {
             setOpenHelp(false);
           }}
         >
-          <Help commands={commandsHomeReader} page="inicio"></Help>
+          <Help commands={commandsProfile} page="perfil"></Help>
         </ModalParent>
       )}
     </div>

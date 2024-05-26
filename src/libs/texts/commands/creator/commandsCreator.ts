@@ -23,8 +23,19 @@ export const commandsBookCreator = [
     command: ["Editar el libro: (Nombre del libro)"],
     tittle: "Editar un libro por nombre",
   },
+];
+
+export const commandsHomeCreator = [
   {
-    command: ["Quiero borrar el libro: (Nombre del libro)"],
-    tittle: "Borrar un libro por nombre",
+    command: ["Agregar un nuevo libro"],
+    tittle: "Agregar un libro",
+  },
+  {
+    command: ["Ver todos los libros"],
+    tittle: "Ver todos los libros",
+  },
+  {
+    command: ["Ver estadística del libro: (Nombre del libro)"],
+    tittle: "Ver estadística de los libros",
   },
 ];

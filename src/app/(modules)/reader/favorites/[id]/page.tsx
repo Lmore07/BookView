@@ -42,7 +42,7 @@ export default function Favorite({
   const [isViewBook, setIsViewBook] = useState(false);
   const [pagesBook, setPagesBook] = useState<PageI[] | null | undefined>([]);
   const [selectedBook, setSelectedBook] = useState<BooksAll | null>(null);
-
+  const [openHelp, setOpenHelp] = useState(false);
   const { resetTranscript, listening, transcript } = useSpeechRecognition();
 
   const handleChange = (event: any, value: number) => {
@@ -78,6 +78,7 @@ export default function Favorite({
   const startListening = () => {
     SpeechRecognition.startListening({ language: "es-EC" });
   };
+
 
   const stopListening = () => {
     SpeechRecognition.stopListening();
@@ -288,12 +289,7 @@ export default function Favorite({
           <span
             className="cursor-pointer"
             onClick={() => {
-              openModal(
-                <Help
-                  commands={commandsBooksFavorites}
-                  page="de búsqueda de libros"
-                />
-              );
+              setOpenHelp(true);
             }}
           >
             <svg
@@ -328,7 +324,7 @@ export default function Favorite({
             isFavorite={book.isFavorite}
             onFavoriteClick={() => {
               console.log("Favorite");
-              //HAY QUE SACARLO DE FAVORITOS
+              //TODO HAY QUE SACARLO DE FAVORITOS
             }}
             onReadClick={() => {
               setSelectedBook(book);
@@ -400,6 +396,27 @@ export default function Favorite({
           </DialogContent>
         </Dialog>
       )}
+      <div>
+        {openHelp && (
+          <Dialog
+            open={openHelp}
+            onOpenChange={(open: boolean) => {
+              setOpenHelp(open);
+            }}
+          >
+            <DialogContent className="bg-bgColorRight">
+              <DialogHeader>
+                <DialogDescription>
+                  <Help
+                    commands={commandsBooksFavorites}
+                    page="libros favoritos"
+                  ></Help>
+                </DialogDescription>
+              </DialogHeader>
+            </DialogContent>
+          </Dialog>
+        )}
+      </div>
     </div>
   );
 }

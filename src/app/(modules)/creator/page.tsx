@@ -17,6 +17,17 @@ import SpeechRecognition, {
   useSpeechRecognition,
 } from "react-speech-recognition";
 
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+} from "@/components/ui/dialog";
+import Help from "@/ui/modals/help/help";
+import { commandsHomeCreator } from "@/libs/texts/commands/creator/commandsCreator";
+import { messageHome } from "@/libs/texts/messages/creator/message";
+import { callFunction } from "@/libs/services/callFunction";
+
 export default function CreatorPage() {
   const router = useRouter();
   const [open, setOpen] = useState(false);
@@ -40,6 +51,43 @@ export default function CreatorPage() {
     resetTranscript();
   };
 
+  const functionInterpret = async () => {
+    const call = await callFunction(transcript);
+    if (call.name == "addNewBook") {
+      router.push("/creator/books/creation");
+    } else if (call.name == "viewBooks") {
+      router.push("/creator/books");
+    } else if (call.name == "viewStatistics") {
+      const idBook = getBookIdByName(call.args.book);
+      if (idBook) {
+        setSelectedId(idBook);
+        setOpenStats(true);
+      } else {
+        handleShowToast(
+          "No se reconoció o no se encontró el libro",
+          ToastType.ERROR
+        );
+      }
+    }
+    console.log(call);
+  };
+
+  const getBookIdByName = (bookName: string) => {
+    const lowerCaseBookName = bookName.toLowerCase();
+    const book = tableData.find(
+      (item: any) => item.bookName.toLowerCase() === lowerCaseBookName
+    );
+    return book ? book.idBook : null;
+  };
+
+  useEffect(() => {
+    if (!listening && transcript != "") {
+      console.log("Transcript: ", transcript);
+      functionInterpret();
+      resetTranscript();
+    }
+  }, [listening]);
+
   const handleToggleListening = () => {
     if (listening) {
       stopListening();
@@ -49,9 +97,7 @@ export default function CreatorPage() {
   };
 
   const startSpeech = async () => {
-    const audioData = await generateSpeech(
-      "A continuación, puede realizar la búsqueda de libros por autor y nombre de libro. Además, también puede filtrar por las categorías presentadas, recuerde que puede usar comandos de voz para realizar esto, para ver los comandos de voz haga click en el ícono de ayuda."
-    );
+    const audioData = await generateSpeech(messageHome);
     const ctx = new AudioContext();
     await ctx.decodeAudioData(audioData, (buffer) => {
       const src = ctx.createBufferSource();
@@ -294,6 +340,24 @@ export default function CreatorPage() {
           <LineChart id={selectedId}></LineChart>
         </div>
       )}
+      <div>
+        {openHelp && (
+          <Dialog
+            open={openHelp}
+            onOpenChange={(open: boolean) => {
+              setOpenHelp(open);
+            }}
+          >
+            <DialogContent className="bg-bgColorRight">
+              <DialogHeader>
+                <DialogDescription>
+                  <Help commands={commandsHomeCreator} page="inicio"></Help>
+                </DialogDescription>
+              </DialogHeader>
+            </DialogContent>
+          </Dialog>
+        )}
+      </div>
     </>
   );
 }

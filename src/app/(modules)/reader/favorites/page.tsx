@@ -1,5 +1,11 @@
 "use client";
 import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+} from "@/components/ui/dialog";
+import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
@@ -12,7 +18,10 @@ import { ResponseData } from "@/libs/interfaces/response.interface";
 import { ToastType } from "@/libs/interfaces/toast.interface";
 import { callFunction } from "@/libs/services/callFunction";
 import { generateSpeech } from "@/libs/services/generateSpeech";
-import { commandsHomeReader } from "@/libs/texts/commands/reader/homeReader";
+import {
+  commandsFoldersFavorites
+} from "@/libs/texts/commands/reader/homeReader";
+import { favoritesReader } from "@/libs/texts/messages/reader/homeReader";
 import Button from "@/ui/components/buttons/ButtonFill";
 import FolderCard from "@/ui/components/cards/folderCard";
 import CreateFolder from "@/ui/modals/folders/createFolder";
@@ -93,9 +102,7 @@ export default function Favorites() {
   };
 
   const startSpeech = async () => {
-    const audioData = await generateSpeech(
-      "A continuación, puede realizar la búsqueda de libros por autor y nombre de libro. Además, también puede filtrar por las categorías presentadas, recuerde que puede usar comandos de voz para realizar esto, para ver los comandos de voz haga click en el ícono de ayuda."
-    );
+    const audioData = await generateSpeech(favoritesReader);
     const ctx = new AudioContext();
     await ctx.decodeAudioData(audioData, (buffer) => {
       const src = ctx.createBufferSource();
@@ -387,15 +394,27 @@ export default function Favorites() {
           />
         </ModalParent>
       )}
-      {openHelp && (
-        <ModalParent
-          onClose={() => {
-            setOpenHelp(false);
-          }}
-        >
-          <Help commands={commandsHomeReader} page="inicio"></Help>
-        </ModalParent>
-      )}
+      <div>
+        {openHelp && (
+          <Dialog
+            open={openHelp}
+            onOpenChange={(open: boolean) => {
+              setOpenHelp(open);
+            }}
+          >
+            <DialogContent className="bg-bgColorRight">
+              <DialogHeader>
+                <DialogDescription>
+                  <Help
+                    commands={commandsFoldersFavorites}
+                    page="carpetas"
+                  ></Help>
+                </DialogDescription>
+              </DialogHeader>
+            </DialogContent>
+          </Dialog>
+        )}
+      </div>
     </div>
   );
 }

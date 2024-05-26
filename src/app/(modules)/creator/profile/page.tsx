@@ -14,7 +14,10 @@ import { ToastType } from "@/libs/interfaces/toast.interface";
 import { UserInfo } from "@/libs/interfaces/user.interface";
 import { callFunction } from "@/libs/services/callFunction";
 import { generateSpeech } from "@/libs/services/generateSpeech";
-import { commandsHomeReader } from "@/libs/texts/commands/reader/homeReader";
+import {
+  commandsProfile
+} from "@/libs/texts/commands/reader/homeReader";
+import { profileMessage } from "@/libs/texts/messages/reader/homeReader";
 import Button from "@/ui/components/buttons/ButtonFill";
 import ButtonOutlined from "@/ui/components/buttons/ButtonOutlined";
 import Input from "@/ui/components/inputs/input";
@@ -37,7 +40,7 @@ export default function ProfileCreator() {
   const { transcript, resetTranscript, listening } = useSpeechRecognition();
   const [userInfo, setUserInfo] = useState<UserInfo>({
     mail: "",
-    profilePicture: null,
+    profilePicture: "",
     Person: {
       names: "",
       lastNames: "",
@@ -56,6 +59,46 @@ export default function ProfileCreator() {
 
   const functionInterpret = async () => {
     const call = await callFunction(transcript);
+    if (call.name == "setInputText") {
+      switch (call.args.inputName) {
+        case "names":
+          setUserInfo({
+            ...userInfo,
+            Person: {
+              ...userInfo.Person,
+              names: call.args.text,
+            },
+          });
+          break;
+        case "lastNames":
+          setUserInfo({
+            ...userInfo,
+            Person: {
+              ...userInfo.Person,
+              lastNames: call.args.text,
+            },
+          });
+          break;
+        case "birthday":
+          setUserInfo({
+            ...userInfo,
+            Person: {
+              ...userInfo.Person,
+              birthday: call.args.text,
+            },
+          });
+          break;
+        case "mail":
+          setUserInfo({
+            ...userInfo,
+            mail: call.args.text,
+          });
+          break;
+        case "profilePicture":
+          handleImageUpload();
+          break;
+      }
+    }
     console.log(call);
   };
 
@@ -81,9 +124,7 @@ export default function ProfileCreator() {
   };
 
   const startSpeech = async () => {
-    const audioData = await generateSpeech(
-      "A continuación, puede realizar la búsqueda de libros por autor y nombre de libro. Además, también puede filtrar por las categorías presentadas, recuerde que puede usar comandos de voz para realizar esto, para ver los comandos de voz haga click en el ícono de ayuda."
-    );
+    const audioData = await generateSpeech(profileMessage);
     const ctx = new AudioContext();
     await ctx.decodeAudioData(audioData, (buffer) => {
       const src = ctx.createBufferSource();
@@ -150,10 +191,22 @@ export default function ProfileCreator() {
   }, []);
 
   const handleChange = (e: any) => {
-    setUserInfo({
-      ...userInfo,
-      [e.target.name]: e.target.value,
-    });
+    const parts = e.target.name.split(".");
+    if (parts.length === 2) {
+      const [object, key] = parts;
+      setUserInfo((prevState: any) => ({
+        ...prevState,
+        [object]: {
+          ...prevState[object],
+          [key]: e.target.value,
+        },
+      }));
+    } else {
+      setUserInfo((prevState) => ({
+        ...prevState,
+        [e.target.name]: e.target.value,
+      }));
+    }
   };
 
   const handleImageUpload = () => {
@@ -327,6 +380,7 @@ export default function ProfileCreator() {
               alt="Imagen de perfil"
               className="max-h-full max-w-full"
               width={300}
+              height={150}
             />
           </div>
           <div className="flex flex-col content-end justify-end gap-y-3">
@@ -402,7 +456,8 @@ export default function ProfileCreator() {
         <div className="py-1 grid">
           <Input
             label="Nombres"
-            name="names"
+            name="Person.names"
+            maxLength={50}
             placeholder="Luis"
             value={userInfo.Person.names}
             type="text"
@@ -423,7 +478,8 @@ export default function ProfileCreator() {
         <div className="py-1 grid">
           <Input
             label="Apellidos"
-            name="lastNames"
+            name="Person.lastNames"
+            maxLength={60}
             placeholder="Moreira"
             value={userInfo.Person.lastNames}
             type="text"
@@ -444,7 +500,7 @@ export default function ProfileCreator() {
         <div className="py-1 grid">
           <Input
             label="Fecha de nacimiento"
-            name="birthday"
+            name="Person.birthday"
             placeholder="lmoreira@gmail.com"
             value={userInfo.Person.birthday}
             type="date"
@@ -465,7 +521,8 @@ export default function ProfileCreator() {
         <div className="py-1 grid">
           <Input
             label="Correo electrónico"
-            name="email"
+            name="mail"
+            maxLength={150}
             placeholder="lmoreira@gmail.com"
             value={userInfo.mail}
             type="email"
@@ -503,7 +560,7 @@ export default function ProfileCreator() {
             setOpenHelp(false);
           }}
         >
-          <Help commands={commandsHomeReader} page="inicio"></Help>
+          <Help commands={commandsProfile} page="perfil"></Help>
         </ModalParent>
       )}
     </div>

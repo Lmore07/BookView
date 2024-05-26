@@ -1,5 +1,11 @@
 "use client";
 import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+} from "@/components/ui/dialog";
+import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
@@ -12,17 +18,16 @@ import { ToastType } from "@/libs/interfaces/toast.interface";
 import { callFunction } from "@/libs/services/callFunction";
 import { generateSpeech } from "@/libs/services/generateSpeech";
 import { commandsHomeReader } from "@/libs/texts/commands/reader/homeReader";
+import { homeReader } from "@/libs/texts/messages/reader/homeReader";
 import ButtonOutlined from "@/ui/components/buttons/ButtonOutlined";
 import Input from "@/ui/components/inputs/input";
 import "@/ui/globals.css";
 import Help from "@/ui/modals/help/help";
-import ModalParent from "@/ui/modals/modal";
 import { useRouter } from "next/navigation";
 import { useContext, useEffect, useRef, useState } from "react";
 import SpeechRecognition, {
   useSpeechRecognition,
 } from "react-speech-recognition";
-import { format } from 'date-fns';
 
 export default function Home() {
   //Variables declaradas
@@ -108,9 +113,7 @@ export default function Home() {
   };
 
   const startSpeech = async () => {
-    const audioData = await generateSpeech(
-      "A continuación, puede realizar la búsqueda de libros por autor y nombre de libro. Además, también puede filtrar por las categorías presentadas, recuerde que puede usar comandos de voz para realizar esto, para ver los comandos de voz haga click en el ícono de ayuda."
-    );
+    const audioData = await generateSpeech(homeReader);
     const ctx = new AudioContext();
     await ctx.decodeAudioData(audioData, (buffer) => {
       const src = ctx.createBufferSource();
@@ -388,11 +391,24 @@ export default function Home() {
           </div>
         </div>
       </div>
-      {openHelp && (
-        <ModalParent onClose={handleCloseHelp}>
-          <Help commands={commandsHomeReader} page="inicio"></Help>
-        </ModalParent>
-      )}
+      <div>
+        {openHelp && (
+          <Dialog
+            open={openHelp}
+            onOpenChange={(open: boolean) => {
+              setOpenHelp(open);
+            }}
+          >
+            <DialogContent className="bg-bgColorRight">
+              <DialogHeader>
+                <DialogDescription>
+                  <Help commands={commandsHomeReader} page="inicio"></Help>
+                </DialogDescription>
+              </DialogHeader>
+            </DialogContent>
+          </Dialog>
+        )}
+      </div>
     </div>
   );
 }

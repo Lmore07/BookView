@@ -22,6 +22,9 @@ export async function callFunction(
         filterByStatusOrRole,
         removeFilter,
         newCategory,
+        viewBooks,
+        addNewBook,
+        viewStatistics,
       ],
     },
   });
@@ -31,23 +34,6 @@ export async function callFunction(
   const call = result.response.functionCalls()[0];
   return call;
 }
-
-const selectCategories = {
-  name: "selectCategories",
-  parameters: {
-    type: "OBJECT",
-    description: "Select categories to filter the books.",
-    properties: {
-      categories: {
-        type: "ARRAY",
-        description: "The categories to filter the books.",
-        items: {
-          type: "STRING",
-        },
-      },
-    },
-  },
-};
 
 const changePage = {
   name: "changePage",
@@ -88,6 +74,58 @@ const setInputText = {
   },
 };
 
+const generateDefinition = {
+  name: "generateDefinition",
+  parameters: {
+    type: "OBJECT",
+    description: "Generate a definition for a word.",
+    properties: {
+      text: {
+        type: "STRING",
+        description: "The word to generate a definition for it",
+      },
+    },
+    required: ["text"],
+  },
+};
+
+// CREATOR OF BOOKS
+
+//HOME
+const viewBooks = {
+  name: "viewBooks",
+  parameters: {
+    type: "OBJECT",
+    description: "View all the books I have created.",
+  },
+};
+
+const addNewBook = {
+  name: "addNewBook",
+  parameters: {
+    type: "OBJECT",
+    description: "Add a new book.",
+  },
+};
+
+const viewStatistics = {
+  name: "viewStatistics",
+  parameters: {
+    type: "OBJECT",
+    description: "View the statistics by book.",
+    properties: {
+      book: {
+        type: "STRING",
+        description: "The book to view the statistics.",
+      },
+    },
+  },
+};
+
+//USER READER
+
+//SEARCH BOOK
+
 const sortBooks = {
   name: "sortBooks",
   parameters: {
@@ -122,6 +160,8 @@ const selectBookByName = {
   },
 };
 
+//FAVORITES
+
 const selectFolderByName = {
   name: "selectFolderByName",
   parameters: {
@@ -131,6 +171,25 @@ const selectFolderByName = {
       folderName: {
         type: "STRING",
         description: "The name of the folder to select.",
+      },
+    },
+  },
+};
+
+//HOME
+
+const selectCategories = {
+  name: "selectCategories",
+  parameters: {
+    type: "OBJECT",
+    description: "Select categories to filter the books.",
+    properties: {
+      categories: {
+        type: "ARRAY",
+        description: "The categories to filter the books.",
+        items: {
+          type: "STRING",
+        },
       },
     },
   },
@@ -153,20 +212,7 @@ const removeCategories = {
   },
 };
 
-const generateDefinition = {
-  name: "generateDefinition",
-  parameters: {
-    type: "OBJECT",
-    description: "Generate a definition for a word.",
-    properties: {
-      text: {
-        type: "STRING",
-        description: "The word to generate a definition for it",
-      },
-    },
-    required: ["text"],
-  },
-};
+
 
 //ADMIN
 

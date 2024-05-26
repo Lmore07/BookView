@@ -47,7 +47,7 @@ export default function BookSearch() {
   const [pagesBook, setPagesBook] = useState<PageI[] | null | undefined>([]);
   const [lastPage, setLastPage] = useState(0);
   const [coverInfo, setCoverInfo] = useState<CoverI | null>(null);
-
+  const [openHelp, setOpenHelp] = useState(false);
   const { transcript, resetTranscript, listening } = useSpeechRecognition();
 
   const handleChange = (event: any, value: number) => {
@@ -321,12 +321,7 @@ export default function BookSearch() {
           <span
             className="cursor-pointer"
             onClick={() => {
-              openModal(
-                <Help
-                  commands={commandsSearchBooks}
-                  page="de búsqueda de libros"
-                />
-              );
+              setOpenHelp(true);
             }}
           >
             <svg
@@ -474,7 +469,7 @@ export default function BookSearch() {
                 setSelectedBook(book);
                 setIsFavorite(true);
               } else {
-                //AQUI HAY QUE SACAR EL LIBRO DE FAVORITOS
+                //TODO AQUI HAY QUE SACAR EL LIBRO DE FAVORITOS
               }
             }}
           ></BookCard>
@@ -560,6 +555,24 @@ export default function BookSearch() {
           </DialogContent>
         </Dialog>
       )}
+      <div>
+        {openHelp && (
+          <Dialog
+            open={openHelp}
+            onOpenChange={(open: boolean) => {
+              setOpenHelp(open);
+            }}
+          >
+            <DialogContent className="bg-bgColorRight">
+              <DialogHeader>
+                <DialogDescription>
+                  <Help commands={commandsSearchBooks} page="búsqueda"></Help>
+                </DialogDescription>
+              </DialogHeader>
+            </DialogContent>
+          </Dialog>
+        )}
+      </div>
     </div>
   );
 }

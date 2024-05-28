@@ -1,5 +1,5 @@
 "use client";
-import React, { createContext, useState, useEffect, useCallback } from "react";
+import React, { createContext, useEffect, useState } from "react";
 import SpeechRecognition, {
   useSpeechRecognition,
 } from "react-speech-recognition";

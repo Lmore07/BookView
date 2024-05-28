@@ -38,7 +38,7 @@ export default function Home() {
   const [openHelp, setOpenHelp] = useState(false);
   const { handleShowToast } = useContext(ToastContext)!;
   const router = useRouter();
-  const { setIsListening, finalTranscript } = useContext(VoiceRecorderContext!);
+  const { setIsListening, finalTranscript } = useContext(VoiceRecorderContext)!;
 
   const addCategoriesToFilter = (categoryNames: string[]) => {
     categoryNames.map((name) => {

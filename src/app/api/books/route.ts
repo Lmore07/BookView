@@ -217,16 +217,21 @@ export const POST = apiMiddleware(async (request: NextRequest) => {
         })),
       },
       Pages: {
-        create: await Promise.all(
-          data.pages.map(async (page: any) => ({
-            numberPage: page.numberPage,
-            content: page.content,
-            image: await saveImage(page.image),
-            audio: await saveAudio(page.audio),
-            video: await saveVideo(page.video),
-            template: page.template,
-          }))
-        ),
+        createMany: {
+          data: await Promise.all(
+            data.pages
+              .filter((page: any) => !page.idPage)
+              .map(async (page: any) => ({
+                numberPage: page.numberPage,
+                createdBy: authResult.userId,
+                content: page.content,
+                template: page.template,
+                image: await saveImage(page.image, 'create'),
+                audio: await saveAudio(page.audio),
+                video: await saveVideo(page.video),
+              }))
+          ),
+        },
       },
     },
   });
@@ -345,7 +350,6 @@ export const PUT = apiMiddleware(async (request: NextRequest) => {
     const isToUpdate = pagesToUpdate
       .filter((page) => page.numberPage !== 0)
       .map((page) => page.idPage);
-
     await prisma.pages.updateMany({
       where: {
         idPage: {
@@ -355,11 +359,6 @@ export const PUT = apiMiddleware(async (request: NextRequest) => {
       data: {
         status: false,
       },
-    });
-
-    const existingBookCategories = await prisma.bookCategory.findMany({
-      where: { idBook },
-      select: { idCategory: true },
     });
 
     const book = await prisma.books.update({
@@ -393,40 +392,38 @@ export const PUT = apiMiddleware(async (request: NextRequest) => {
           ],
         },
         Pages: {
-          upsert: await Promise.all(
-            data.pages.map(async (page: any) => {
-              const whereCondition = page.idPage
-                ? { idPage: page.idPage }
-                : {
-                    idBook_numberPage: {
-                      idBook,
-                      numberPage: page.numberPage,
-                    },
-                  };
-              return {
-                where: whereCondition,
-                update: {
+          updateMany: (await Promise.all(
+            data.pages
+              .filter((page: any) => page.idPage)
+              .map(async (page: any) => ({
+                where: { idPage: page.idPage },
+                data: {
                   numberPage: page.numberPage,
                   status: true,
                   content: page.content,
                   template: page.template,
                   updatedBy: authResult.userId,
-                  image: await saveImage(page.image),
+                  image: await saveImage(page.image, 'update'),
                   audio: await saveAudio(page.audio),
                   video: await saveVideo(page.video),
                 },
-                create: {
+              }))
+          )),
+          createMany: {
+            data: await Promise.all(
+              data.pages
+                .filter((page: any) => !page.idPage)
+                .map(async (page: any) => ({
                   numberPage: page.numberPage,
                   createdBy: authResult.userId,
                   content: page.content,
                   template: page.template,
-                  image: await saveImage(page.image),
+                  image: await saveImage(page.image, 'create'),
                   audio: await saveAudio(page.audio),
                   video: await saveVideo(page.video),
-                },
-              };
-            })
-          ),
+                }))
+            ),
+          },
         },
       },
     });

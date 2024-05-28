@@ -1,5 +1,6 @@
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { storage } from "../../../config";
+import { v4 as uuidv4 } from 'uuid';
 
 export async function generateImage(text: string): Promise<string> {
   const timestamp = new Date().getTime();
@@ -29,11 +30,12 @@ export async function saveAudio(audio: any): Promise<string | null> {
     return audio;
   }
   if (audio != null) {
-    const timestamp = new Date().getTime();
-    const extension = audio.type.split("/")[1];
-    const filename = `audio_${timestamp}.${extension}`;
+    const extension = audio.name.split('.').pop() || 'mp3';
+    const uuid = uuidv4();
+    const filename = `image_${uuid}.${extension}`;
     const storageRef = ref(storage, `pages/audios/${filename}`);
-    await uploadBytes(storageRef, audio);
+    const file = new File([audio], filename, { type: extension });
+    await uploadBytes(storageRef, file);
     const url = await getDownloadURL(storageRef);
     return url;
   } else {
@@ -41,16 +43,17 @@ export async function saveAudio(audio: any): Promise<string | null> {
   }
 }
 
-export async function saveImage(image: any): Promise<string | null> {
+export async function saveImage(image: any, action?: string): Promise<string | null> {
   if (typeof image === "string") {
     return image;
   }
   if (image != null) {
-    const timestamp = new Date().getTime();
-    const extension = image.type.split("/")[1];
-    const filename = `image_${timestamp}.${extension}`;
+    const extension = image.name.split('.').pop() || 'jpg';
+    const uuid = uuidv4();
+    const filename = `image_${uuid}.${extension}`;
     const storageRef = ref(storage, `pages/images/${filename}`);
-    await uploadBytes(storageRef, image);
+    const file = new File([image], filename, { type: extension });
+    await uploadBytes(storageRef, file);
     const url = await getDownloadURL(storageRef);
     return url;
   } else {
@@ -62,12 +65,13 @@ export async function saveVideo(video: any): Promise<string | null> {
   if (typeof video === "string") {
     return video;
   } else {
-    const timestamp = new Date().getTime();
     if (video != null) {
-      const extension = video.type.split("/")[1];
-      const filename = `video_${timestamp}.${extension}`;
+      const extension = video.name.split('.').pop() || 'mp4';
+      const uuid = uuidv4();
+      const filename = `image_${uuid}.${extension}`;
       const storageRef = ref(storage, `pages/videos/${filename}`);
-      await uploadBytes(storageRef, video);
+      const file = new File([video], filename, { type: extension });
+      await uploadBytes(storageRef, file);
       const url = await getDownloadURL(storageRef);
       return url;
     }

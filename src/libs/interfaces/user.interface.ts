@@ -26,7 +26,7 @@ export enum RolEnum {
 
 export interface UserInfo {
   mail: string;
-  profilePicture?: any;
+  profilePicture?: File | null | string;
   Person: Person;
 }
 

@@ -744,8 +744,6 @@ export default function Stepper() {
                       content: "",
                       image: selectedBook?.coverPhoto,
                     });
-                    console.log("paso 1: ", stepOne);
-                    console.log("Paginas: ", pages);
                     setPrevisualize(true);
                   }}
                   className="w-full flex text-sm items-center justify-center font-open-sans font-normal py-1 rounded-lg bg-bgButtonPrevFill text-textButtonPrevFill px-3 hover:text-textButtonPrevFillHover hover:bg-bgButtonPrevFillHover"

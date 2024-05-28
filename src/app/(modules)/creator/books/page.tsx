@@ -342,7 +342,6 @@ export default function CreatorBooksPage() {
                 if (data.error) {
                   handleShowToast(data.message!, ToastType.ERROR);
                 } else {
-                  console.log("item seleccionado: ", item);
                   setSelectedBook(item);
                   setPagesBook(data.data);
                   setIsViewBook(true);

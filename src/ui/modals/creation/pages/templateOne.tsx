@@ -125,7 +125,6 @@ const Template1: React.FC<{
         <Editor
           apiKey="pxp94q2uamitsp5ok6hrdctn5uu10ei9emrfbozu7576fwa4"
           onEditorChange={(newContent) => {
-            console.log(newContent);
             onContentChange(newContent, imageBlob, audioBlob, videoBlob);
           }}
           init={{

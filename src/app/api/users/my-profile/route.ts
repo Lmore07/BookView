@@ -49,7 +49,7 @@ export const PUT = apiMiddleware(async (request: NextRequest) => {
     mail?: string;
     names?: string;
     lastNames?: string;
-    profilePicture?: Blob;
+    profilePicture?: Blob | string | null;
     birthday?: Date;
   } = {};
   Object.assign(data, Object.fromEntries(formData.entries()));

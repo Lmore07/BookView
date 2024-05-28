@@ -7,6 +7,7 @@ import type { Metadata } from "next";
 import "reflect-metadata";
 import "regenerator-runtime/runtime";
 import "../ui/globals.css";
+import { VoiceRecorderProvider } from "@/libs/contexts/speechToTextContext";
 
 export const metadata: Metadata = {
   title: "BookView",
@@ -28,7 +29,7 @@ export default function RootLayout({
           <LoadingProvider>
             <ModalProvider>
               <ToastProvider>
-                {children}
+                <VoiceRecorderProvider>{children}</VoiceRecorderProvider>
                 <AccessibilityButton />
               </ToastProvider>
             </ModalProvider>

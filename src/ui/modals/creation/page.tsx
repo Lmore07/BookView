@@ -48,9 +48,7 @@ const BookEditor: React.FC<{ onChangedPages: any; pagesEdit?: any[] }> = ({
     audio?: any,
     video?: any
   ) => {
-    console.log("Paginas antes: ", pages);
     const newPages = [...pages];
-    console.log("Paginas despues: ", newPages);
     newPages[index].content = content;
     newPages[index].image = image;
     newPages[index].audio = audio;
@@ -67,7 +65,6 @@ const BookEditor: React.FC<{ onChangedPages: any; pagesEdit?: any[] }> = ({
 
   useEffect(() => {
     onChangedPages(pages);
-    console.log("pages: ", pages);
   }, [pages]);
 
   return (

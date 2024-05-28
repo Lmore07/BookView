@@ -36,11 +36,6 @@ const PageContent: React.FC<PageProps> = ({ page, coverInfo }) => {
   };
 
   useEffect(() => {
-    console.log(
-      "Date es string?: ",
-      typeof coverInfo?.publicationDate == "string"
-    );
-    console.log("Info: ", coverInfo);
     if (
       typeof coverInfo?.publicationDate != "string" &&
       coverInfo?.publicationDate

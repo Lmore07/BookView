@@ -1,4 +1,3 @@
-// FIXME: CORREGIR LLEGADA DE DATA Y ACTUALIZATION DE DATOS DEL PERFIL
 "use client";
 import {
   Tooltip,
@@ -13,9 +12,7 @@ import { ToastType } from "@/libs/interfaces/toast.interface";
 import { UserInfo } from "@/libs/interfaces/user.interface";
 import { callFunction } from "@/libs/services/callFunction";
 import { generateSpeech } from "@/libs/services/generateSpeech";
-import {
-  commandsProfile
-} from "@/libs/texts/commands/reader/homeReader";
+import { commandsProfile } from "@/libs/texts/commands/reader/homeReader";
 import { profileMessage } from "@/libs/texts/messages/reader/homeReader";
 import Button from "@/ui/components/buttons/ButtonFill";
 import ButtonOutlined from "@/ui/components/buttons/ButtonOutlined";
@@ -123,9 +120,7 @@ export default function ProfileReader() {
   };
 
   const startSpeech = async () => {
-    const audioData = await generateSpeech(
-      profileMessage
-    );
+    const audioData = await generateSpeech(profileMessage);
     const ctx = new AudioContext();
     await ctx.decodeAudioData(audioData, (buffer) => {
       const src = ctx.createBufferSource();
@@ -229,7 +224,9 @@ export default function ProfileReader() {
     formData.append("mail", userInfo.mail);
     formData.append("names", userInfo.Person.names);
     formData.append("lastNames", userInfo.Person.lastNames);
-    formData.append("profilePicture", userInfo.profilePicture);
+    if (userInfo.profilePicture) {
+      formData.append("profilePicture", userInfo.profilePicture);
+    }
     formData.append("birthday", userInfo.Person.birthday);
     const response = await fetch("../api/users/my-profile", {
       method: "PUT",
@@ -372,17 +369,19 @@ export default function ProfileReader() {
         </div>
         <div className="flex gap-5 py-1">
           <div className="bg-bgInputText rounded-md h-64 w-1/3 flex items-center justify-center hover:text-secondary-400 hover:border hover:border-black">
-            <Image
-              src={
-                userInfo.profilePicture instanceof File
-                  ? URL.createObjectURL(userInfo.profilePicture as Blob)
-                  : userInfo.profilePicture
-              }
-              width={300}
-              height={150}
-              alt="Imagen de perfil"
-              className="max-h-full max-w-full"
-            />
+            {userInfo.profilePicture && (
+              <Image
+                src={
+                  userInfo.profilePicture instanceof File
+                    ? URL.createObjectURL(userInfo.profilePicture as Blob)
+                    : userInfo.profilePicture
+                }
+                alt="Imagen de perfil"
+                className="max-h-full max-w-full"
+                width={300}
+                height={150}
+              />
+            )}
           </div>
           <div className="flex flex-col content-end justify-end gap-y-3">
             <ButtonOutlined

@@ -97,15 +97,15 @@ const FlipBook: React.FC<FlipBookProps> = ({
       if (bookElement) {
         bookElement.classList.add("flipping");
         if (flipDirection === "prev") {
-          bookElement.classList.add("flip-prev");
+          bookElement.classList.add("swing-left");
         } else {
-          bookElement.classList.add("flip-next");
+          bookElement.classList.add("swing-right");
         }
 
         const resetFlip = () => {
           bookElement.classList.remove("flipping");
-          bookElement.classList.remove("flip-prev");
-          bookElement.classList.remove("flip-next");
+          bookElement.classList.remove("swing-left");
+          bookElement.classList.remove("swing-right");
           setIsFlipping(false);
           if (flipDirection === "prev") {
             setCurrentPage(currentPage - 1);

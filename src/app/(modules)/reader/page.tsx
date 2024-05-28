@@ -11,6 +11,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { VoiceRecorderContext } from "@/libs/contexts/speechToTextContext";
 import { ToastContext } from "@/libs/contexts/toastContext";
 import { CategoriesAll } from "@/libs/interfaces/categories.interface";
 import { ResponseData } from "@/libs/interfaces/response.interface";
@@ -25,9 +26,6 @@ import "@/ui/globals.css";
 import Help from "@/ui/modals/help/help";
 import { useRouter } from "next/navigation";
 import { useContext, useEffect, useRef, useState } from "react";
-import SpeechRecognition, {
-  useSpeechRecognition,
-} from "react-speech-recognition";
 
 export default function Home() {
   //Variables declaradas
@@ -40,7 +38,7 @@ export default function Home() {
   const [openHelp, setOpenHelp] = useState(false);
   const { handleShowToast } = useContext(ToastContext)!;
   const router = useRouter();
-  const { transcript, resetTranscript, listening } = useSpeechRecognition();
+  const { setIsListening, finalTranscript } = useContext(VoiceRecorderContext!);
 
   const addCategoriesToFilter = (categoryNames: string[]) => {
     categoryNames.map((name) => {
@@ -72,45 +70,26 @@ export default function Home() {
   };
 
   const functionInterpret = async () => {
-    const call = await callFunction(transcript);
-    if (call.name === "selectCategories") {
-      addCategoriesToFilter(call.args.categories);
-    } else if (call.name == "removeCategories") {
-      removeCategoriesFromFilter(call.args.categories);
-    } else if (call.name == "setInputText") {
-      setSearchTerm(call.args.text);
+    try {
+      const call = await callFunction(finalTranscript);
+      if (call.name === "selectCategories") {
+        addCategoriesToFilter(call.args.categories);
+      } else if (call.name == "removeCategories") {
+        removeCategoriesFromFilter(call.args.categories);
+      } else if (call.name == "setInputText") {
+        setSearchTerm(call.args.text);
+      }
+      console.log(call);
+    } catch (error) {
+      handleShowToast("No se reconoció el comando", ToastType.ERROR);
     }
-    console.log(call);
   };
 
   useEffect(() => {
-    if (!listening && transcript != "") {
-      console.log("Transcript: ", transcript);
+    if (finalTranscript && finalTranscript != "") {
       functionInterpret();
-      resetTranscript();
     }
-  }, [listening]);
-
-  const startListening = () => {
-    SpeechRecognition.startListening({
-      language: "es-EC",
-      continuous: false,
-      interimResults: true,
-    });
-  };
-
-  const stopListening = () => {
-    SpeechRecognition.stopListening();
-    resetTranscript();
-  };
-
-  const handleToggleListening = () => {
-    if (listening) {
-      stopListening();
-    } else {
-      startListening();
-    }
-  };
+  }, [finalTranscript]);
 
   const startSpeech = async () => {
     const audioData = await generateSpeech(homeReader);
@@ -190,10 +169,6 @@ export default function Home() {
     );
   };
 
-  const handleCloseHelp = () => {
-    setOpenHelp(false);
-  };
-
   return (
     <div className="shadow-xl p-8 grid rounded-md">
       <div className="flex items-center justify-end gap-2">
@@ -252,37 +227,27 @@ export default function Home() {
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger>
-              <span className="cursor-pointer" onClick={handleToggleListening}>
-                {listening ? (
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 16 16"
-                    fill="#cf0101"
-                    className="w-8 h-8"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M4.5 7.5a3 3 0 0 1 3-3h9a3 3 0 0 1 3 3v9a3 3 0 0 1-3 3h-9a3 3 0 0 1-3-3v-9Z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                ) : (
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="w-9 h-9"
-                    viewBox="0 0 16 16"
-                    fill="#c5910d"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M8 1a2 2 0 0 0-2 2v4a2 2 0 1 0 4 0V3a2 2 0 0 0-2-2"
-                    />
-                    <path d="M4.5 7A.75.75 0 0 0 3 7a5.001 5.001 0 0 0 4.25 4.944V13.5h-1.5a.75.75 0 0 0 0 1.5h4.5a.75.75 0 0 0 0-1.5h-1.5v-1.556A5.001 5.001 0 0 0 13 7a.75.75 0 0 0-1.5 0a3.5 3.5 0 1 1-7 0" />
-                  </svg>
-                )}
+              <span
+                className="cursor-pointer"
+                onClick={() => {
+                  setIsListening(true);
+                }}
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="w-9 h-9"
+                  viewBox="0 0 16 16"
+                  fill="#c5910d"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M8 1a2 2 0 0 0-2 2v4a2 2 0 1 0 4 0V3a2 2 0 0 0-2-2"
+                  />
+                  <path d="M4.5 7A.75.75 0 0 0 3 7a5.001 5.001 0 0 0 4.25 4.944V13.5h-1.5a.75.75 0 0 0 0 1.5h4.5a.75.75 0 0 0 0-1.5h-1.5v-1.556A5.001 5.001 0 0 0 13 7a.75.75 0 0 0-1.5 0a3.5 3.5 0 1 1-7 0" />
+                </svg>
               </span>
             </TooltipTrigger>
-            <TooltipContent>{listening ? "Detener" : "Dictar"}</TooltipContent>
+            <TooltipContent>Dictar</TooltipContent>
           </Tooltip>
         </TooltipProvider>
         <TooltipProvider>

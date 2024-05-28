@@ -13,9 +13,6 @@ async function main() {
       where: { categoryName: "Otra" },
     });
 
-    console.log("Categoria inicial:", existingCategory);
-    console.log("Usuario inicial:", existingUser);
-
     if (!existingUser) {
       const newUser = await prisma.users.create({
         data: {

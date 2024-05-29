@@ -1,3 +1,8 @@
+import {
+  AddBookBodyRequest,
+  bookSchema,
+  parsePagesField,
+} from "@/libs/dtos/books/booksDTOS";
 import { apiMiddleware } from "@/libs/middleware/apiMiddleware";
 import { toBoolean } from "@/libs/pipes/toBoolean";
 import { saveAudio, saveImage, saveVideo } from "@/libs/services/generateImage";
@@ -131,67 +136,36 @@ export const POST = apiMiddleware(async (request: NextRequest) => {
     return authResult;
   }
   const formData = await request.formData();
-
-  const data: {
-    bookName?: string;
-    authors?: string[];
-    illustrator?: string;
-    publicationDate?: Date;
-    editorial?: string;
-    bookCover?: Blob;
-    pages: {
-      template?: string;
-      content?: string;
-      numberPage?: number;
-      image?: Blob;
-      audio?: Blob;
-      video?: Blob;
-    }[];
-    categoriesIds?: number[];
-    [key: string]: any;
-  } = { pages: [] };
-  Object.assign(data, Object.fromEntries(formData.entries()));
-  if (
-    !data.bookName ||
-    !data.publicationDate ||
-    !data.illustrator ||
-    !data.editorial ||
-    !data.bookCover
-  ) {
-    throw new Error("Faltan campos requeridos");
+  const parsedPages = parsePagesField(formData);
+  const parsedEntries: AddBookBodyRequest = { pages: [] };
+  Object.assign(parsedEntries, Object.fromEntries(formData.entries()));
+  if (typeof parsedEntries.categoriesIds === "string") {
+    parsedEntries.categoriesIds = JSON.parse(parsedEntries.categoriesIds);
   }
-
-  data.pages = [];
-  data.pages.push({
+  if (typeof parsedEntries.authors === "string") {
+    parsedEntries.authors = JSON.parse(parsedEntries.authors);
+  }
+  for (const key of Object.keys(parsedEntries)) {
+    if (key.startsWith("pages")) {
+      delete parsedEntries[key];
+    }
+  }
+  parsedEntries.pages = [];
+  parsedEntries.pages.push({
     template: "Cover",
     numberPage: 0,
-    content: `Hola, el nombre del libro es: ${data.bookName} los autores son:  y lo publicó el: ${data.publicationDate}`,
+    content: `Hola, el nombre del libro es: ${parsedEntries.bookName} los autores son:  y lo publicó el: ${parsedEntries.publicationDate}`,
   });
-  for (let i = 0, j = 1; data[`pages[${i}][template]`]; i++, j++) {
-    data.pages.push({
-      template: data[`pages[${i}][template]`],
-      content: data[`pages[${i}][content]`],
-      numberPage: j,
-      image: data[`pages[${i}][image]`],
-      audio: data[`pages[${i}][audio]`],
-      video: data[`pages[${i}][video]`],
-    });
-  }
-  data.authors = [];
-  for (let i = 0; data[`authors[${i}]`]; i++) {
-    data.authors.push(data[`authors[${i}]`]);
-  }
-
-  if (typeof data.categoriesIds === "string") {
-    data.categoriesIds = JSON.parse(data.categoriesIds);
-  }
-  if (typeof data.publicationDate === "string") {
-    data.publicationDate = new Date(data.publicationDate);
-  }
-  for (const key in data) {
-    if (key.startsWith("pages[") || key.startsWith("authors[")) {
-      delete data[key];
-    }
+  parsedEntries.pages.push(...parsedPages.pages);
+  const validatedFields = bookSchema.safeParse(parsedEntries);
+  if (!validatedFields.success) {
+    return NextResponse.json(
+      {
+        message: "Campos inválidos",
+        errors: validatedFields.error.errors,
+      },
+      { status: 400 }
+    );
   }
 
   const book = await prisma.books.create({
@@ -204,29 +178,29 @@ export const POST = apiMiddleware(async (request: NextRequest) => {
       Pages: true,
     },
     data: {
-      authors: data.authors,
-      bookName: data.bookName,
-      publicationDate: data.publicationDate,
+      authors: parsedEntries.authors,
+      bookName: parsedEntries.bookName!,
+      publicationDate: parsedEntries.publicationDate,
       createdBy: authResult.userId,
-      illustrator: data.illustrator,
-      editorial: data.editorial,
-      coverPhoto: await saveImage(data.bookCover),
+      illustrator: parsedEntries.illustrator,
+      editorial: parsedEntries.editorial,
+      coverPhoto: await saveImage(parsedEntries.bookCover),
       BookCategories: {
-        create: data.categoriesIds?.map((idCategory: any) => ({
+        create: parsedEntries.categoriesIds?.map((idCategory: any) => ({
           Categories: { connect: { idCategory } },
         })),
       },
       Pages: {
         createMany: {
           data: await Promise.all(
-            data.pages
+            parsedEntries.pages
               .filter((page: any) => !page.idPage)
               .map(async (page: any) => ({
                 numberPage: page.numberPage,
                 createdBy: authResult.userId,
                 content: page.content,
                 template: page.template,
-                image: await saveImage(page.image, 'create'),
+                image: await saveImage(page.image, "create"),
                 audio: await saveAudio(page.audio),
                 video: await saveVideo(page.video),
               }))
@@ -392,7 +366,7 @@ export const PUT = apiMiddleware(async (request: NextRequest) => {
           ],
         },
         Pages: {
-          updateMany: (await Promise.all(
+          updateMany: await Promise.all(
             data.pages
               .filter((page: any) => page.idPage)
               .map(async (page: any) => ({
@@ -403,12 +377,12 @@ export const PUT = apiMiddleware(async (request: NextRequest) => {
                   content: page.content,
                   template: page.template,
                   updatedBy: authResult.userId,
-                  image: await saveImage(page.image, 'update'),
+                  image: await saveImage(page.image, "update"),
                   audio: await saveAudio(page.audio),
                   video: await saveVideo(page.video),
                 },
               }))
-          )),
+          ),
           createMany: {
             data: await Promise.all(
               data.pages
@@ -418,7 +392,7 @@ export const PUT = apiMiddleware(async (request: NextRequest) => {
                   createdBy: authResult.userId,
                   content: page.content,
                   template: page.template,
-                  image: await saveImage(page.image, 'create'),
+                  image: await saveImage(page.image, "create"),
                   audio: await saveAudio(page.audio),
                   video: await saveVideo(page.video),
                 }))

@@ -249,9 +249,7 @@ export default function Stepper() {
       formData.append("bookName", body.bookName);
       formData.append("illustrator", body.illustrator);
       formData.append("editorial", body.editorial);
-      body.authors.forEach((author: any, index: any) => {
-        formData.append(`authors[${index}]`, author);
-      });
+      formData.append("authors", JSON.stringify(body.authors));
       formData.append("publicationDate", body.publicationDate.toString());
       formData.append("bookCover", body.bookImage!);
       body.pages.forEach((page: any, index: any) => {

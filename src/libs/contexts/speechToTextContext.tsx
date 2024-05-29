@@ -19,9 +19,10 @@ export const VoiceRecorderProvider = ({
 }: {
   children: React.ReactNode;
 }) => {
-  const { resetTranscript, listening, finalTranscript } =
+  const { resetTranscript, listening, transcript, finalTranscript } =
     useSpeechRecognition();
   const [isListening, setIsListening] = useState(false);
+  const [isAnimating, setIsAnimating] = useState(false);
 
   const startListening = () => {
     SpeechRecognition.startListening({
@@ -32,8 +33,15 @@ export const VoiceRecorderProvider = ({
   };
 
   useEffect(() => {
+    if (transcript.length > 0) {
+      setIsAnimating(true);
+    }
+  }, [transcript]);
+
+  useEffect(() => {
     if (!listening) {
       setIsListening(false);
+      setIsAnimating(false);
     }
   }, [listening]);
 
@@ -53,13 +61,31 @@ export const VoiceRecorderProvider = ({
   return (
     <VoiceRecorderContext.Provider value={{ setIsListening, finalTranscript }}>
       {isListening && (
-        <div className="fixed flex items-center z-[100] top-0 left-0 w-full h-full items-center justify-center">
+        <div
+          className={`fixed flex z-[100] top-0 left-0 w-full h-full items-center justify-center`}
+        >
           <div className="absolute inset-0 bg-black bg-opacity-25 backdrop-blur-sm"></div>
-          <div className="relative z-10 flex">
-            <div className="animate-wave-1 h-8 w-4 bg-primary rounded-full mx-2"></div>
-            <div className="animate-wave-2 h-8 w-4 bg-primary rounded-full mx-2"></div>
-            <div className="animate-wave-3 h-8 w-4 bg-primary rounded-full mx-2"></div>
-            <div className="animate-wave-4 h-8 w-4 bg-primary rounded-full mx-2"></div>
+          <div className="relative z-10 flex bg-bgColorRight p-5 rounded-full">
+            <div
+              className={`h-8 w-4 bg-primary rounded-full mx-2 ${
+                isAnimating ? "animate-wave-1" : ""
+              }`}
+            ></div>
+            <div
+              className={`h-8 w-4 bg-primary rounded-full mx-2 ${
+                isAnimating ? "animate-wave-2" : ""
+              }`}
+            ></div>
+            <div
+              className={`h-8 w-4 bg-primary rounded-full mx-2 ${
+                isAnimating ? "animate-wave-3" : ""
+              }`}
+            ></div>
+            <div
+              className={`h-8 w-4 bg-primary rounded-full mx-2 ${
+                isAnimating ? "animate-wave-4" : ""
+              }`}
+            ></div>
           </div>
         </div>
       )}

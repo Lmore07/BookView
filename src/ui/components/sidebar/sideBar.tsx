@@ -62,16 +62,16 @@ const Sidebar: React.FC<SidebarProps> = ({ optionsRoutes, children }) => {
               <span className="sr-only">Toggle sidebar</span>
             </SheetTrigger>
             <SheetContent
-              className="w-64 border-r border-gray-200 dark:border-gray-700"
+              className="w-64 border-r border-gray-200 dark:border-gray-700 bg-bgColorRight"
               side="left"
             >
-              <div className="flex items-center mb-6">
+              <div className="flex items-center mb-6 ">
                 <Image src={logoImg.src} alt="Imagen" width={40} height={40} />
                 <h2 className="text-lg ms-2 font-semibold text-gray-800 dark:text-gray-200">
                   BookViewer
                 </h2>
               </div>
-              <nav className="space-y-1">
+              <nav className="space-y-1  ">
                 {optionsRoutes.map((route) => (
                   <Link
                     key={route.key}

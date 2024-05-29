@@ -38,3 +38,4 @@ export interface BookInfo {
   Pages: PageI[];
   categoriesIds: number[];
 }
+

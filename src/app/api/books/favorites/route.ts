@@ -1,6 +1,8 @@
+import { AddBookToFolder } from "@/libs/dtos/folders/createFolderDTO";
 import { apiMiddleware } from "@/libs/middleware/apiMiddleware";
 import prisma from "@/libs/services/prisma";
 import { withAuth } from "@/libs/utils/auth";
+import { withValidation } from "@/libs/utils/validation";
 import { NextRequest, NextResponse } from "next/server";
 
 export const POST = apiMiddleware(async (request: NextRequest) => {
@@ -9,7 +11,10 @@ export const POST = apiMiddleware(async (request: NextRequest) => {
     return authResult;
   }
 
-  const body = await request.json();
+  const body = await withValidation(AddBookToFolder, request);
+  if (body instanceof NextResponse) {
+    return body;
+  }
 
   const favorite = await prisma.favorite_Books.create({
     data: {
@@ -38,8 +43,11 @@ export const DELETE = apiMiddleware(async (request: NextRequest) => {
     return authResult;
   }
 
-  const body = await request.json();
-
+  const body = await withValidation(AddBookToFolder, request);
+  if (body instanceof NextResponse) {
+    return body;
+  }
+  
   const userFavoriteFolder = await prisma.favorite_Folders.findFirst({
     where: {
       idUser: authResult.userId,

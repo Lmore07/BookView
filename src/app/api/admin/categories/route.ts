@@ -1,4 +1,5 @@
 import { createCategoryDTO } from "@/libs/dtos/categories/createCategoryDTO";
+import { StatusDTO } from "@/libs/dtos/general/statusDTO";
 import { apiMiddleware } from "@/libs/middleware/apiMiddleware";
 import { toBoolean } from "@/libs/pipes/toBoolean";
 import prisma from "@/libs/services/prisma";
@@ -190,7 +191,11 @@ export const PATCH = apiMiddleware(async (request: NextRequest) => {
 
     const url = new URL(request.url);
     const categoryId = parseInt(url.searchParams.get("id") ?? "0");
-    const body = await request.json();
+
+    const body = await withValidation(StatusDTO, request);
+    if (body instanceof NextResponse) {
+      return body;
+    }
 
     if (categoryId == 0) {
       return NextResponse.json(

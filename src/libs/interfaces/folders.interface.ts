@@ -6,3 +6,4 @@ export interface FoldersAll {
   status: boolean;
   urlFolder?: string;
 }
+

@@ -1,7 +1,9 @@
+import { StatusDTO } from "@/libs/dtos/general/statusDTO";
 import { apiMiddleware } from "@/libs/middleware/apiMiddleware";
 import { toBoolean, toRolEnum } from "@/libs/pipes/toBoolean";
 import prisma from "@/libs/services/prisma";
 import { withAuth } from "@/libs/utils/auth";
+import { withValidation } from "@/libs/utils/validation";
 import { NextRequest, NextResponse } from "next/server";
 
 export const GET = apiMiddleware(async (request: NextRequest) => {
@@ -96,7 +98,12 @@ export const PATCH = apiMiddleware(async (request: NextRequest) => {
 
     const url = new URL(request.url);
     const id = parseInt(url.searchParams.get("id") ?? "", 10);
-    const body = await request.json();
+
+    const body = await withValidation(StatusDTO, request);
+    if (body instanceof NextResponse) {
+      return body;
+    }
+
     await prisma.users.update({
       where: {
         idUser: id,

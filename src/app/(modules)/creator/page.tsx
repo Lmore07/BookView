@@ -27,11 +27,10 @@ import Help from "@/ui/modals/help/help";
 import { commandsHomeCreator } from "@/libs/texts/commands/creator/commandsCreator";
 import { messageHome } from "@/libs/texts/messages/creator/message";
 import { callFunction } from "@/libs/services/callFunction";
+import { VoiceRecorderContext } from "@/libs/contexts/speechToTextContext";
 
 export default function CreatorPage() {
   const router = useRouter();
-  const [open, setOpen] = useState(false);
-  const { transcript, resetTranscript, listening } = useSpeechRecognition();
   const [openHelp, setOpenHelp] = useState(false);
   const [openStats, setOpenStats] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -41,35 +40,37 @@ export default function CreatorPage() {
   const { handleShowToast } = useContext(ToastContext)!;
   const { setIsLoading } = useContext(LoadingContext)!;
   const [tableData, setTableData] = useState<any>([]);
+  const { setIsListening, finalTranscript } = useContext(VoiceRecorderContext)!;
 
-  const startListening = () => {
-    SpeechRecognition.startListening({ language: "es-EC" });
-  };
-
-  const stopListening = () => {
-    SpeechRecognition.stopListening();
-    resetTranscript();
-  };
+  useEffect(() => {
+    if (finalTranscript && finalTranscript != "") {
+      functionInterpret();
+    }
+  }, [finalTranscript]);
 
   const functionInterpret = async () => {
-    const call = await callFunction(transcript);
-    if (call.name == "addNewBook") {
-      router.push("/creator/books/creation");
-    } else if (call.name == "viewBooks") {
-      router.push("/creator/books");
-    } else if (call.name == "viewStatistics") {
-      const idBook = getBookIdByName(call.args.book);
-      if (idBook) {
-        setSelectedId(idBook);
-        setOpenStats(true);
-      } else {
-        handleShowToast(
-          "No se reconoció o no se encontró el libro",
-          ToastType.ERROR
-        );
+    try {
+      const call = await callFunction(finalTranscript);
+      if (call.name == "addNewBook") {
+        router.push("/creator/books/creation");
+      } else if (call.name == "viewBooks") {
+        router.push("/creator/books");
+      } else if (call.name == "viewStatistics") {
+        const idBook = getBookIdByName(call.args.book);
+        if (idBook) {
+          setSelectedId(idBook);
+          setOpenStats(true);
+        } else {
+          handleShowToast(
+            "No se reconoció o no se encontró el libro",
+            ToastType.ERROR
+          );
+        }
       }
+      console.log(call);
+    } catch (error) {
+      handleShowToast("No se reconoció el comando", ToastType.ERROR);
     }
-    console.log(call);
   };
 
   const getBookIdByName = (bookName: string) => {
@@ -78,22 +79,6 @@ export default function CreatorPage() {
       (item: any) => item.bookName.toLowerCase() === lowerCaseBookName
     );
     return book ? book.idBook : null;
-  };
-
-  useEffect(() => {
-    if (!listening && transcript != "") {
-      console.log("Transcript: ", transcript);
-      functionInterpret();
-      resetTranscript();
-    }
-  }, [listening]);
-
-  const handleToggleListening = () => {
-    if (listening) {
-      stopListening();
-    } else {
-      startListening();
-    }
   };
 
   const startSpeech = async () => {
@@ -213,39 +198,25 @@ export default function CreatorPage() {
               )}
             </span>
           </Tooltip>
-          <Tooltip
-            arrow
-            title={listening ? "Detener" : "Dictar"}
-            placement="top"
-          >
-            <span className="cursor-pointer" onClick={handleToggleListening}>
-              {listening ? (
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 16 16"
-                  fill="#cf0101"
-                  className="w-8 h-8"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M4.5 7.5a3 3 0 0 1 3-3h9a3 3 0 0 1 3 3v9a3 3 0 0 1-3 3h-9a3 3 0 0 1-3-3v-9Z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-              ) : (
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="w-9 h-9"
-                  viewBox="0 0 16 16"
-                  fill="#c5910d"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M8 1a2 2 0 0 0-2 2v4a2 2 0 1 0 4 0V3a2 2 0 0 0-2-2"
-                  />
-                  <path d="M4.5 7A.75.75 0 0 0 3 7a5.001 5.001 0 0 0 4.25 4.944V13.5h-1.5a.75.75 0 0 0 0 1.5h4.5a.75.75 0 0 0 0-1.5h-1.5v-1.556A5.001 5.001 0 0 0 13 7a.75.75 0 0 0-1.5 0a3.5 3.5 0 1 1-7 0" />
-                </svg>
-              )}
+          <Tooltip arrow title={"Dictar"} placement="top">
+            <span
+              className="cursor-pointer"
+              onClick={() => {
+                setIsListening(true);
+              }}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="w-9 h-9"
+                viewBox="0 0 16 16"
+                fill="#c5910d"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M8 1a2 2 0 0 0-2 2v4a2 2 0 1 0 4 0V3a2 2 0 0 0-2-2"
+                />
+                <path d="M4.5 7A.75.75 0 0 0 3 7a5.001 5.001 0 0 0 4.25 4.944V13.5h-1.5a.75.75 0 0 0 0 1.5h4.5a.75.75 0 0 0 0-1.5h-1.5v-1.556A5.001 5.001 0 0 0 13 7a.75.75 0 0 0-1.5 0a3.5 3.5 0 1 1-7 0" />
+              </svg>
             </span>
           </Tooltip>
           <Tooltip arrow title="Ayuda" placement="top">

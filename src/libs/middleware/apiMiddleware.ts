@@ -8,7 +8,6 @@ export function apiMiddleware(
     try {
       const res = await handler(req, params);
       const data: ResponseData = await res.json();
-      // Si la respuesta es exitosa, da formato a la respuesta
       if (res.status == 200 || res.status == 201) {
         return NextResponse.json(
           {
@@ -31,7 +30,6 @@ export function apiMiddleware(
         { status: data.statusCode ?? res.status }
       );
     } catch (e: any) {
-      // Si ocurre un error, da formato al error
       return NextResponse.json(
         {
           message: "Error",

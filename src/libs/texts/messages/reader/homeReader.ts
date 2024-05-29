@@ -12,3 +12,6 @@ export const booksFavoritesReader =
 
 export const profileMessage =
   "A continuación, puede realizar el cambio de su información personal. Además, también puede opcionalmente agregar una imagen de perfil, recuerde que puede usar comandos de voz para realizar esto, para ver los comandos de voz haga click en el ícono de ayuda.";
+
+export const searchBooks =
+  "A continuación, puede elegir un libro para leer. Además, también puede opcionalmente ordenar de forma ascendente o descendente por nombre de libro o por fecha de publicación, recuerde que puede usar comandos de voz para realizar esto, para ver los comandos de voz haga click en el ícono de ayuda.";

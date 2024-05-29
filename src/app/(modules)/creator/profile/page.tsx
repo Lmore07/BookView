@@ -1,5 +1,3 @@
-// FIXME: CORREGIR LLEGADA DE DATA Y ACTUALIZATION DE DATOS DEL PERFIL
-
 "use client";
 import {
   Tooltip,
@@ -8,6 +6,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { LoadingContext } from "@/libs/contexts/loadingContext";
+import { VoiceRecorderContext } from "@/libs/contexts/speechToTextContext";
 import { ToastContext } from "@/libs/contexts/toastContext";
 import { ResponseData } from "@/libs/interfaces/response.interface";
 import { ToastType } from "@/libs/interfaces/toast.interface";
@@ -35,7 +34,8 @@ export default function ProfileCreator() {
   const [isPlaying, setIsPlaying] = useState(false);
   const audioContext = useRef<AudioContext | null>(null);
   const source = useRef<AudioBufferSourceNode | null>(null);
-  const { transcript, resetTranscript, listening } = useSpeechRecognition();
+  const router = useRouter();
+  const { setIsListening, finalTranscript } = useContext(VoiceRecorderContext)!;
   const [userInfo, setUserInfo] = useState<UserInfo>({
     mail: "",
     profilePicture: "",
@@ -45,81 +45,64 @@ export default function ProfileCreator() {
       birthday: "",
     },
   });
-  const router = useRouter();
-
-  useEffect(() => {
-    if (!listening && transcript != "") {
-      console.log("Transcript: ", transcript);
-      functionInterpret();
-      resetTranscript();
-    }
-  }, [listening]);
 
   const functionInterpret = async () => {
-    const call = await callFunction(transcript);
-    if (call.name == "setInputText") {
-      switch (call.args.inputName) {
-        case "names":
-          setUserInfo({
-            ...userInfo,
-            Person: {
-              ...userInfo.Person,
-              names: call.args.text,
-            },
-          });
-          break;
-        case "lastNames":
-          setUserInfo({
-            ...userInfo,
-            Person: {
-              ...userInfo.Person,
-              lastNames: call.args.text,
-            },
-          });
-          break;
-        case "birthday":
-          setUserInfo({
-            ...userInfo,
-            Person: {
-              ...userInfo.Person,
-              birthday: call.args.text,
-            },
-          });
-          break;
-        case "mail":
-          setUserInfo({
-            ...userInfo,
-            mail: call.args.text,
-          });
-          break;
-        case "profilePicture":
-          handleImageUpload();
-          break;
+    try {
+      const call = await callFunction(finalTranscript);
+      if (call.name == "setInputText") {
+        switch (call.args.inputName) {
+          case "names":
+            setUserInfo({
+              ...userInfo,
+              Person: {
+                ...userInfo.Person,
+                names: call.args.text,
+              },
+            });
+            break;
+          case "lastNames":
+            setUserInfo({
+              ...userInfo,
+              Person: {
+                ...userInfo.Person,
+                lastNames: call.args.text,
+              },
+            });
+            break;
+          case "birthday":
+            setUserInfo({
+              ...userInfo,
+              Person: {
+                ...userInfo.Person,
+                birthday: call.args.text,
+              },
+            });
+            break;
+          case "mail":
+            setUserInfo({
+              ...userInfo,
+              mail: call.args.text,
+            });
+            break;
+          case "profilePicture":
+            handleImageUpload();
+            break;
+        }
       }
-    }
-    console.log(call);
-  };
-
-  const startListening = () => {
-    SpeechRecognition.startListening({
-      language: "es-EC",
-      continuous: false,
-      interimResults: true,
-    });
-  };
-
-  const stopListening = () => {
-    SpeechRecognition.stopListening();
-    resetTranscript();
-  };
-
-  const handleToggleListening = () => {
-    if (listening) {
-      stopListening();
-    } else {
-      startListening();
+      console.log(call);
+    } catch (error) {
+      handleShowToast(
+        "No se ha podido interpretar el comando",
+        ToastType.ERROR
+      );
     }
   };
+
+  useEffect(() => {
+    if (finalTranscript && finalTranscript != "") {
+      functionInterpret();
+    }
+  }, [finalTranscript]);
 
   const startSpeech = async () => {
     const audioData = await generateSpeech(profileMessage);
@@ -299,37 +282,27 @@ export default function ProfileCreator() {
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger>
-              <span className="cursor-pointer" onClick={handleToggleListening}>
-                {listening ? (
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 16 16"
-                    fill="#cf0101"
-                    className="w-8 h-8"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M4.5 7.5a3 3 0 0 1 3-3h9a3 3 0 0 1 3 3v9a3 3 0 0 1-3 3h-9a3 3 0 0 1-3-3v-9Z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                ) : (
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="w-9 h-9"
-                    viewBox="0 0 16 16"
-                    fill="#c5910d"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M8 1a2 2 0 0 0-2 2v4a2 2 0 1 0 4 0V3a2 2 0 0 0-2-2"
-                    />
-                    <path d="M4.5 7A.75.75 0 0 0 3 7a5.001 5.001 0 0 0 4.25 4.944V13.5h-1.5a.75.75 0 0 0 0 1.5h4.5a.75.75 0 0 0 0-1.5h-1.5v-1.556A5.001 5.001 0 0 0 13 7a.75.75 0 0 0-1.5 0a3.5 3.5 0 1 1-7 0" />
-                  </svg>
-                )}
+              <span
+                className="cursor-pointer"
+                onClick={() => {
+                  setIsListening(true);
+                }}
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="w-9 h-9"
+                  viewBox="0 0 16 16"
+                  fill="#c5910d"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M8 1a2 2 0 0 0-2 2v4a2 2 0 1 0 4 0V3a2 2 0 0 0-2-2"
+                  />
+                  <path d="M4.5 7A.75.75 0 0 0 3 7a5.001 5.001 0 0 0 4.25 4.944V13.5h-1.5a.75.75 0 0 0 0 1.5h4.5a.75.75 0 0 0 0-1.5h-1.5v-1.556A5.001 5.001 0 0 0 13 7a.75.75 0 0 0-1.5 0a3.5 3.5 0 1 1-7 0" />
+                </svg>
               </span>
             </TooltipTrigger>
-            <TooltipContent>{listening ? "Detener" : "Dictar"}</TooltipContent>
+            <TooltipContent>{"Dictar"}</TooltipContent>
           </Tooltip>
         </TooltipProvider>
         <TooltipProvider>

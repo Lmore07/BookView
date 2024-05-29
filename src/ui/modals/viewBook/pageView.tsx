@@ -1,4 +1,3 @@
-//TODO: AGREGAR PLANTILLA DE SOLO IMAGEN
 import { CoverI } from "@/libs/interfaces/books.interface";
 import { generateSpeech } from "@/libs/services/generateSpeech";
 import { generateText } from "@/libs/services/generateText";

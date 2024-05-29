@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/dialog";
 import { LoadingContext } from "@/libs/contexts/loadingContext";
 import { ModalContext } from "@/libs/contexts/modalContext";
+import { VoiceRecorderContext } from "@/libs/contexts/speechToTextContext";
 import { ToastContext } from "@/libs/contexts/toastContext";
 import { BooksAll, PageI } from "@/libs/interfaces/books.interface";
 import { ResponseData } from "@/libs/interfaces/response.interface";
@@ -28,7 +29,6 @@ import SpeechRecognition, {
   useSpeechRecognition,
 } from "react-speech-recognition";
 export default function CreatorBooksPage() {
-  const { transcript, resetTranscript, listening } = useSpeechRecognition();
   const router = useRouter();
   const [openHelp, setOpenHelp] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -39,10 +39,10 @@ export default function CreatorBooksPage() {
   const [tableData, setTableData] = useState<any>([]);
   const { handleShowToast } = useContext(ToastContext)!;
   const { setIsLoading } = useContext(LoadingContext)!;
-  const { openModal } = useContext(ModalContext)!;
   const [isViewBook, setIsViewBook] = useState(false);
   const [pagesBook, setPagesBook] = useState<PageI[] | null | undefined>([]);
   const [selectedBook, setSelectedBook] = useState<BooksAll | null>(null);
+  const { setIsListening, finalTranscript } = useContext(VoiceRecorderContext)!;
 
   const headers = [
     { key: "bookName", name: "Nombre del libro" },
@@ -109,44 +109,25 @@ export default function CreatorBooksPage() {
 
   //FUNCIONALIDAD DE ESCUCHAR LOS COMANDOS
 
-  const functionInterpret = async () => {
-    const call = await callFunction(transcript);
-    if (call.name == "addNewBook") {
-      router.push("/creator/books/creation");
-    } else if (call.name == "changePage") {
-      changePage(call.args.action, call.args.pageNumber);
-    }
-    console.log(call);
-  };
-
   useEffect(() => {
-    if (!listening && transcript != "") {
-      console.log("Transcript: ", transcript);
+    if (finalTranscript && finalTranscript != "") {
       functionInterpret();
-      resetTranscript();
     }
-  }, [listening]);
+  }, [finalTranscript]);
 
-  const handleToggleListening = () => {
-    if (listening) {
-      stopListening();
-    } else {
-      startListening();
+  const functionInterpret = async () => {
+    try {
+      const call = await callFunction(finalTranscript);
+      if (call.name == "addNewBook") {
+        router.push("/creator/books/creation");
+      } else if (call.name == "changePage") {
+        changePage(call.args.action, call.args.pageNumber);
+      }
+      console.log(call);
+    } catch (error) {
+      handleShowToast("No se ha podido reconocer el comando", ToastType.ERROR);
     }
   };
-
-  const startListening = () => {
-    SpeechRecognition.startListening({ language: "es-EC" });
-  };
-
-  const stopListening = () => {
-    SpeechRecognition.stopListening();
-    resetTranscript();
-  };
-
-  useEffect(() => {
-    console.log(transcript);
-  }, [transcript]);
 
   const handleClickNewBook = () => {
     router.push("/creator/books/creation");
@@ -237,39 +218,25 @@ export default function CreatorBooksPage() {
               )}
             </span>
           </Tooltip>
-          <Tooltip
-            arrow
-            title={listening ? "Detener" : "Dictar"}
-            placement="top"
-          >
-            <span className="cursor-pointer" onClick={handleToggleListening}>
-              {listening ? (
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 16 16"
-                  fill="#cf0101"
-                  className="w-8 h-8"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M4.5 7.5a3 3 0 0 1 3-3h9a3 3 0 0 1 3 3v9a3 3 0 0 1-3 3h-9a3 3 0 0 1-3-3v-9Z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-              ) : (
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="w-9 h-9"
-                  viewBox="0 0 16 16"
-                  fill="#c5910d"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M8 1a2 2 0 0 0-2 2v4a2 2 0 1 0 4 0V3a2 2 0 0 0-2-2"
-                  />
-                  <path d="M4.5 7A.75.75 0 0 0 3 7a5.001 5.001 0 0 0 4.25 4.944V13.5h-1.5a.75.75 0 0 0 0 1.5h4.5a.75.75 0 0 0 0-1.5h-1.5v-1.556A5.001 5.001 0 0 0 13 7a.75.75 0 0 0-1.5 0a3.5 3.5 0 1 1-7 0" />
-                </svg>
-              )}
+          <Tooltip arrow title={"Dictar"} placement="top">
+            <span
+              className="cursor-pointer"
+              onClick={() => {
+                setIsListening(true);
+              }}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="w-9 h-9"
+                viewBox="0 0 16 16"
+                fill="#c5910d"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M8 1a2 2 0 0 0-2 2v4a2 2 0 1 0 4 0V3a2 2 0 0 0-2-2"
+                />
+                <path d="M4.5 7A.75.75 0 0 0 3 7a5.001 5.001 0 0 0 4.25 4.944V13.5h-1.5a.75.75 0 0 0 0 1.5h4.5a.75.75 0 0 0 0-1.5h-1.5v-1.556A5.001 5.001 0 0 0 13 7a.75.75 0 0 0-1.5 0a3.5 3.5 0 1 1-7 0" />
+              </svg>
             </span>
           </Tooltip>
           <Tooltip arrow title="Ayuda" placement="top">

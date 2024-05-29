@@ -7,6 +7,7 @@ import {
 } from "@/components/ui/dialog";
 import { LoadingContext } from "@/libs/contexts/loadingContext";
 import { ModalContext } from "@/libs/contexts/modalContext";
+import { VoiceRecorderContext } from "@/libs/contexts/speechToTextContext";
 import { ToastContext } from "@/libs/contexts/toastContext";
 import { BooksAll, CoverI, PageI } from "@/libs/interfaces/books.interface";
 import { ResponseData } from "@/libs/interfaces/response.interface";
@@ -14,6 +15,7 @@ import { ToastType } from "@/libs/interfaces/toast.interface";
 import { callFunction } from "@/libs/services/callFunction";
 import { generateSpeech } from "@/libs/services/generateSpeech";
 import { commandsSearchBooks } from "@/libs/texts/commands/reader/homeReader";
+import { searchBooks } from "@/libs/texts/messages/reader/homeReader";
 import BookCard from "@/ui/components/cards/bookCard";
 import AddToFavorite from "@/ui/modals/folders/addToFavorite";
 import Help from "@/ui/modals/help/help";
@@ -42,13 +44,11 @@ export default function BookSearch() {
   const audioContext = useRef<AudioContext | null>(null);
   const source = useRef<AudioBufferSourceNode | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
-  const { openModal } = useContext(ModalContext)!;
   const [isViewBook, setIsViewBook] = useState(false);
   const [pagesBook, setPagesBook] = useState<PageI[] | null | undefined>([]);
   const [lastPage, setLastPage] = useState(0);
-  const [coverInfo, setCoverInfo] = useState<CoverI | null>(null);
   const [openHelp, setOpenHelp] = useState(false);
-  const { transcript, resetTranscript, listening } = useSpeechRecognition();
+  const { setIsListening, finalTranscript } = useContext(VoiceRecorderContext)!;
 
   const handleChange = (event: any, value: number) => {
     setPage(value);
@@ -101,34 +101,13 @@ export default function BookSearch() {
   }, [page, orderBy]);
 
   useEffect(() => {
-    if (!listening && transcript != "") {
-      console.log("Transcript: ", transcript);
+    if (finalTranscript && finalTranscript != "") {
       functionInterpret();
-      resetTranscript();
     }
-  }, [listening]);
-
-  const startListening = () => {
-    SpeechRecognition.startListening({ language: "es-EC" });
-  };
-
-  const stopListening = () => {
-    SpeechRecognition.stopListening();
-    resetTranscript();
-  };
-
-  const handleToggleListening = () => {
-    if (listening) {
-      stopListening();
-    } else {
-      startListening();
-    }
-  };
+  }, [finalTranscript]);
 
   const startSpeech = async () => {
-    const audioData = await generateSpeech(
-      "A continuación, puede realizar la búsqueda de libros por autor y nombre de libro. Además, también puede filtrar por las categorías presentadas, recuerde que puede usar comandos de voz para realizar esto, para ver los comandos de voz haga click en el ícono de ayuda."
-    );
+    const audioData = await generateSpeech(searchBooks);
     const ctx = new AudioContext();
     await ctx.decodeAudioData(audioData, (buffer) => {
       const src = ctx.createBufferSource();
@@ -162,18 +141,22 @@ export default function BookSearch() {
 
   //LOGICA DE FUNCIONES
   const functionInterpret = async () => {
-    const call = await callFunction(transcript);
-    if (call.name == "sortBooks") {
-      let orderString = `${
-        call.args.sortBy == "book" ? "bookName" : call.args.sortBy
-      }_${call.args.order}`;
-      setOrderBy(orderString);
-    } else if (call.name == "selectBookByName") {
-      openBookByName(call.args.bookName);
-    } else if (call.name == "changePage") {
-      changePage(call.args.action, call.args.pageNumber);
+    try {
+      const call = await callFunction(finalTranscript);
+      if (call.name == "sortBooks") {
+        let orderString = `${
+          call.args.sortBy == "book" ? "bookName" : call.args.sortBy
+        }_${call.args.order}`;
+        setOrderBy(orderString);
+      } else if (call.name == "selectBookByName") {
+        openBookByName(call.args.bookName);
+      } else if (call.name == "changePage") {
+        changePage(call.args.action, call.args.pageNumber);
+      }
+      console.log(call);
+    } catch (error) {
+      handleShowToast("No se reconoció el comando", ToastType.ERROR);
     }
-    console.log(call);
   };
 
   const openBookByName = (bookName: string) => {
@@ -286,35 +269,25 @@ export default function BookSearch() {
             )}
           </span>
         </Tooltip>
-        <Tooltip arrow title={listening ? "Detener" : "Dictar"} placement="top">
-          <span className="cursor-pointer" onClick={handleToggleListening}>
-            {listening ? (
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 16 16"
-                fill="#cf0101"
-                className="w-8 h-8"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M4.5 7.5a3 3 0 0 1 3-3h9a3 3 0 0 1 3 3v9a3 3 0 0 1-3 3h-9a3 3 0 0 1-3-3v-9Z"
-                  clipRule="evenodd"
-                />
-              </svg>
-            ) : (
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="w-9 h-9"
-                viewBox="0 0 16 16"
-                fill="#c5910d"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M8 1a2 2 0 0 0-2 2v4a2 2 0 1 0 4 0V3a2 2 0 0 0-2-2"
-                />
-                <path d="M4.5 7A.75.75 0 0 0 3 7a5.001 5.001 0 0 0 4.25 4.944V13.5h-1.5a.75.75 0 0 0 0 1.5h4.5a.75.75 0 0 0 0-1.5h-1.5v-1.556A5.001 5.001 0 0 0 13 7a.75.75 0 0 0-1.5 0a3.5 3.5 0 1 1-7 0" />
-              </svg>
-            )}
+        <Tooltip arrow title={"Dictar"} placement="top">
+          <span
+            className="cursor-pointer"
+            onClick={() => {
+              setIsListening(true);
+            }}
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="w-9 h-9"
+              viewBox="0 0 16 16"
+              fill="#c5910d"
+            >
+              <path
+                fillRule="evenodd"
+                d="M8 1a2 2 0 0 0-2 2v4a2 2 0 1 0 4 0V3a2 2 0 0 0-2-2"
+              />
+              <path d="M4.5 7A.75.75 0 0 0 3 7a5.001 5.001 0 0 0 4.25 4.944V13.5h-1.5a.75.75 0 0 0 0 1.5h4.5a.75.75 0 0 0 0-1.5h-1.5v-1.556A5.001 5.001 0 0 0 13 7a.75.75 0 0 0-1.5 0a3.5 3.5 0 1 1-7 0" />
+            </svg>
           </span>
         </Tooltip>
         <Tooltip arrow title="Ayuda" placement="top">

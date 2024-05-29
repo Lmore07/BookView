@@ -15,6 +15,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { LoadingContext } from "@/libs/contexts/loadingContext";
+import { VoiceRecorderContext } from "@/libs/contexts/speechToTextContext";
 import { ToastContext } from "@/libs/contexts/toastContext";
 import { ResponseData } from "@/libs/interfaces/response.interface";
 import { ToastType } from "@/libs/interfaces/toast.interface";
@@ -26,14 +27,10 @@ import Table from "@/ui/components/tabble/table";
 import ConfirmActiveOrDesactive from "@/ui/modals/admin/users/confirm";
 import Help from "@/ui/modals/help/help";
 import { Pagination, Stack, Tooltip } from "@mui/material";
-import { add, format, sub } from "date-fns";
+import { format, sub } from "date-fns";
 import { useContext, useEffect, useRef, useState } from "react";
-import SpeechRecognition, {
-  useSpeechRecognition,
-} from "react-speech-recognition";
 
 export default function UsersAdmin() {
-  const { transcript, resetTranscript, listening } = useSpeechRecognition();
   const [openHelp, setOpenHelp] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const [selectedId, setSelectedId] = useState(0);
@@ -47,10 +44,8 @@ export default function UsersAdmin() {
   const [statusActiveorDesactive, setStatusActiveorDesactive] = useState<any>();
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const startListening = () => {
-    SpeechRecognition.startListening({ language: "es-EC" });
-  };
   const [showStatus, setShowStatus] = useState<any>();
+  const { setIsListening, finalTranscript } = useContext(VoiceRecorderContext)!;
   const [showRol, setShowRol] = useState<any>();
   const headersUsers = [
     { key: "names", name: "Nombres" },
@@ -60,36 +55,46 @@ export default function UsersAdmin() {
     { key: "status", name: "Estado" },
   ];
 
+  useEffect(() => {
+    if (finalTranscript && finalTranscript != "") {
+      functionInterpret();
+    }
+  }, [finalTranscript]);
+
   const functionInterpret = async () => {
-    const call = await callFunction(transcript);
-    switch (call.name) {
-      case "filterByStatusOrRole":
-        if (call.args.status) {
-          setShowStatus(call.args.status);
-        }
-        if (call.args.role) {
-          setShowRol(call.args.role);
-        }
-        break;
-      case "changePage":
-        changePage(call.args.action, call.args.pageNumber);
-        break;
-      case "removeFilter":
-        if (call.args.filter) {
-          if (call.args.filter == "role") {
-            setShowRol(null);
+    try {
+      const call = await callFunction(finalTranscript);
+      switch (call.name) {
+        case "filterByStatusOrRole":
+          if (call.args.status) {
+            setShowStatus(call.args.status);
+          }
+          if (call.args.role) {
+            setShowRol(call.args.role);
+          }
+          break;
+        case "changePage":
+          changePage(call.args.action, call.args.pageNumber);
+          break;
+        case "removeFilter":
+          if (call.args.filter) {
+            if (call.args.filter == "role") {
+              setShowRol(null);
+            } else {
+              setShowStatus(null);
+            }
           } else {
+            setShowRol(null);
             setShowStatus(null);
           }
-        } else {
-          setShowRol(null);
-          setShowStatus(null);
-        }
-        break;
-      default:
-        handleShowToast("No se reconoce el comando", ToastType.ERROR);
+          break;
+        default:
+          handleShowToast("No se reconoce el comando", ToastType.ERROR);
+      }
+      console.log(call);
+    } catch (error) {
+      handleShowToast("No se reconoce el comando", ToastType.ERROR);
     }
-    console.log(call);
   };
 
   const changePage = (action: string, pageNumber?: number) => {
@@ -111,27 +116,6 @@ export default function UsersAdmin() {
       } else {
         setPage(pageNumber!);
       }
-    }
-  };
-
-  useEffect(() => {
-    if (!listening && transcript != "") {
-      console.log("Transcript: ", transcript);
-      functionInterpret();
-      resetTranscript();
-    }
-  }, [listening]);
-
-  const stopListening = () => {
-    SpeechRecognition.stopListening();
-    resetTranscript();
-  };
-
-  const handleToggleListening = () => {
-    if (listening) {
-      stopListening();
-    } else {
-      startListening();
     }
   };
 
@@ -293,39 +277,25 @@ export default function UsersAdmin() {
               )}
             </span>
           </Tooltip>
-          <Tooltip
-            arrow
-            title={listening ? "Detener" : "Dictar"}
-            placement="top"
-          >
-            <span className="cursor-pointer" onClick={handleToggleListening}>
-              {listening ? (
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 16 16"
-                  fill="#cf0101"
-                  className="w-8 h-8"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M4.5 7.5a3 3 0 0 1 3-3h9a3 3 0 0 1 3 3v9a3 3 0 0 1-3 3h-9a3 3 0 0 1-3-3v-9Z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-              ) : (
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="w-9 h-9"
-                  viewBox="0 0 16 16"
-                  fill="#c5910d"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M8 1a2 2 0 0 0-2 2v4a2 2 0 1 0 4 0V3a2 2 0 0 0-2-2"
-                  />
-                  <path d="M4.5 7A.75.75 0 0 0 3 7a5.001 5.001 0 0 0 4.25 4.944V13.5h-1.5a.75.75 0 0 0 0 1.5h4.5a.75.75 0 0 0 0-1.5h-1.5v-1.556A5.001 5.001 0 0 0 13 7a.75.75 0 0 0-1.5 0a3.5 3.5 0 1 1-7 0" />
-                </svg>
-              )}
+          <Tooltip arrow title={"Dictar"} placement="top">
+            <span
+              className="cursor-pointer"
+              onClick={() => {
+                setIsListening(true);
+              }}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="w-9 h-9"
+                viewBox="0 0 16 16"
+                fill="#c5910d"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M8 1a2 2 0 0 0-2 2v4a2 2 0 1 0 4 0V3a2 2 0 0 0-2-2"
+                />
+                <path d="M4.5 7A.75.75 0 0 0 3 7a5.001 5.001 0 0 0 4.25 4.944V13.5h-1.5a.75.75 0 0 0 0 1.5h4.5a.75.75 0 0 0 0-1.5h-1.5v-1.556A5.001 5.001 0 0 0 13 7a.75.75 0 0 0-1.5 0a3.5 3.5 0 1 1-7 0" />
+              </svg>
             </span>
           </Tooltip>
           <Tooltip arrow title="Ayuda" placement="top">

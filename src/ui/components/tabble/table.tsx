@@ -73,7 +73,7 @@ const Table: React.FC<TableProps> = ({
                     <th
                       key={header.key}
                       scope="col"
-                      className="px-6 py-3 text-xs font-normal tracking-wider text-left text-textButtonFill uppercase font-poppins"
+                      className="px-6 py-3 text-xs font-normal tracking-wider text-left text-textButtonFill uppercase font-custom"
                     >
                       {header.name}
                     </th>
@@ -81,7 +81,7 @@ const Table: React.FC<TableProps> = ({
                   {showActions && (
                     <th
                       scope="col"
-                      className="px-6 py-3 text-xs font-normal tracking-wider text-left text-textButtonFill uppercase font-poppins"
+                      className="px-6 py-3 text-xs font-normal tracking-wider text-left text-textButtonFill uppercase font-custom"
                     >
                       Acciones
                     </th>

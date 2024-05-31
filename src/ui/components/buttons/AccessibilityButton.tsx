@@ -6,11 +6,13 @@ import { useTheme } from "next-themes";
 export default function AccessibilityButton() {
   const [isOpen, setIsOpen] = useState(false);
   const { theme, setTheme } = useTheme();
+  const [font, setFont] = useState<string>();
   const [zoom, setZoom] = useState<number>();
 
   useEffect(() => {
     const localTheme = localStorage.getItem("theme");
     const localZoom = parseFloat(localStorage.getItem("zoom") ?? "1");
+    const localFont = localStorage.getItem("font");
     if (localZoom) {
       const newZoom = Math.min(localZoom, 2);
       (document.body.style as any).zoom = newZoom.toString();
@@ -19,11 +21,28 @@ export default function AccessibilityButton() {
     if (localTheme) {
       setTheme(localTheme);
     }
+    if (localFont) {
+      document.documentElement.style.setProperty(
+        "--font-family",
+        `${localFont}, sans-serif`
+      );
+      setFont(localFont);
+    }
   }, []);
 
   const handleThemeChange = (event: any) => {
     localStorage.setItem("theme", event.target.value);
     setTheme(event.target.value);
+  };
+
+  const handleFontChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const newFont = event.target.value;
+    document.documentElement.style.setProperty(
+      "--font-family",
+      `${newFont}, sans-serif`
+    );
+    localStorage.setItem("font", newFont);
+    setFont(newFont);
   };
 
   const increaseZoom = () => {
@@ -68,8 +87,11 @@ export default function AccessibilityButton() {
       {isOpen && (
         <div className="rounded-lg shadow-lg p-4 mt-2">
           <div className="mb-2">
-            <label className="text-textButtonAccesible">Elige un tema: </label>
+            <label htmlFor="themeSelect" className="text-textButtonAccesible">
+              Elige un tema:{" "}
+            </label>
             <select
+              id="themeSelect"
               className="bg-bgSelectTheme text-textSelectTheme rounded-md"
               value={theme}
               onChange={handleThemeChange}
@@ -79,6 +101,37 @@ export default function AccessibilityButton() {
               <option value="sepia">Sepia</option>
               <option value="blackAndWhite">Blanco y Negro</option>
               <option value="contrast">Alto Contraste</option>
+            </select>
+          </div>
+          <div className="mb-2">
+            <label htmlFor="fontSelect" className="text-textButtonAccesible">
+              Elige una fuente:{" "}
+            </label>
+            <select
+              id="fontSelect"
+              className="bg-bgSelectTheme text-textSelectTheme rounded-md"
+              value={font}
+              onChange={handleFontChange}
+            >
+              <option value="Poppins">Poppins</option>
+              <option value="Arial">Arial</option>
+              <option value="Verdana">Verdana</option>
+              <option value="Roboto">Roboto</option>
+              <option value="Open Sans">Open Sans</option>
+              <option value="Lato">Lato</option>
+              <option value="Montserrat">Montserrat</option>
+              <option value="Raleway">Raleway</option>
+              <option value="Oswald">Oswald</option>
+              <option value="Source Sans Pro">Source Sans Pro</option>
+              <option value="Merriweather">Merriweather</option>
+              <option value="Ubuntu">Ubuntu</option>
+              <option value="PT Sans">PT Sans</option>
+              <option value="Droid Sans">Droid Sans</option>
+              <option value="Helvetica Neue">Helvetica Neue</option>
+              <option value="Times New Roman">Times New Roman</option>
+              <option value="Georgia">Georgia</option>
+              <option value="Courier New">Courier New</option>
+              <option value="Lucida Sans Unicode">Lucida Sans Unicode</option>
             </select>
           </div>
           <div>

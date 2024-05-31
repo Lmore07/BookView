@@ -114,10 +114,10 @@ export default function Login() {
                 width={300}
                 height={100}
               ></Image>
-              <div className="pb-3 pt-5 text-center font-bold text-4xl text-primary-500  font-poppins">
+              <div className="pb-3 pt-5 text-center font-bold text-4xl text-primary-500  font-custom">
                 BookView: Libros interactivos para todos
               </div>
-              <div className="text-center font-open-sans text-sm font-normal text-primary">
+              <div className="text-center font-custom text-sm font-normal text-primary">
                 Acceda y gestione sus libros en cualquier momento y desde
                 cualquier lugar
               </div>
@@ -125,7 +125,7 @@ export default function Login() {
           </section>
           <section className="md:px-5 xl:px-32 sm:px-8 bg-bgColorRight flex items-center grid-cols-1">
             <div className="shadow-2xl w-full rounded-lg py-5 bg-bgColorLeft">
-              <div className="pb-3 ps-10 pt-5 text-left font-bold text-3xl text-primary-500 font-poppins">
+              <div className="pb-3 ps-10 pt-5 text-left font-bold text-3xl text-primary-500 font-custom">
                 Iniciar Sesión
               </div>
               <div className="py-1 grid px-10">
@@ -190,7 +190,7 @@ export default function Login() {
                 <Button onClick={handleClick}>Iniciar Sesión</Button>
               </div>
               <div className="py-4">
-                <div className="flex px-10 text-left font-open-sans text-sm font-normal text-textLabel">
+                <div className="flex px-10 text-left font-custom text-sm font-normal text-textLabel">
                   ¿No tienes una cuenta?
                   <a
                     href="/register"
@@ -202,7 +202,7 @@ export default function Login() {
                 <div className="py-4">
                   <a
                     href="#"
-                    className="flex px-10 justify-center underline font-open-sans text-sm font-normal text-textForgotPassword"
+                    className="flex px-10 justify-center underline font-custom text-sm font-normal text-textForgotPassword"
                   >
                     ¿Olvidaste tu contraseña?
                   </a>

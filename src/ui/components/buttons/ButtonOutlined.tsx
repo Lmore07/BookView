@@ -18,7 +18,7 @@ const ButtonOutlined: React.FC<ButtonProps> = ({
     <div className="flex justify-center">
       <button
         onClick={onClick}
-        className={`w-full flex items-center justify-center bg-bgButtonOutlined font-open-sans border font-bold py-[6px] px-3 rounded-md text-[16px] ${
+        className={`w-full flex items-center justify-center bg-bgButtonOutlined font-custom border font-bold py-[6px] px-3 rounded-md text-[16px] ${
           className ? className : "border-textButtonOutlined text-textButtonOutlined hover:text-textButtonOutlinedHover hover:bg-bgButtonOutlinedHover"
         }`}
       >

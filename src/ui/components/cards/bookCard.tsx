@@ -33,8 +33,8 @@ const BookCard: React.FC<BookCardProps> = ({
         />
       </div>
       <div className="p-4 flex flex-col flex-wrap">
-        <p className=" font-open-sans text-sm">Autores: {authors.join(", ")}</p>
-        <h3 className=" font-bold font-open-sans capitalize text-xl">
+        <p className=" font-custom text-sm">Autores: {authors.join(", ")}</p>
+        <h3 className=" font-bold font-custom capitalize text-xl">
           {title}
         </h3>
 

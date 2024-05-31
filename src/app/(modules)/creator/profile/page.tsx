@@ -339,7 +339,7 @@ export default function ProfileCreator() {
         </h1>
       </div>
       <div>
-        <div className="font-open-sans mb-1 text-sm font-bold text-labelInputText">
+        <div className="font-custom mb-1 text-sm font-bold text-labelInputText">
           Foto de perfil
         </div>
         <div className="flex gap-5 py-1">

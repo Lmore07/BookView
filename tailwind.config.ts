@@ -34,8 +34,7 @@ const config = {
         "accordion-up": "accordion-up 0.2s ease-out",
       },
       fontFamily: {
-        poppins: ["Poppins", "sans-serif"],
-        "open-sans": ["Open Sans", "sans-serif"],
+        custom: "var(--font-family)",
       },
       colors: {
         bgColorLeft: "var(--bgColorLeft)",

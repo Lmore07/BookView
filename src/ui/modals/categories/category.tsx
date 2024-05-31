@@ -88,7 +88,7 @@ const CategoryComponent: React.FC<{
 
   return (
     <div className="w-full rounded-lg">
-      <div className="flex items-center text-left font-bold text-lg text-primary-500 font-poppins">
+      <div className="flex items-center text-left font-bold text-lg text-primary-500 font-custom">
         <span>{idCategory == 0 ? "Insertar" : "Actualizar"} categoría </span>
       </div>
       <div className="my-2">

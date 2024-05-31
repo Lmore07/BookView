@@ -54,7 +54,7 @@ const AudioUpload: React.FC<{ onAudioSelected: any }> = ({
             </g>
           </svg>
         </span>
-        <span className="font-poppins font-semibold text-primary-500">
+        <span className="font-custom font-semibold text-primary-500">
           Seleccione un audio
         </span>
       </div>
@@ -104,7 +104,7 @@ const AudioUpload: React.FC<{ onAudioSelected: any }> = ({
                 </g>
               </svg>
             </span>
-            <span className="font-poppins text-iconBgColor">Click aqui</span>
+            <span className="font-custom text-iconBgColor">Click aqui</span>
           </div>
         )}
       </div>

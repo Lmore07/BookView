@@ -371,7 +371,7 @@ export default function Stepper() {
         {steps.map((step, index) => (
           <div key={index} className="flex justify-center">
             <div
-              className={`flex items-center text-sm justify-start cursor-pointer pb-2 font-open-sans ${
+              className={`flex items-center text-sm justify-start cursor-pointer pb-2 font-custom ${
                 index === currentStep
                   ? "text-primary-500 border-b-4 border-secondary-400 font-bold"
                   : "text-gray-500"
@@ -447,7 +447,7 @@ export default function Stepper() {
                   onChange={handleChangeStepOne}
                   validations={[validateNotEmpty]}
                 ></Input>
-                <h3 className="text-primary-500 font-poppins font-semibold text-xl">
+                <h3 className="text-primary-500 font-custom font-semibold text-xl">
                   Metadatos
                 </h3>
                 <div>
@@ -650,7 +650,7 @@ export default function Stepper() {
                 ></Input>
               </div>
               <div>
-                <div className="font-open-sans mb-1 text-sm font-bold text-labelInputText">
+                <div className="font-custom mb-1 text-sm font-bold text-labelInputText">
                   Portada del libro
                 </div>
                 <div
@@ -683,7 +683,7 @@ export default function Stepper() {
               </h1>
             </div>
             <div className="py-1 grid gap-3 w-full px-2">
-              <h3 className="text-primary-500 font-open-sans font-normal text-base">
+              <h3 className="text-primary-500 font-custom font-normal text-base">
                 Selecciona una o mas cateogrías
               </h3>
               <div className="flex flex-row gap-5 flex-wrap">
@@ -699,7 +699,7 @@ export default function Stepper() {
                       onChange={handleCategoryChange}
                       className="mr-2 cursor-pointer focus:outline-none w-6 border-gray-200 rounded-md custom-checkbox"
                     />
-                    <span className="font-open-sans text-sm font-normal text-labelInputText">
+                    <span className="font-custom text-sm font-normal text-labelInputText">
                       {category.categoryName}
                     </span>
                   </label>
@@ -744,7 +744,7 @@ export default function Stepper() {
                     });
                     setPrevisualize(true);
                   }}
-                  className="w-full flex text-sm items-center justify-center font-open-sans font-normal py-1 rounded-lg bg-bgButtonPrevFill text-textButtonPrevFill px-3 hover:text-textButtonPrevFillHover hover:bg-bgButtonPrevFillHover"
+                  className="w-full flex text-sm items-center justify-center font-custom font-normal py-1 rounded-lg bg-bgButtonPrevFill text-textButtonPrevFill px-3 hover:text-textButtonPrevFillHover hover:bg-bgButtonPrevFillHover"
                 >
                   Previsualizar libro
                 </button>

@@ -40,7 +40,7 @@ const URLModal: React.FC<{ onUrlReady: any }> = ({ onUrlReady }) => {
 
   return (
     <div className="shadow-2xl w-full rounded-lg py-3 bg-bgColorLeft">
-      <div className="flex items-center ps-3 text-left font-bold text-lg text-primary-500 font-poppins">
+      <div className="flex items-center ps-3 text-left font-bold text-lg text-primary-500 font-custom">
         <span>Ingresar enlace del video</span>
       </div>
       <div className="mx-3 my-2">

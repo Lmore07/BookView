@@ -61,7 +61,7 @@ const Help: React.FC<VoiceCommandProps> = ({ commands, page }) => {
 
   return (
     <div className="w-full rounded-lg flex flex-col items-start justify-start me-10">
-      <div className="flex items-center text-left font-bold text-lg text-primary-500 font-poppins">
+      <div className="flex items-center text-left font-bold text-lg text-primary-500 font-custom">
         <div>
           <svg
             viewBox="0 0 24 24"
@@ -144,10 +144,10 @@ const Help: React.FC<VoiceCommandProps> = ({ commands, page }) => {
       </div>
       {commands.map((commandObj, index) => (
         <div key={index} className="">
-          <div className="mt-1 font-bold font-poppins">{commandObj.tittle}:</div>
+          <div className="mt-1 font-bold font-custom">{commandObj.tittle}:</div>
           <ul className="list-disc list-inside">
             {commandObj.command.map((command, index) => (
-              <li key={index} className="ml-5 font-poppins font-light">
+              <li key={index} className="ml-5 font-custom font-light">
                 {command}
               </li>
             ))}

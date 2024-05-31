@@ -50,7 +50,7 @@ const ConfirmActiveOrDesactive: React.FC<{
       <div
         className={`flex items-center text-left font-bold text-lg ${
           action == "active" ? "text-primary-500" : "text-red-900"
-        } font-poppins`}
+        } font-custom`}
       >
         <div>
           {action == "active" ? (
@@ -90,7 +90,7 @@ const ConfirmActiveOrDesactive: React.FC<{
         </span>
       </div>
       <div className="my-5">
-        <span className="font-poppins">
+        <span className="font-custom">
           ¿Está seguro que desea {action == "active" ? "activar" : "desactivar"}{" "}
           {entity}?
         </span>

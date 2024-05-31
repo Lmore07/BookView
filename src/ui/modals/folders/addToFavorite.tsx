@@ -91,7 +91,7 @@ const AddToFavorite: React.FC<DeleteToFavoriteProps> = ({
 
   return (
     <div className="shadow-2xl w-full rounded-lg py-3 bg-bgColorLeft">
-      <div className="pb-3 ps-3 text-left font-bold text-lg text-primary-500 font-poppins">
+      <div className="pb-3 ps-3 text-left font-bold text-lg text-primary-500 font-custom">
         <svg
           viewBox="0 0 24 24"
           fill="currentColor"
@@ -114,11 +114,11 @@ const AddToFavorite: React.FC<DeleteToFavoriteProps> = ({
         </svg>
         Agregar libro a favoritos
       </div>
-      <div className="pb-3 ps-3 text-left font-poppins">
+      <div className="pb-3 ps-3 text-left font-custom">
         Elige donde quieres guardar el libro:{" "}
         <b className="capitalize">{book.bookName}</b>
       </div>
-      <div className="p-2 text-left font-poppins flex flex-wrap gap-3 mx-2">
+      <div className="p-2 text-left font-custom flex flex-wrap gap-3 mx-2">
         {folders.map((folder) => (
           <div
             key={folder.idFolder}

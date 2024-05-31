@@ -135,10 +135,10 @@ const PageContent: React.FC<PageProps> = ({ page, coverInfo }) => {
               className="flex flex-col items-center"
               onMouseUp={handleTextSelection}
             >
-              <h1 className="text-3xl font-poppins font-bold pb-5">
+              <h1 className="text-3xl font-custom font-bold pb-5">
                 {coverInfo?.bookName}
               </h1>
-              <div className="text-lg font-poppins font-light pb-5">
+              <div className="text-lg font-custom font-light pb-5">
                 Autores: {coverInfo?.authors.join(", ")}
               </div>
               <Image
@@ -152,7 +152,7 @@ const PageContent: React.FC<PageProps> = ({ page, coverInfo }) => {
                 width={200}
                 height={200}
               />
-              <div className="text-lg font-poppins font-light pt-5">
+              <div className="text-lg font-custom font-light pt-5">
                 Publicado: {formatDate}
               </div>
             </div>

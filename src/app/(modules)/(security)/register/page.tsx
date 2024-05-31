@@ -130,10 +130,10 @@ export default function Register() {
             width={300}
             height={100}
           ></Image>
-          <div className="pb-3 pt-5 text-center font-bold text-4xl text-primary-500  font-poppins">
+          <div className="pb-3 pt-5 text-center font-bold text-4xl text-primary-500  font-custom">
             BookView: Libros interactivos para todos
           </div>
-          <div className="text-center font-open-sans text-sm font-normal text-primary">
+          <div className="text-center font-custom text-sm font-normal text-primary">
             Acceda y gestione sus libros en cualquier momento y desde cualquier
             lugar
           </div>
@@ -141,7 +141,7 @@ export default function Register() {
       </section>
       <section className="md:px-5 xl:px-10 sm:px-8 bg-bgColorRight flex items-center grid-cols-1">
         <div className="shadow-2xl w-full rounded-lg py-5 bg-bgColorLeft">
-          <div className="pb-3 ps-10 pt-5 text-left font-bold text-3xl text-primary-500 font-poppins">
+          <div className="pb-3 ps-10 pt-5 text-left font-bold text-3xl text-primary-500 font-custom">
             Registrate
           </div>
           <div className="py-2 gap-4 grid md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-2 md:gap-4 xl:gap-5 sm:gap-4 lg:gap-5 sm:grid-cols-1 px-10">
@@ -294,7 +294,7 @@ export default function Register() {
             <Button onClick={handleClick}>Registrarme</Button>
           </div>
           <div className="py-4">
-            <div className="flex px-10 text-left font-open-sans text-sm font-normal text-textLabel">
+            <div className="flex px-10 text-left font-custom text-sm font-normal text-textLabel">
               ¿Ya tienes una cuenta?
               <a
                 href="../login"

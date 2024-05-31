@@ -18,7 +18,7 @@ const Button: React.FC<ButtonProps> = ({
     <div className="flex justify-center">
       <button
         onClick={onClick}
-        className={`w-full flex items-center justify-center font-open-sans font-bold py-2 rounded-lg px-3 ${
+        className={`w-full flex items-center justify-center font-custom font-bold py-2 rounded-lg px-3 ${
           className
             ? className
             : "bg-bgButtonFill text-textButtonFill hover:text-textButtonFillHover hover:bg-bgButtonFillHover"

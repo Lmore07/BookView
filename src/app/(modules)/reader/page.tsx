@@ -325,12 +325,12 @@ export default function Home() {
           </ButtonOutlined>
         </div>
       </div>
-      <div className="pb-3 pt-5 text-left font-bold text-xl text-primary-500 font-poppins">
+      <div className="pb-3 pt-5 text-left font-bold text-xl text-primary-500 font-custom">
         Filtros
       </div>
       <div className="shadow-md rounded-md p-3">
         <div className="flex items-center justify-between">
-          <span className="font-open-sans text-secondary-400 font-normal text-sm">
+          <span className="font-custom text-secondary-400 font-normal text-sm">
             Categorías
           </span>
         </div>
@@ -348,7 +348,7 @@ export default function Home() {
                   onChange={handleCategoryChange}
                   className="mr-2 cursor-pointer focus:outline-none w-6 border-gray-200 rounded-md custom-checkbox"
                 />
-                <span className="font-open-sans text-sm font-normal text-labelInputText">
+                <span className="font-custom text-sm font-normal text-labelInputText">
                   {category.categoryName}
                 </span>
               </label>

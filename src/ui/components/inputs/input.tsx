@@ -96,7 +96,7 @@ const Input = ({
   return (
     <div className={`input-component w-full ${className}`}>
       {label && (
-        <div className="font-open-sans text-sm font-bold text-labelInputText">
+        <div className="font-custom text-sm font-bold text-labelInputText">
           {label}
         </div>
       )}
@@ -111,7 +111,7 @@ const Input = ({
           onChange={handleChange}
           onBlur={handleBlur}
           placeholder={placeholder}
-          className={`w-full pl-9 font-open-sans bg-bgInputText px-3 py-2 border-0 text-sm font-medium placeholder:text-gray-400 hover:placeholder:text-secondary-400 text-secondary-400 rounded-md outline-none hover:text-secondary-400 hover:border hover:border-black ${
+          className={`w-full pl-9 font-custom bg-bgInputText px-3 py-2 border-0 text-sm font-medium placeholder:text-gray-400 hover:placeholder:text-secondary-400 text-secondary-400 rounded-md outline-none hover:text-secondary-400 hover:border hover:border-black ${
             validationErrors.length > 0
               ? "border-red-900 border-2 focus:ring-1 focus:ring-red-900 hover:border-red-900 hover:border-2"
               : "border-0 focus:ring-2 focus:ring-slate-300"

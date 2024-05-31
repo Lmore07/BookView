@@ -262,6 +262,17 @@ const Table: React.FC<TableProps> = ({
                     )}
                   </tr>
                 ))}
+                {data.length === 0 && (
+                  <tr>
+                    <td
+                      colSpan={headers.length + (showActions ? 1 : 0)}
+                      className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center"
+                    >
+                      No hay datos
+                    </td>
+                  </tr>
+
+                )}
               </tbody>
             </table>
           </div>

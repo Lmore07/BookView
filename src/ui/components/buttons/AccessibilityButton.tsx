@@ -114,31 +114,24 @@ export default function AccessibilityButton() {
               onChange={handleFontChange}
             >
               <option value="Poppins">Poppins</option>
-              <option value="Arial">Arial</option>
-              <option value="Verdana">Verdana</option>
               <option value="Roboto">Roboto</option>
               <option value="Open Sans">Open Sans</option>
               <option value="Lato">Lato</option>
               <option value="Montserrat">Montserrat</option>
               <option value="Raleway">Raleway</option>
               <option value="Oswald">Oswald</option>
-              <option value="Source Sans Pro">Source Sans Pro</option>
               <option value="Merriweather">Merriweather</option>
               <option value="Ubuntu">Ubuntu</option>
               <option value="PT Sans">PT Sans</option>
-              <option value="Droid Sans">Droid Sans</option>
-              <option value="Helvetica Neue">Helvetica Neue</option>
-              <option value="Times New Roman">Times New Roman</option>
-              <option value="Georgia">Georgia</option>
-              <option value="Courier New">Courier New</option>
-              <option value="Lucida Sans Unicode">Lucida Sans Unicode</option>
+              <option value="OpenDyslexic">OpenDyslexic</option>
             </select>
           </div>
           <div>
-            <label className="mr-2 text-textButtonAccesible">
+            <label htmlFor="zoom" className="mr-2 text-textButtonAccesible">
               Modificar tamaño:
             </label>
             <button
+              id="zoom"
               onClick={decreaseZoom}
               disabled={zoom == 0.5 ? true : false}
               className={`bg-gray-200 ${

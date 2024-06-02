@@ -1,0 +1,26 @@
+@tailwind utilities;
+
+.custom-checkbox {
+    @apply w-4 h-4 appearance-none relative bg-white border-2 border-green-600 rounded-sm transition duration-200;
+  }
+  
+  /* Estilos para el checkbox cuando está seleccionado */
+  .custom-checkbox:checked {
+    @apply bg-green-600 border-green-600 ;
+  }
+  
+  /* Estilos para el checkbox cuando está enfocado */
+  .custom-checkbox:focus {
+    @apply outline-none ring-1 ring-green-600;
+  }
+  
+  /* Ícono de check cuando el checkbox está seleccionado */
+  .custom-checkbox:checked::after {
+    @apply content-[''] absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-1 h-2 border-r-2 border-b-2 border-white rotate-45;
+  }
+  
+  @variants checkbox, checked {
+    .custom-checkbox {
+      @apply w-5 h-5 bg-white border-2 border-green-600 rounded-sm transition duration-200 relative;
+    }
+  }

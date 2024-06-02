@@ -1,0 +1,104 @@
+  
+    [data-theme="dark"] {
+        --bgColorLeft: rgba(23, 23, 23, 0.8);
+        --bgColorDark: rgba(47, 44, 44, 1);
+        --bgColorRight: #121212;
+        --bg--ButtonAccesible: #1f8905;
+        --text--ButtonAccesible: #ffffff;
+        --bg--SelectTheme: #ffffff;
+        --text--SelectTheme: #000000;
+        
+        /* Input */
+        --label--inputText:#ffffff;
+        --bg--InputTextColor: rgba(245,250,246,1);
+    
+        /* Focus Input */
+        --focus--ColorInput:rgba(189,193,202,1);
+        --focus--BgInput: #fff;
+    
+        /* Hover Input */
+        --bg--HoverInput: #585858;
+    
+        /* Button Fill */
+        --bg--ButonFill: #ffffff;
+        --text--ButtonFill: #000;
+    
+        /* Button Fill Hover*/
+        --bg--ButtonFillHover: #696969;
+        --text--ButtonFillHover: #fff;
+    
+        /* Button Outlined */
+        --bg--ButtonOutlined: #000;
+        --text--ButtonOutlined: #fff;
+        
+        /* Button Outlined Hover*/
+        --bg--ButtonOutlinedHover: #696969;
+        --text--ButtonOutlinedHover: #fff;
+    
+        /* Register label */
+        --text--RegisterLabel: #fef9ee;
+        --text-ForgotPassword: #fff;
+        --label--Label: #fef9ee;
+    
+        /* Color Icon */
+        --icon-bgColor: #000;
+    
+        /*Text sidebar no selected*/
+        --text-SideBar-NS: rgb(188, 187, 187);
+    
+        /* COLORS PAGINATION */
+    
+        --text-no-select: #9095a1;
+        --bg-no-select: #000000;
+        --hover-text-not-select: #ffffff;
+        --border-not-select: #8f8f8f;
+        --bg-select:#fff;
+    
+            /* Button Previsualization Fill */
+            --bg--ButonPrevFill: #eefee9;
+            --text--ButtonPrevFill: #000000;
+          
+            /* Button Previsualization Fill Hover*/
+            --bg--ButtonPrevFillHover: #1b7505;
+            --text--ButtonPrevFillHover: #fff;
+    
+        --primary--100: #97c597;
+        --primary--150: #1a391a;
+        --primary--200: #205020;
+        --primary--250: #256625;
+        --primary--300: #2b7c2b;
+        --primary--350: #319231;
+        --primary--400: #000000;
+        --primary--450: #3d9d3d;
+        --primary--500: #ffffff;
+        --primary--550: #3e9c3e;
+        --primary--600: #c0ffc0;
+        --primary--650: #348d34;
+        --primary--700: #969696;
+        --primary--750: #2a7a2a;
+    
+        --secondary--100: #081d08;
+        --secondary--150: #0e2b0e;
+        --secondary--200: #144814;
+        --secondary--250: #1a551a;
+        --secondary--300: #206320;
+        --secondary--350: #267026;
+        --secondary--400: #000000;
+        --secondary--450: #328b32;
+        --secondary--500: #ffffff;
+        --secondary--550: #309030;
+        --secondary--600: #298829;
+        --secondary--650: #228122;
+        --secondary--700: #1b771b;
+        --secondary--750: #146e14;
+    
+        --tertiary--100: #3e3e3e;
+        --tertiary--150: #474747;
+        --tertiary--200: #515151;
+        --tertiary--250: #5a5a5a;
+        --tertiary--300: #646464;
+        --tertiary--350: #6e6e6e;
+        --tertiary--400: #777777;
+        --tertiary--450: #818181;
+        --tertiary--500: #f2f2f2;
+    }

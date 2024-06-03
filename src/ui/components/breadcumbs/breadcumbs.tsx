@@ -14,7 +14,7 @@ interface BreadcrumbsProps {
 const Breadcrumbs: React.FC<BreadcrumbsProps> = ({ items }) => {
   return (
     <nav className="flex" aria-label="Breadcrumb">
-      <ol className="flex items-center">
+      <ol className="flex items-center font-custom">
         {items.map((item, index) => (
           <li key={index} className="flex items-center">
             {item.href ? (

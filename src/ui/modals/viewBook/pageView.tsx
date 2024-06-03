@@ -128,17 +128,17 @@ const PageContent: React.FC<PageProps> = ({ page, coverInfo }) => {
           />
         )}
       </Divider>
-      <div className="px-4 pb-1 pt-2">
+      <div className="px-4 pb-1 pt-2 font-custom">
         {page.template === "Cover" && (
           <div className="overflow-hidden">
             <div
               className="flex flex-col items-center"
               onMouseUp={handleTextSelection}
             >
-              <h1 className="text-3xl font-custom font-bold pb-5">
+              <h1 className=" text-3xl  font-bold pb-5">
                 {coverInfo?.bookName}
               </h1>
-              <div className="text-lg font-custom font-light pb-5">
+              <div className="text-lg  font-light pb-5">
                 Autores: {coverInfo?.authors.join(", ")}
               </div>
               <Image
@@ -152,7 +152,7 @@ const PageContent: React.FC<PageProps> = ({ page, coverInfo }) => {
                 width={200}
                 height={200}
               />
-              <div className="text-lg font-custom font-light pt-5">
+              <div className="text-lg  font-light pt-5">
                 Publicado: {formatDate}
               </div>
             </div>
@@ -160,7 +160,7 @@ const PageContent: React.FC<PageProps> = ({ page, coverInfo }) => {
         )}
         {page.template === "Template1" && (
           <div className="overflow-hidden">
-            <div className="flex items-center justify-center mb-2">
+            <div className="flex items-center  justify-center mb-2">
               {page.image && (
                 <Image
                   src={
@@ -177,13 +177,13 @@ const PageContent: React.FC<PageProps> = ({ page, coverInfo }) => {
             </div>
             <div
               onMouseUp={handleTextSelection}
-              className="break-words max-w-none max-h-72 overflow-y-auto"
+              className="break-words  max-w-none max-h-72 overflow-y-auto"
               dangerouslySetInnerHTML={{ __html: page.content }}
             ></div>
           </div>
         )}
         {page.template === "Template2" && (
-          <div className="grid grid-cols-5 gap-3 overflow-hidden">
+          <div className="grid grid-cols-5  gap-3 overflow-hidden">
             <div className="flex items-center justify-center col-span-2">
               {page.image && (
                 <Image
@@ -201,7 +201,7 @@ const PageContent: React.FC<PageProps> = ({ page, coverInfo }) => {
             </div>
             <div className="col-span-3">
               <div
-                className="break-words max-w-none text-justify max-h-96 overflow-y-scroll scroll-ms-1"
+                className="break-words  max-w-none max-h-96 overflow-y-auto"
                 onMouseUp={handleTextSelection}
                 dangerouslySetInnerHTML={{ __html: page.content }}
               ></div>

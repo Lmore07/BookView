@@ -48,14 +48,14 @@ const Sidebar: React.FC<SidebarProps> = ({ optionsRoutes, children }) => {
 
   return (
     <>
-      <header className="h-[10dvh] bg-bgColorRight shadow-lg dark:border-gray-700 px-6 py-4 flex items-center justify-between fixed top-0 left-0 right-0 z-50">
+      <header className="h-[10dvh] bg-bgColorRight font-custom shadow-lg dark:border-gray-700 px-6 py-4 flex items-center justify-between fixed top-0 left-0 right-0 z-50">
         <div className="flex items-center">
           <Image src={logoImg.src} alt="Imagen" width={40} height={40} />
           <h2 className="text-lg pl-3 font-semibold text-gray-800 dark:text-gray-200">
             BookViewer
           </h2>
         </div>
-        <div className="flex items-center space-x-4">
+        <div className="flex items-center space-x-4 font-custom">
           <Sheet>
             <SheetTrigger>
               <MenuIcon className="h-5 w-5 lg:hidden text-gray-500 dark:text-gray-400" />
@@ -67,11 +67,11 @@ const Sidebar: React.FC<SidebarProps> = ({ optionsRoutes, children }) => {
             >
               <div className="flex items-center mb-6 ">
                 <Image src={logoImg.src} alt="Imagen" width={40} height={40} />
-                <h2 className="text-lg ms-2 font-semibold text-gray-800 dark:text-gray-200">
+                <h2 className="text-lg ms-2 font-custom font-semibold text-gray-800 dark:text-gray-200">
                   BookViewer
                 </h2>
               </div>
-              <nav className="space-y-1  ">
+              <nav className="space-y-1  font-custom">
                 {optionsRoutes.map((route) => (
                   <Link
                     key={route.key}
@@ -135,7 +135,7 @@ const Sidebar: React.FC<SidebarProps> = ({ optionsRoutes, children }) => {
           </Avatar>
         </div>
       </header>
-      <div className="flex h-auto min-h-[90dvh]">
+      <div className="flex h-auto min-h-[90dvh] font-custom">
         <div className="hidden lg:block bg-bgColorRight w-64 border-r shadow-lg fixed top-20 bottom-0 left-0 overflow-y-auto">
           <nav className="space-y-1">
             {optionsRoutes.map((route) => (

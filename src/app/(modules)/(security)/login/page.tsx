@@ -190,18 +190,18 @@ export default function Login() {
                 <Button onClick={handleClick}>Iniciar Sesión</Button>
               </div>
               <div className="py-4">
-                <div className="flex px-10 text-left font-custom text-sm font-normal text-textLabel">
+                <div className="flex px-10 font-custom text-left text-sm font-normal text-textLabel">
                   ¿No tienes una cuenta?
                   <a
                     href="/register"
-                    className="ps-5 text-textRegisterLabel text-right underline"
+                    className="ps-5 text-textRegisterLabel font-custom text-right underline"
                   >
                     Regístrate
                   </a>
                 </div>
                 <div className="py-4">
                   <a
-                    href="#"
+                    href="/forgot"
                     className="flex px-10 justify-center underline font-custom text-sm font-normal text-textForgotPassword"
                   >
                     ¿Olvidaste tu contraseña?

@@ -122,7 +122,7 @@ const FlipBook: React.FC<FlipBookProps> = ({
   }, [isFlipping, flipDirection, currentPage, pages.length]);
 
   return (
-    <div className="flex items-center justify-center flex-col">
+    <div className="flex items-center justify-center flex-col font-custom">
       <div
         className="flex items-center justify-center mb-4"
         ref={bookRef}
@@ -152,7 +152,7 @@ const FlipBook: React.FC<FlipBookProps> = ({
             </svg>
           </button>
         </div>
-        <div className="pages flex items-center justify-center">
+        <div className="pages flex items-center justify-center font-custom">
           <div className={`page front no-cover`}>
             {currentPage == 0 ? (
               <PageContent page={pages[currentPage]} coverInfo={currentBook} />
@@ -184,7 +184,7 @@ const FlipBook: React.FC<FlipBookProps> = ({
           </button>
         </div>
       </div>
-      <div className="my-2 w-full flex gap-3 items-center justify-center">
+      <div className="my-2 w-full flex gap-3 font-custom items-center justify-center">
         <span className="w-auto text-nowrap">Portada</span>
         <Slider
           onValueCommit={(value: any) => {

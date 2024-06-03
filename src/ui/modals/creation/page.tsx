@@ -159,7 +159,7 @@ const BookEditor: React.FC<{ onChangedPages: any; pagesEdit?: any[] }> = ({
       </div>
       <div className="bg-bgColorDark rounded-md shadow-xl">
         <div className="mt-3">
-          <h1 className="relative cursor-default text-sm text-primary-500 font-bold underline">
+          <h1 className="font-custom relative cursor-default text-sm text-primary-500 font-bold underline">
             <span className="ps-2">Selecciona una plantilla</span>
           </h1>
         </div>

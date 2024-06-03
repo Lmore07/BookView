@@ -363,7 +363,7 @@ export default function Stepper() {
   return (
     <div className="shadow-xl rounded-xl p-3">
       <div className="py-2">
-        <h1 className="relative text-3xl text-primary-500 font-bold">
+        <h1 className="font-custom relative text-3xl text-primary-500 font-bold">
           <span className="ps-2">Creación de Libro</span>
         </h1>
       </div>
@@ -406,7 +406,7 @@ export default function Stepper() {
         {currentStep == 0 && (
           <div className="shadow-2xl w-full rounded-xl p-3">
             <div className="">
-              <h1 className="pb-3 text-2xl text-left text-primary-500 font-bold">
+              <h1 className="font-custom pb-3 text-2xl text-left text-primary-500 font-bold">
                 <span>Información del Libro</span>
               </h1>
             </div>
@@ -678,7 +678,7 @@ export default function Stepper() {
         {currentStep == 1 && (
           <div className="shadow-2xl w-full rounded-xl p-3">
             <div className="">
-              <h1 className="relative ps-2 pb-3 text-2xl text-left text-primary-500 font-bold">
+              <h1 className="font-custom relative ps-2 pb-3 text-2xl text-left text-primary-500 font-bold">
                 <span>Categorías del Libro</span>
               </h1>
             </div>
@@ -718,7 +718,7 @@ export default function Stepper() {
         {currentStep == 3 && (
           <div className="shadow-2xl w-full rounded-xl p-3">
             <div className="flex items-center justify-between pb-2 flex-wrap">
-              <h1 className="relative ps-2 pb-3 text-2xl text-left text-primary-500 font-bold">
+              <h1 className="font-custom relative ps-2 pb-3 text-2xl text-left text-primary-500 font-bold">
                 <span>Publicar Libro</span>
               </h1>
               <div className="flex justify-center">

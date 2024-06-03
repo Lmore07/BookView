@@ -6,7 +6,7 @@ import { Chip, Divider, Snackbar } from "@mui/material";
 import { add, format } from "date-fns";
 import Image from "next/image";
 import React, { useEffect, useRef, useState } from "react";
-
+import "../../globals.css";
 interface PageProps {
   page: {
     numberPage: number;
@@ -33,6 +33,18 @@ const PageContent: React.FC<PageProps> = ({ page, coverInfo }) => {
   const handlePlayVideo = () => {
     setIsPlayingVideo(true);
   };
+
+  const withCustomStyles = (Component: any) => {
+    return (props: any) => {
+      return (
+        <div style={{ position: "relative" }}>
+          <Component {...props} />
+        </div>
+      );
+    };
+  };
+
+  const CustomSnackbar = withCustomStyles(Snackbar);
 
   useEffect(() => {
     if (
@@ -116,6 +128,18 @@ const PageContent: React.FC<PageProps> = ({ page, coverInfo }) => {
       setOpen(true);
     }
   };
+
+  useEffect(() => {
+    if (open) {
+      const timer = setTimeout(() => {
+        setOpen(false);
+      }, 5000);
+
+      return () => {
+        clearTimeout(timer);
+      };
+    }
+  }, [open]);
 
   return (
     <div className="py-5 bg-bgColorDark rounded-lg shadow-md flex flex-col items-center justify-center">
@@ -317,12 +341,11 @@ const PageContent: React.FC<PageProps> = ({ page, coverInfo }) => {
           )}
         </div>
       </div>
-      <Snackbar
-        open={open}
-        autoHideDuration={5000}
-        onClose={() => setOpen(false)}
-        message={textGenerated}
-      />
+      {open && (
+        <div className="mx-2 mt-2 flex relative shadow-lg font-medium text-sm justify-center p-3 font-custom rounded-xl text-white items-center bg-primary-500 transition-all duration-500 ease-in-out transform scale-100">
+          {textGenerated}
+        </div>
+      )}
     </div>
   );
 };

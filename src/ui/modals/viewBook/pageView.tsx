@@ -2,11 +2,10 @@ import { CoverI } from "@/libs/interfaces/books.interface";
 import { generateSpeech } from "@/libs/services/generateSpeech";
 import { generateText } from "@/libs/services/generateText";
 import { parseHtmlToText } from "@/libs/services/parseHtmlToText";
-import { Chip, Divider, Snackbar } from "@mui/material";
+import { Chip, Divider } from "@mui/material";
 import { add, format } from "date-fns";
 import Image from "next/image";
 import React, { useEffect, useRef, useState } from "react";
-import "../../globals.css";
 interface PageProps {
   page: {
     numberPage: number;
@@ -33,18 +32,6 @@ const PageContent: React.FC<PageProps> = ({ page, coverInfo }) => {
   const handlePlayVideo = () => {
     setIsPlayingVideo(true);
   };
-
-  const withCustomStyles = (Component: any) => {
-    return (props: any) => {
-      return (
-        <div style={{ position: "relative" }}>
-          <Component {...props} />
-        </div>
-      );
-    };
-  };
-
-  const CustomSnackbar = withCustomStyles(Snackbar);
 
   useEffect(() => {
     if (

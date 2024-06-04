@@ -13,7 +13,7 @@ export async function generateImage(text: string): Promise<string> {
     "https://api-inference.huggingface.co/models/nerijs/pixel-art-xl",
     {
       headers: {
-        Authorization: "Bearer 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",
+        Authorization: "Bearer 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",
       },
       method: "POST",
       body: JSON.stringify(inputs),

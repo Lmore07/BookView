@@ -1,5 +1,7 @@
 "use client";
 
+//TODO AGREGAR ALT A LA IMAGEN DEL AVATAR
+
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import Cookie from "js-cookie";
@@ -130,7 +132,7 @@ const Sidebar: React.FC<SidebarProps> = ({ optionsRoutes, children }) => {
           <Avatar className="h-9 w-9 bg-slate-400">
             <AvatarImage src={Cookie.get("profile")} />
             <AvatarFallback>
-              <Image src={userImg.src} alt="" width={300} height={100} />
+              <Image src={userImg.src} alt="Foto de Perfil" width={300} height={100} />
             </AvatarFallback>
           </Avatar>
         </div>

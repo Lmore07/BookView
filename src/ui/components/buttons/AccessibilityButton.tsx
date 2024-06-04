@@ -73,6 +73,7 @@ export default function AccessibilityButton() {
     >
       <button
         className=" text-textButtonAccesible font-bold py-2 px-4"
+        aria-label="Botón de accesibilidad"
         onClick={() => setIsOpen(!isOpen)}
       >
         <svg

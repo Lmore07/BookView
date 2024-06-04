@@ -16,6 +16,7 @@ import {
   validateCorrectDate,
   validateNotEmpty,
 } from "@/libs/validations/validations";
+import { useRouter } from "next/navigation";
 import Button from "@/ui/components/buttons/ButtonFill";
 import ButtonOutlined from "@/ui/components/buttons/ButtonOutlined";
 import Input from "@/ui/components/inputs/input";
@@ -34,6 +35,7 @@ export default function Stepper() {
   const { handleShowToast } = useContext(ToastContext)!;
   const [authors, setAuthors] = useState([{ value: "" }]);
   const { setIsLoading } = useContext(LoadingContext)!;
+  const router = useRouter();
   const [selectedBook, setSelectedBook] = useState<BooksAll | null>(null);
   const [stepOne, setStepOne] = useState<{
     bookName: string;
@@ -348,7 +350,7 @@ export default function Stepper() {
       });
       if (file) {
         const reader = new FileReader();
-        reader.onload = () => {};
+        reader.onload = () => { };
         reader.readAsArrayBuffer(file);
       } else {
         setStepOne({
@@ -371,11 +373,10 @@ export default function Stepper() {
         {steps.map((step, index) => (
           <div key={index} className="flex justify-center">
             <div
-              className={`flex items-center text-sm justify-start cursor-pointer pb-2 font-custom ${
-                index === currentStep
-                  ? "text-primary-500 border-b-4 border-secondary-400 font-bold"
-                  : "text-gray-500"
-              }`}
+              className={`flex items-center text-sm justify-start cursor-pointer pb-2 font-custom ${index === currentStep
+                ? "text-primary-500 border-b-4 border-secondary-400 font-bold"
+                : "text-gray-500"
+                }`}
               onClick={() => setCurrentStep(index)}
             >
               <span className="mr-2">{step.icon}</span>
@@ -649,7 +650,7 @@ export default function Stepper() {
                   validations={[validateCorrectDate]}
                 ></Input>
               </div>
-              <div>
+              <div className="flex flex-col">
                 <div className="font-custom mb-1 text-sm font-bold text-labelInputText">
                   Portada del libro
                 </div>
@@ -666,7 +667,7 @@ export default function Stepper() {
                       height={200}
                     ></Image>
                   ) : (
-                    <span className="text-gray-500">
+                    <span className="text-gray-500 text-center">
                       Haga clic para agregar la portada
                     </span>
                   )}
@@ -752,9 +753,8 @@ export default function Stepper() {
             </div>
             {visible && (
               <div
-                className={`flex xl:w-1/2 lg:w-1/2 md:w-full sm:w-full items-center top-4 rounded-md font-bold font-opens-sans text-base bg-tertiary-200 text-tertiary p-4${
-                  visible ? "opacity-100" : "opacity-0"
-                } transition-opacity duration-500`}
+                className={`flex xl:w-1/2 lg:w-1/2 md:w-full sm:w-full items-center top-4 rounded-md font-bold font-opens-sans text-base bg-tertiary-200 text-tertiary p-4${visible ? "opacity-100" : "opacity-0"
+                  } transition-opacity duration-500`}
               >
                 <div className="ms-4 grow">
                   <svg
@@ -831,7 +831,9 @@ export default function Stepper() {
       </div>
       <div className="flex items-center justify-end mt-4 px-5 gap-3">
         <ButtonOutlined
-          onClick={() => {}}
+          onClick={() => {
+            router.back();
+          }}
           className={
             "border-red-600 text-red-600 hover:text-white hover:bg-red-600"
           }

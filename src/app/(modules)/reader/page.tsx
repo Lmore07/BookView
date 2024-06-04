@@ -175,7 +175,7 @@ export default function Home() {
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger>
-              <span className="cursor-pointer" onClick={handleSpeech}>
+              <span className="cursor-pointer" aria-label="Leer en voz alta" onClick={handleSpeech}>
                 {isPlaying ? (
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -229,6 +229,7 @@ export default function Home() {
             <TooltipTrigger>
               <span
                 className="cursor-pointer"
+                aria-label="Dictado de comandos"
                 onClick={() => {
                   setIsListening(true);
                 }}
@@ -255,6 +256,7 @@ export default function Home() {
             <TooltipTrigger>
               <span
                 className="cursor-pointer"
+                aria-label="Ayuda"
                 onClick={() => setOpenHelp(true)}
               >
                 <svg

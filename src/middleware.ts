@@ -7,7 +7,7 @@ import TokenService from "./libs/services/TokenService";
 const readerRoutes = ["/reader"];
 const creatorRoutes = ["/creator"];
 const adminRoutes = ["/admin"];
-const publicRoutes = ["/login", "/register"];
+const publicRoutes = ["/login", "/register", "/"];
 
 export default async function middleware(
   req: NextRequest,
@@ -43,10 +43,10 @@ export default async function middleware(
       if (tokenInfo.role == RolEnum.READER) {
         return NextResponse.next();
       } else {
-        return NextResponse.redirect(new URL("/login", req.url));
+        return NextResponse.redirect(new URL("/", req.url));
       }
     } else {
-      return NextResponse.redirect(new URL("/login", req.url));
+      return NextResponse.redirect(new URL("/", req.url));
     }
   }
 
@@ -57,10 +57,10 @@ export default async function middleware(
       if (tokenInfo.role == RolEnum.CREATOR) {
         return NextResponse.next();
       } else {
-        return NextResponse.redirect(new URL("/login", req.url));
+        return NextResponse.redirect(new URL("/", req.url));
       }
     } else {
-      return NextResponse.redirect(new URL("/login", req.url));
+      return NextResponse.redirect(new URL("/", req.url));
     }
   }
 
@@ -71,10 +71,10 @@ export default async function middleware(
       if (tokenInfo.role == RolEnum.ADMIN) {
         return NextResponse.next();
       } else {
-        return NextResponse.redirect(new URL("/login", req.url));
+        return NextResponse.redirect(new URL("/", req.url));
       }
     } else {
-      return NextResponse.redirect(new URL("/login", req.url));
+      return NextResponse.redirect(new URL("/", req.url));
     }
   }
 }
@@ -82,6 +82,7 @@ export default async function middleware(
 export const config = {
   matcher: [
     "/login",
+    "/",
     "/register",
     "/reader/:path*",
     "/creator/:path*",

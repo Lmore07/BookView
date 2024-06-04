@@ -11,7 +11,7 @@
         --text--ButtonAccesible: #ffffff;
         --bg--SelectTheme: #ffffff;
         --text--SelectTheme: #000000;
-    
+        --text-landing: rgb(107 114 128);
         /* Input */
         --label--inputText:#424856;
         --bg--InputTextColor: rgb(239, 248, 241);

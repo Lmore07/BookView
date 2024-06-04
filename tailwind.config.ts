@@ -40,6 +40,7 @@ const config = {
         bgColorLeft: "var(--bgColorLeft)",
         bgColorDark: "var(--bgColorDark)",
         bgColorRight: "var(--bgColorRight)",
+        textLanding: "var(--text-landing)",
         bgButtonAccesible: "var(--bg--ButtonAccesible)",
         textButtonAccesible: "var(--text--ButtonAccesible)",
         bgSelectTheme: "var(--bg--SelectTheme)",

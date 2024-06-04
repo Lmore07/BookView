@@ -130,9 +130,9 @@ const Sidebar: React.FC<SidebarProps> = ({ optionsRoutes, children }) => {
             </SheetContent>
           </Sheet>
           <Avatar className="h-9 w-9 bg-slate-400">
-            <AvatarImage src={Cookie.get("profile")} />
+            <AvatarImage src={Cookie.get("profile")} alt="Foto de Perfil" />
             <AvatarFallback>
-              <Image src={userImg.src} alt="Foto de Perfil" width={300} height={100} />
+              <Image src={userImg.src} alt="Foto de Perfil por defecto" width={300} height={100} />
             </AvatarFallback>
           </Avatar>
         </div>

@@ -71,7 +71,7 @@ export default function RootPage() {
           <img
             src={persons.src}
             alt="Fondo"
-            className="absolute inset-0 bg-cover w-full bg-center opacity-10 z-0"
+            className="absolute inset-0 bg-cover w-full bg-center opacity-[0.07] z-0"
           />
           <div className="container grid gap-12 px-4 md:px-6 relative z-10">
             <div className="flex flex-col items-center justify-center space-y-4 text-center animate-fadeIn">

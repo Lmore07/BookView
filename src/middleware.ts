@@ -16,7 +16,7 @@ export default async function middleware(
   const token = cookies().get("token")?.value;
   const { pathname } = req.nextUrl;
 
-  if (publicRoutes.some((route) => pathname.startsWith(route))) {
+  if (publicRoutes.includes(pathname)) {
     if (token) {
       const tokenInfo: DataLogin = (await TokenService.decode(token)).payload
         .data;

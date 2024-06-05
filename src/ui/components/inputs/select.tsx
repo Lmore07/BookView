@@ -45,9 +45,12 @@ const Select = ({
   return (
     <div className={`input-component ${className}`}>
       {label && (
-        <div className="font-custom text-sm font-bold text-labelInputText">
+        <label
+          htmlFor={name}
+          className="font-custom text-sm font-bold text-labelInputText"
+        >
           {label}
-        </div>
+        </label>
       )}
       <div className="relative flex items-center">
         <select

@@ -36,20 +36,6 @@ const Input = ({
   const [touched, setTouched] = useState(false);
   const [isValid, setIsValid] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const [isListening, setIsListening] = useState(false);
-
-  const commands = [
-    {
-      command: "Ingresa en la búsqueda *",
-      callback: (search: string) => {
-        onChange({ target: { value: search } } as any);
-      },
-    },
-  ];
-
-  const { transcript, resetTranscript } = useSpeechRecognition({
-    commands: commands,
-  });
 
   useEffect(() => {
     const handleValidateForm = () => {
@@ -70,17 +56,6 @@ const Input = ({
   const handleChange = (e: any) => {
     onChange(e);
     setIsValid(validations.every((validate) => !validate(e.target.value)));
-  };
-
-  const startListening = () => {
-    SpeechRecognition.startListening({ continuous: true, language: "es-EC" });
-    setIsListening(true);
-  };
-
-  const stopListening = () => {
-    SpeechRecognition.stopListening();
-    setIsListening(false);
-    resetTranscript();
   };
 
   const handleBlur = () => {

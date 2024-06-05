@@ -1,9 +1,10 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import udlPrinciples from "../../public/imgs/duaPrincipios.jpeg";
-import persons from "../../public/imgs/landing.png";
+import udlPrinciples from "../../public/imgs/duaPrincipios.webp";
+import persons from "../../public/imgs/landing.webp";
 import Link from "next/link";
+import Image from "next/image";
 
 export default function RootPage() {
   //Variables declaradas
@@ -25,6 +26,7 @@ export default function RootPage() {
           <nav className="ml-auto flex gap-4 sm:gap-6">
             <Link
               href="#about"
+              tabIndex={0}
               className="inline-flex h-9 text-textButtonFill items-center justify-center rounded-md bg-white/10 px-4 py-2 text-sm font-medium transition-colors hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 dark:bg-gray-950/10 dark:hover:bg-gray-950/20 dark:focus:ring-gray-300"
               prefetch={false}
             >
@@ -68,11 +70,11 @@ export default function RootPage() {
           id="about"
           className="w-full py-12 md:py-24 lg:py-10 bg-gradient-to-r from-primary-100 to-secondary-100 relative"
         >
-          <img
-            src={persons.src}
+          <Image
+            src={persons}
             alt="Fondo"
             className="absolute inset-0 bg-cover w-full bg-center opacity-[0.07] z-0"
-          />
+          ></Image>
           <div className="container grid gap-12 px-4 md:px-6 relative z-10">
             <div className="flex flex-col items-center justify-center space-y-4 text-center animate-fadeIn">
               <div className="space-y-2 flex flex-col items-center">
@@ -94,7 +96,7 @@ export default function RootPage() {
                     className="inline-flex h-9 items-center justify-center rounded-md bg-primary-500 px-4 py-2 text-lg font-medium shadow-sm text-bgColorRight transition-colors hover:bg-primary-650 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-indigo-700"
                     prefetch={false}
                   >
-                    Empezar
+                    Empezar a leer
                   </Link>
                 </div>
               </div>
@@ -227,13 +229,11 @@ export default function RootPage() {
                 </Link>
               </div>
             </div>
-            <img
-              src={udlPrinciples.src}
-              width="550"
-              height="310"
+            <Image
+              src={udlPrinciples}
               alt="UDL Principles"
               className="mx-auto aspect-video overflow-hidden rounded-xl object-cover object-center sm:w-full lg:order-last animate-zoomIn"
-            />
+            ></Image>
           </div>
         </section>
       </main>

@@ -13,7 +13,7 @@ import Input from "@/ui/components/inputs/input";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useContext, useState } from "react";
-import frontPage from "../../../../../public/imgs/frontPage.png";
+import frontPage from "../../../../../public/imgs/frontPage.webp";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function Login() {

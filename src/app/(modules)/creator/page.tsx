@@ -152,7 +152,7 @@ export default function CreatorPage() {
       <div className="shadow-2xl p-4  rounded-lg">
         <div className="flex items-center justify-end gap-2">
           <Tooltip arrow title={isPlaying ? "Detener" : "Oír"} placement="top">
-            <span className="cursor-pointer" onClick={handleSpeech}>
+            <button className="cursor-pointer" onClick={handleSpeech}>
               {isPlaying ? (
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -196,10 +196,10 @@ export default function CreatorPage() {
                   </g>
                 </svg>
               )}
-            </span>
+            </button>
           </Tooltip>
           <Tooltip arrow title={"Dictar"} placement="top">
-            <span
+            <button
               className="cursor-pointer"
               onClick={() => {
                 setIsListening(true);
@@ -217,10 +217,13 @@ export default function CreatorPage() {
                 />
                 <path d="M4.5 7A.75.75 0 0 0 3 7a5.001 5.001 0 0 0 4.25 4.944V13.5h-1.5a.75.75 0 0 0 0 1.5h4.5a.75.75 0 0 0 0-1.5h-1.5v-1.556A5.001 5.001 0 0 0 13 7a.75.75 0 0 0-1.5 0a3.5 3.5 0 1 1-7 0" />
               </svg>
-            </span>
+            </button>
           </Tooltip>
           <Tooltip arrow title="Ayuda" placement="top">
-            <span className="cursor-pointer" onClick={() => setOpenHelp(true)}>
+            <button
+              className="cursor-pointer"
+              onClick={() => setOpenHelp(true)}
+            >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"
@@ -233,7 +236,7 @@ export default function CreatorPage() {
                   clipRule="evenodd"
                 />
               </svg>
-            </span>
+            </button>
           </Tooltip>
         </div>
         <div className="my-3 border-b border-gray-300"></div>

@@ -350,7 +350,7 @@ export default function Stepper() {
       });
       if (file) {
         const reader = new FileReader();
-        reader.onload = () => { };
+        reader.onload = () => {};
         reader.readAsArrayBuffer(file);
       } else {
         setStepOne({
@@ -373,10 +373,11 @@ export default function Stepper() {
         {steps.map((step, index) => (
           <div key={index} className="flex justify-center">
             <div
-              className={`flex items-center text-sm justify-start cursor-pointer pb-2 font-custom ${index === currentStep
-                ? "text-primary-500 border-b-4 border-secondary-400 font-bold"
-                : "text-gray-500"
-                }`}
+              className={`flex items-center text-sm justify-start cursor-pointer pb-2 font-custom ${
+                index === currentStep
+                  ? "text-primary-500 border-b-4 border-secondary-400 font-bold"
+                  : "text-gray-500"
+              }`}
               onClick={() => setCurrentStep(index)}
             >
               <span className="mr-2">{step.icon}</span>
@@ -448,9 +449,9 @@ export default function Stepper() {
                   onChange={handleChangeStepOne}
                   validations={[validateNotEmpty]}
                 ></Input>
-                <h3 className="text-primary-500 font-custom font-semibold text-xl">
+                <span className="text-primary-500 font-custom font-semibold text-xl">
                   Metadatos
-                </h3>
+                </span>
                 <div>
                   {authors.map((author, index) => (
                     <div key={index} className="flex items-end gap-2">
@@ -521,6 +522,7 @@ export default function Stepper() {
                       {index === authors.length - 1 && (
                         <button
                           type="button"
+                          aria-label="Agregar autor"
                           onClick={addAuthor}
                           className="text-primary p-1 border rounded-full hover:text-green-700"
                         >
@@ -655,6 +657,7 @@ export default function Stepper() {
                   Portada del libro
                 </div>
                 <div
+                  tabIndex={0}
                   className="bg-bgInputText rounded-md h-64 flex items-center justify-center mb-4 cursor-pointer hover:text-secondary-400 hover:border hover:border-black"
                   onClick={handleImageUpload}
                 >
@@ -684,9 +687,9 @@ export default function Stepper() {
               </h1>
             </div>
             <div className="py-1 grid gap-3 w-full px-2">
-              <h3 className="text-primary-500 font-custom font-normal text-base">
+              <span className="text-primary-500 font-custom font-normal text-base">
                 Selecciona una o mas cateogrías
-              </h3>
+              </span>
               <div className="flex flex-row gap-5 flex-wrap">
                 {categories.map((category) => (
                   <label
@@ -753,8 +756,9 @@ export default function Stepper() {
             </div>
             {visible && (
               <div
-                className={`flex xl:w-1/2 lg:w-1/2 md:w-full sm:w-full items-center top-4 rounded-md font-bold font-opens-sans text-base bg-tertiary-200 text-tertiary p-4${visible ? "opacity-100" : "opacity-0"
-                  } transition-opacity duration-500`}
+                className={`flex xl:w-1/2 lg:w-1/2 md:w-full sm:w-full items-center top-4 rounded-md font-bold font-opens-sans text-base bg-tertiary-200 text-tertiary p-4${
+                  visible ? "opacity-100" : "opacity-0"
+                } transition-opacity duration-500`}
               >
                 <div className="ms-4 grow">
                   <svg

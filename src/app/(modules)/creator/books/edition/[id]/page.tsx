@@ -41,6 +41,7 @@ export default function BookEdit({
   const { setIsLoading } = useContext(LoadingContext)!;
   const [authors, setAuthors] = useState([{ value: "" }]);
   const [selectedBook, setSelectedBook] = useState<BooksAll | null>(null);
+  const [pagesToPrev, setPagesToPrev] = useState<any[]>([]);
   const [stepOne, setStepOne] = useState<{
     bookName: string;
     authors: string[];
@@ -377,6 +378,10 @@ export default function BookEdit({
       }
     }
   };
+
+  useEffect(() => {
+    console.log("paginas prev: ", pagesToPrev);
+  }, [pagesToPrev]);
 
   const handleImageUpload = () => {
     const input = document.createElement("input");
@@ -750,6 +755,7 @@ export default function BookEdit({
           <BookEditor
             pagesEdit={pages}
             onChangedPages={(pages: any) => {
+              console.log("cambiaron las pages");
               setPages(pages);
             }}
           />
@@ -778,24 +784,19 @@ export default function BookEdit({
                       );
                       return;
                     }
-                    setSelectedBook({
-                      idBook: 0,
-                      authors: stepOne.authors,
-                      bookName: stepOne.bookName,
-                      publicationDate: new Date(stepOne.publicationDate),
-                      isFavorite: false,
-                      isViewed: false,
-                      coverPhoto: stepOne.bookImage,
-                      illustrator: stepOne.illustrator,
-                    });
-                    pages.unshift({
-                      video: null,
-                      audio: null,
-                      numberPage: 0,
-                      template: "Cover",
-                      content: "",
-                      image: selectedBook?.coverPhoto,
-                    });
+                    setPagesToPrev([]);
+                    setPagesToPrev(pages);
+                    setPagesToPrev((prevPages) => [
+                      {
+                        video: null,
+                        audio: null,
+                        numberPage: 0,
+                        template: "Cover",
+                        content: `El titulo del libro es: ${selectedBook?.bookName}`,
+                        image: selectedBook?.coverPhoto,
+                      },
+                      ...prevPages,
+                    ]);
                     setPrevisualize(true);
                   }}
                   className="w-full flex text-sm items-center justify-center font-custom font-normal py-1 rounded-lg bg-bgButtonPrevFill text-textButtonPrevFill px-3 hover:text-textButtonPrevFillHover hover:bg-bgButtonPrevFillHover"
@@ -853,25 +854,23 @@ export default function BookEdit({
                 <Dialog
                   open={previsualize}
                   onOpenChange={(open: boolean) => {
+                    console.log("Esto mando: ", pagesToPrev);
                     setPrevisualize(open);
-                    if (!open) {
-                      pages.shift();
-                    }
                   }}
                 >
                   <DialogContent className="bg-bgColorRight">
                     <DialogHeader>
                       <DialogDescription>
                         <FlipBook
-                          pages={pages!}
+                          pages={pagesToPrev}
                           startPage={0}
                           isViewed={true}
                           coverInfo={{
-                            authors: selectedBook?.authors ?? [],
-                            bookName: selectedBook!.bookName,
-                            coverPhoto: selectedBook!.coverPhoto!,
-                            publicationDate: selectedBook!.publicationDate,
-                            idBook: selectedBook!.idBook,
+                            authors: stepOne?.authors ?? [],
+                            bookName: stepOne!.bookName,
+                            coverPhoto: stepOne!.bookImage!,
+                            publicationDate: stepOne!.publicationDate,
+                            idBook: 0,
                           }}
                         />
                       </DialogDescription>

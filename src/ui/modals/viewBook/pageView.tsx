@@ -34,6 +34,7 @@ const PageContent: React.FC<PageProps> = ({ page, coverInfo }) => {
   };
 
   useEffect(() => {
+    console.log("llego al pageview", page);
     if (
       typeof coverInfo?.publicationDate != "string" &&
       coverInfo?.publicationDate

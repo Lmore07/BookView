@@ -34,6 +34,7 @@ export default function Stepper() {
   const [filterCategories, setFilterCategories] = useState<number[]>([]);
   const { handleShowToast } = useContext(ToastContext)!;
   const [authors, setAuthors] = useState([{ value: "" }]);
+  const [pagesToPrev, setPagesToPrev] = useState<any[]>([]);
   const { setIsLoading } = useContext(LoadingContext)!;
   const router = useRouter();
   const [selectedBook, setSelectedBook] = useState<BooksAll | null>(null);
@@ -267,7 +268,10 @@ export default function Stepper() {
         formData.append("illustrator", body.stepOne.illustrator);
         formData.append("editorial", body.stepOne.editorial);
         formData.append("authors", JSON.stringify(body.stepOne.authors));
-        formData.append("publicationDate", body.stepOne.publicationDate.toString());
+        formData.append(
+          "publicationDate",
+          body.stepOne.publicationDate.toString()
+        );
         formData.append("bookCover", body.stepOne.bookImage!);
         body.pages.forEach((page: any, index: any) => {
           formData.append(`pages[${index}][template]`, page.template);
@@ -771,14 +775,19 @@ export default function Stepper() {
                       coverPhoto: stepOne.bookImage,
                       illustrator: stepOne.illustrator,
                     });
-                    pages.unshift({
-                      video: null,
-                      audio: null,
-                      numberPage: 0,
-                      template: "Cover",
-                      content: "",
-                      image: selectedBook?.coverPhoto,
-                    });
+                    setPagesToPrev([]);
+                    setPagesToPrev(pages);
+                    setPagesToPrev((prevPages) => [
+                      {
+                        video: null,
+                        audio: null,
+                        numberPage: 0,
+                        template: "Cover",
+                        content: `El titulo del libro es: ${selectedBook?.bookName}`,
+                        image: selectedBook?.coverPhoto,
+                      },
+                      ...prevPages,
+                    ]);
                     setPrevisualize(true);
                   }}
                   className="w-full flex text-sm items-center justify-center font-custom font-normal py-1 rounded-lg bg-bgButtonPrevFill text-textButtonPrevFill px-3 hover:text-textButtonPrevFillHover hover:bg-bgButtonPrevFillHover"
@@ -837,16 +846,13 @@ export default function Stepper() {
                   open={previsualize}
                   onOpenChange={(open: boolean) => {
                     setPrevisualize(open);
-                    if (!open) {
-                      pages.shift();
-                    }
                   }}
                 >
                   <DialogContent className="bg-bgColorRight">
                     <DialogHeader>
                       <DialogDescription>
                         <FlipBook
-                          pages={pages!}
+                          pages={pagesToPrev}
                           startPage={0}
                           isViewed={true}
                           coverInfo={{

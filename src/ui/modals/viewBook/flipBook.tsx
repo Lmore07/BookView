@@ -86,10 +86,6 @@ const FlipBook: React.FC<FlipBookProps> = ({
   };
 
   useEffect(() => {
-    console.log("LLego al flipbook");
-  }, []);
-
-  useEffect(() => {
     updateLastPage();
     setSliderValue(currentPage);
   }, [currentPage]);

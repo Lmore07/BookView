@@ -187,7 +187,9 @@ export default function Login() {
                 ></Input>
               </div>
               <div className="py-2 grid px-10">
-                <Button onClick={handleClick}>Iniciar Sesión</Button>
+                <Button type="submit" onClick={handleClick}>
+                  Iniciar Sesión
+                </Button>
               </div>
               <div className="py-4">
                 <div className="flex px-10 font-custom text-left text-sm font-normal text-textLabel">

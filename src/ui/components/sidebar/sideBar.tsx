@@ -159,7 +159,7 @@ const Sidebar: React.FC<SidebarProps> = ({ optionsRoutes, children }) => {
               href={"../login"}
               onClick={() => {
                 Cookie.remove("token");
-                router.replace("/login");
+                window.location.reload();
               }}
               className={`flex items-center gap-2 px-3 py-2 bg-transparent cursor-pointer transition-colors ${
                 selectedOption == "logOut"

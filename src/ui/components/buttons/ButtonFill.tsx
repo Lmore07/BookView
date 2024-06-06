@@ -6,6 +6,7 @@ interface ButtonProps {
   icon?: ReactNode | null;
   onClick: () => void;
   className?: string | null;
+  type?: "button" | "reset" | "submit";
 }
 
 const Button: React.FC<ButtonProps> = ({
@@ -13,11 +14,13 @@ const Button: React.FC<ButtonProps> = ({
   icon,
   onClick,
   className,
+  type = "button",
 }) => {
   return (
     <div className="flex justify-center">
       <button
         onClick={onClick}
+        type={type}
         className={`w-full flex items-center justify-center font-custom font-bold py-2 rounded-lg px-3 ${
           className
             ? className

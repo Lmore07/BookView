@@ -137,7 +137,7 @@ export const POST = apiMiddleware(async (request: NextRequest) => {
   }
   const formData = await request.formData();
   const parsedPages = parsePagesField(formData);
-  const parsedEntries: AddBookBodyRequest = { pages: [] };
+  const parsedEntries: AddBookBodyRequest = { pages: [], publicationDate: "" };
   Object.assign(parsedEntries, Object.fromEntries(formData.entries()));
   if (typeof parsedEntries.categoriesIds === "string") {
     parsedEntries.categoriesIds = JSON.parse(parsedEntries.categoriesIds);
@@ -168,6 +168,8 @@ export const POST = apiMiddleware(async (request: NextRequest) => {
     );
   }
 
+  console.log("Datos que llegan", parsedEntries);
+
   const book = await prisma.books.create({
     select: {
       idBook: true,
@@ -180,7 +182,7 @@ export const POST = apiMiddleware(async (request: NextRequest) => {
     data: {
       authors: parsedEntries.authors,
       bookName: parsedEntries.bookName!,
-      publicationDate: parsedEntries.publicationDate,
+      publicationDate: new Date(parsedEntries.publicationDate).toISOString(),
       createdBy: authResult.userId,
       illustrator: parsedEntries.illustrator,
       editorial: parsedEntries.editorial,

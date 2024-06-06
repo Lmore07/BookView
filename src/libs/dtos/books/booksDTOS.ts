@@ -28,7 +28,7 @@ export interface AddBookBodyRequest {
   bookName?: string;
   authors?: string[];
   illustrator?: string;
-  publicationDate?: Date;
+  publicationDate: string;
   editorial?: string;
   bookCover?: Blob;
   pages: {

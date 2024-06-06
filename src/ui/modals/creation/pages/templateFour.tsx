@@ -69,8 +69,8 @@ const Template4: React.FC<{
   };
 
   return (
-    <div className="bg-bgColorDark p-8 rounded shadow-md w-full mx-auto flex flex-col items-center">
-      <div className="max-w-2xl">
+    <div className="bg-bgColorDark p-8 rounded shadow-md w-full mx-auto items-center">
+      <div className="max-w-2xl inline">
         <Editor
           apiKey="pxp94q2uamitsp5ok6hrdctn5uu10ei9emrfbozu7576fwa4"
           onEditorChange={(newContent) => {

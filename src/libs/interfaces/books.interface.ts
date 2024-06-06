@@ -19,6 +19,15 @@ export interface PageI {
   content: string;
 }
 
+export interface PageCreate {
+  numberPage: number;
+  audio: string | null;
+  video: string | null;
+  image: string | null;
+  template: string;
+  content: string | null;
+}
+
 export interface CoverI {
   coverPhoto: any;
   authors: string[];
@@ -38,4 +47,3 @@ export interface BookInfo {
   Pages: PageI[];
   categoriesIds: number[];
 }
-

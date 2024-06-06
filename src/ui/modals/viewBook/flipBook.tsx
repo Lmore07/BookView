@@ -7,7 +7,7 @@ interface FlipBookProps {
   pages: {
     numberPage: number;
     template: string;
-    content: string;
+    content: string | null;
     image: string | null;
     audio: string | null;
     video: string | null;
@@ -39,7 +39,6 @@ const FlipBook: React.FC<FlipBookProps> = ({
       setIsFlipping(true);
     }
   };
-
 
   const handleNextPage = () => {
     if (currentPage < pages.length - 1 && !isFlipping) {
@@ -85,6 +84,10 @@ const FlipBook: React.FC<FlipBookProps> = ({
       });
     }
   };
+
+  useEffect(() => {
+    console.log("LLego al flipbook");
+  }, []);
 
   useEffect(() => {
     updateLastPage();

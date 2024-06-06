@@ -98,7 +98,7 @@ const Template1: React.FC<{
   };
 
   return (
-    <div className="bg-bgColorDark p-8 rounded shadow-md w-full max-w-4xl mx-auto flex flex-col items-center justify-center">
+    <div className="bg-bgColorDark p-8 rounded shadow-md w-full max-w-4xl mx-auto items-center justify-center">
       <div
         className="bg-gray-200 h-64 w-full flex items-center justify-center mb-4 cursor-pointer"
         onClick={handleImageUpload}
@@ -121,7 +121,7 @@ const Template1: React.FC<{
           </span>
         )}
       </div>
-      <div className=" max-w-2xl w-full col-span-2">
+      <div className="max-w-2xl inline">
         <Editor
           apiKey="pxp94q2uamitsp5ok6hrdctn5uu10ei9emrfbozu7576fwa4"
           onEditorChange={(newContent) => {

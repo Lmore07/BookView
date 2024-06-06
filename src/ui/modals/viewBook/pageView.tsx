@@ -10,7 +10,7 @@ interface PageProps {
   page: {
     numberPage: number;
     template: string;
-    content: string;
+    content: any;
     image: any;
     audio: any;
     video: any;
@@ -146,9 +146,7 @@ const PageContent: React.FC<PageProps> = ({ page, coverInfo }) => {
               className="flex flex-col items-center"
               onMouseUp={handleTextSelection}
             >
-              <h1 className=" text-3xl  font-bold pb-5">
-                {coverInfo?.bookName}
-              </h1>
+              <h1 className=" text-3xl  font-bold">{coverInfo?.bookName}</h1>
               <div className="text-lg  font-light pb-5">
                 Autores: {coverInfo?.authors.join(", ")}
               </div>
@@ -189,7 +187,12 @@ const PageContent: React.FC<PageProps> = ({ page, coverInfo }) => {
             <div
               onMouseUp={handleTextSelection}
               className="break-words  max-w-none max-h-72 overflow-y-auto"
-              dangerouslySetInnerHTML={{ __html: page.content }}
+              dangerouslySetInnerHTML={{
+                __html: page.content.replace(
+                  /<ul>/g,
+                  '<ul style="list-style: disc; padding-left: 40px;">'
+                ),
+              }}
             ></div>
           </div>
         )}
@@ -214,7 +217,12 @@ const PageContent: React.FC<PageProps> = ({ page, coverInfo }) => {
               <div
                 className="break-words  max-w-none max-h-96 overflow-y-auto"
                 onMouseUp={handleTextSelection}
-                dangerouslySetInnerHTML={{ __html: page.content }}
+                dangerouslySetInnerHTML={{
+                  __html: page.content.replace(
+                    /<ul>/g,
+                    '<ul style="list-style: disc; padding-left: 40px;">'
+                  ),
+                }}
               ></div>
             </div>
           </div>
@@ -225,7 +233,12 @@ const PageContent: React.FC<PageProps> = ({ page, coverInfo }) => {
               <div
                 className="break-words max-w-none max-h-96 overflow-y-auto"
                 onMouseUp={handleTextSelection}
-                dangerouslySetInnerHTML={{ __html: page.content }}
+                dangerouslySetInnerHTML={{
+                  __html: page.content.replace(
+                    /<ul>/g,
+                    '<ul style="list-style: disc; padding-left: 40px;">'
+                  ),
+                }}
               ></div>
             </div>
             <div className="flex items-center justify-center col-span-2">
@@ -250,7 +263,12 @@ const PageContent: React.FC<PageProps> = ({ page, coverInfo }) => {
             <div
               onMouseUp={handleTextSelection}
               className="break-words max-w-none max-h-96 overflow-y-auto"
-              dangerouslySetInnerHTML={{ __html: page.content }}
+              dangerouslySetInnerHTML={{
+                __html: page.content.replace(
+                  /<ul>/g,
+                  '<ul style="list-style: disc; padding-left: 40px;">'
+                ),
+              }}
             ></div>
           </div>
         )}

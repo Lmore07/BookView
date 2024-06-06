@@ -341,8 +341,12 @@ export default function BookEdit({
           method: "PUT",
           body: formData,
         });
-        handleShowToast("Libro editado con éxito", ToastType.SUCCESS);
-        router.push("/creator/books");
+        if (response.ok) {
+          router.back();
+          handleShowToast("Libro editado con éxito", ToastType.SUCCESS);
+        } else {
+          handleShowToast("No se pudo editar el libro", ToastType.ERROR);
+        }
       } catch (error) {
         handleShowToast("Error al editar el libro", ToastType.ERROR);
       } finally {
@@ -759,6 +763,21 @@ export default function BookEdit({
               <div className="flex justify-center">
                 <button
                   onClick={() => {
+                    if (
+                      stepOne.authors.length === 0 ||
+                      stepOne.bookName === "" ||
+                      stepOne.publicationDate === "" ||
+                      stepOne.bookImage === null ||
+                      stepOne.illustrator === "" ||
+                      filterCategories.length === 0 ||
+                      pages.length === 0
+                    ) {
+                      handleShowToast(
+                        "Por favor, complete todos los campos antes de publicar el libro.",
+                        ToastType.WARNING
+                      );
+                      return;
+                    }
                     setSelectedBook({
                       idBook: 0,
                       authors: stepOne.authors,

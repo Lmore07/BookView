@@ -108,7 +108,7 @@ export default function RootPage() {
                 </div>
                 <h3 className="text-xl font-bold">Interfaz Intuitiva</h3>
                 <p className="text-textLanding dark:text-gray-400">
-                  Experiencia perfecta de creación y lectura de libros para
+                  Experiencia sastisfactoria de creación y lectura de libros para
                   usuarios de todos los niveles.
                 </p>
               </div>
@@ -183,7 +183,7 @@ export default function RootPage() {
               </h2>
               <p className="max-w-[600px] text-textLanding md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed text-left inline-block dark:text-gray-400 animate-fadeIn">
                 Nuestra aplicación está diseñada teniendo en cuenta los
-                principios del Diseño Universal para el Aprendizaje (DUA). DUA
+                principios del Diseño Universal para el Aprendizaje (DUA). El DUA
                 es un marco que guía el diseño de experiencias de aprendizaje
                 para que sean accesibles y efectivas para todas las personas,
                 independientemente de sus habilidades, antecedentes o estilos de
@@ -240,7 +240,7 @@ export default function RootPage() {
       <footer className="flex flex-col text-textButtonFill gap-2 sm:flex-row py-6 w-full shrink-0 items-center px-4 md:px-6 border-t bg-gradient-to-r from-primary-450 to-secondary-450 shadow-lg">
         <div className="flex flex-col sm:flex-row items-center gap-4">
           <p className="text-xs animate-fadeIn font-semibold">
-            &copy; 2024 Book App. Creado por Luis Moreira.
+            &copy; 2024 Universidad Técnica Estatal de Quevedo.
           </p>
           <nav className="flex gap-4 sm:gap-6 animate-fadeIn">
             <Link

@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/dialog";
 import { LoadingContext } from "@/libs/contexts/loadingContext";
 import { ToastContext } from "@/libs/contexts/toastContext";
-import { BooksAll } from "@/libs/interfaces/books.interface";
+import { BooksAll, PageCreate } from "@/libs/interfaces/books.interface";
 import { CategoriesAll } from "@/libs/interfaces/categories.interface";
 import { ResponseData } from "@/libs/interfaces/response.interface";
 import { ToastType } from "@/libs/interfaces/toast.interface";
@@ -30,7 +30,7 @@ export default function Stepper() {
   const [categories, setCategories] = useState<CategoriesAll[]>([]);
   const [visible, setVisible] = useState(true);
   const [previsualize, setPrevisualize] = useState(false);
-  const [pages, setPages] = useState<any>([]);
+  const [pages, setPages] = useState<PageCreate[]>([]);
   const [filterCategories, setFilterCategories] = useState<number[]>([]);
   const { handleShowToast } = useContext(ToastContext)!;
   const [authors, setAuthors] = useState([{ value: "" }]);
@@ -199,93 +199,110 @@ export default function Stepper() {
     setCurrentStep(currentStep + 1);
   };
 
-  const handlePageValidation = (obj: any) => {
-    if (obj.content === null || obj.content === "") {
-      handleShowToast(
-        `En la página ${obj.pageNumber} falta el contenido.`,
-        ToastType.ERROR
-      );
-      return false;
+  function validateBody(body: any) {
+    console.log(body);
+    if (!body.stepOne || Object.keys(body.stepOne).length === 0) {
+      return {
+        isValid: false,
+        message: "La información principal del paso 1 debe estar completa",
+      };
     }
-    if (obj.imageBlob === null && obj.template !== "Template4") {
-      handleShowToast(
-        `En la página ${obj.pageNumber} falta la imagen.`,
-        ToastType.ERROR
-      );
-      return false;
-    }
-    if (obj.audioBlob === null) {
-      handleShowToast(
-        `En las páginas que falta el audio se realizará lectura mediante IA.`,
-        ToastType.INFO
-      );
-    }
-    if (obj.videoBlob === null) {
-      handleShowToast(
-        `En la página ${obj.pageNumber} falta el video.`,
-        ToastType.ERROR
-      );
-      return false;
-    }
-    return true;
-  };
 
-  const handleClick = async () => {
-    if (currentStep === 2) {
-      for (const obj of pages) {
-        if (!handlePageValidation(obj)) {
-          return;
-        }
+    // Verifica que categoriesIds sea un array y no esté vacío
+    if (!Array.isArray(body.categoriesIds) || body.categoriesIds.length === 0) {
+      return {
+        isValid: false,
+        message: "Se debe elegir al menos una categoría",
+      };
+    }
+
+    // Verifica que pages sea un array y no esté vacío
+    if (!Array.isArray(body.pages) || body.pages.length === 0) {
+      return {
+        isValid: false,
+        message: "El libro debe tener al menos una pagina",
+      };
+    }
+
+    // Verifica que cada página con template "Template4" tenga un audio
+    for (let page of body.pages) {
+      if (page.template === "Template5" && !page.audio) {
+        return {
+          isValid: false,
+          message: "Las páginas que son solo imagenes deben incluir un audio",
+        };
       }
     }
+
+    for (let page of body.pages) {
+      if (page.template != "Template5" && page.content.length == 0) {
+        return {
+          isValid: false,
+          message: "Las páginas deben tener contenido válido",
+        };
+      }
+    }
+
+    // Si todas las verificaciones pasan, el cuerpo es válido
+    return { isValid: true };
+  }
+
+  const handleClick = async () => {
     if (currentStep !== 3) {
       handleNext();
     }
     if (currentStep == 3) {
       let body = {
-        ...stepOne,
+        stepOne: stepOne,
         categoriesIds: filterCategories,
         pages: pages,
       };
-      const formData = new FormData();
-      formData.append("bookName", body.bookName);
-      formData.append("illustrator", body.illustrator);
-      formData.append("editorial", body.editorial);
-      formData.append("authors", JSON.stringify(body.authors));
-      formData.append("publicationDate", body.publicationDate.toString());
-      formData.append("bookCover", body.bookImage!);
-      body.pages.forEach((page: any, index: any) => {
-        formData.append(`pages[${index}][template]`, page.template);
-        formData.append(`pages[${index}][content]`, page.content);
-        formData.append(`pages[${index}][numberPage]`, page.numberPage);
-        if (page.image) {
-          formData.append(`pages[${index}][image]`, page.image);
-        }
-        if (page.audio) {
-          formData.append(`pages[${index}][audio]`, page.audio);
-        }
-        if (page.video) {
-          formData.append(`pages[${index}][video]`, page.video);
-        }
-      });
-      formData.append("categoriesIds", JSON.stringify(body.categoriesIds));
-      try {
-        setIsLoading(true);
-        const response = await fetch("../../api/books", {
-          method: "POST",
-          body: formData,
+      let validationResult = validateBody(body);
+      if (!validationResult.isValid) {
+        console.error(validationResult.message);
+        handleShowToast(validationResult.message ?? "Error", ToastType.ERROR);
+      } else {
+        const formData = new FormData();
+        formData.append("bookName", body.stepOne.bookName);
+        formData.append("illustrator", body.stepOne.illustrator);
+        formData.append("editorial", body.stepOne.editorial);
+        formData.append("authors", JSON.stringify(body.stepOne.authors));
+        formData.append("publicationDate", body.stepOne.publicationDate.toString());
+        formData.append("bookCover", body.stepOne.bookImage!);
+        body.pages.forEach((page: any, index: any) => {
+          formData.append(`pages[${index}][template]`, page.template);
+          formData.append(`pages[${index}][content]`, page.content);
+          formData.append(`pages[${index}][numberPage]`, page.numberPage);
+          if (page.image) {
+            formData.append(`pages[${index}][image]`, page.image);
+          }
+          if (page.audio) {
+            formData.append(`pages[${index}][audio]`, page.audio);
+          }
+          if (page.video) {
+            formData.append(`pages[${index}][video]`, page.video);
+          }
         });
-        const data: ResponseData<CategoriesAll[]> = await response.json();
-        if (data.error) {
-          handleShowToast(data.error, ToastType.ERROR);
-        } else {
-          handleShowToast(data.message!, ToastType.SUCCESS);
+        formData.append("categoriesIds", JSON.stringify(body.categoriesIds));
+        try {
+          setIsLoading(true);
+          const response = await fetch("../../api/books", {
+            method: "POST",
+            body: formData,
+          });
+          const data: ResponseData<CategoriesAll[]> = await response.json();
+          if (data.error) {
+            handleShowToast(data.error, ToastType.ERROR);
+          } else {
+            router.back();
+            handleShowToast(data.message!, ToastType.SUCCESS);
+          }
+        } catch (error) {
+          console.error(error);
+          handleShowToast("Error al crear el libro", ToastType.ERROR);
+        } finally {
+          setIsLoading(false);
         }
-      } catch (error) {
-        console.error(error);
-        handleShowToast("Error al crear el libro", ToastType.ERROR);
-      } finally {
-        setIsLoading(false);
       }
     }
   };
@@ -728,6 +745,22 @@ export default function Stepper() {
               <div className="flex justify-center">
                 <button
                   onClick={() => {
+                    if (
+                      stepOne.authors.length === 0 ||
+                      stepOne.bookName === "" ||
+                      String(stepOne.publicationDate) === "" ||
+                      stepOne.bookImage === null ||
+                      stepOne.illustrator === "" ||
+                      filterCategories.length === 0 ||
+                      pages.length === 0
+                    ) {
+                      handleShowToast(
+                        "Por favor, complete todos los campos antes de publicar el libro.",
+                        ToastType.WARNING
+                      );
+                      return;
+                    }
+
                     setSelectedBook({
                       idBook: 0,
                       authors: stepOne.authors,

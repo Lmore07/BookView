@@ -167,9 +167,6 @@ export const POST = apiMiddleware(async (request: NextRequest) => {
       { status: 400 }
     );
   }
-
-  console.log("Datos que llegan", parsedEntries);
-
   const book = await prisma.books.create({
     select: {
       idBook: true,

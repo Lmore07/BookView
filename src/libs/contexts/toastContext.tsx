@@ -21,7 +21,7 @@ export const ToastProvider = ({ children }: { children: React.ReactNode }) => {
   const handleShowToast = (
     message: string,
     type: ToastType,
-    duration = 400000
+    duration = 4000
   ) => {
     setMessageToast(message);
     setTypeToast(type);

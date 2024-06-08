@@ -37,13 +37,26 @@ const Toast: React.FC<ToastProps> = ({
   const getBackgroundColor = () => {
     switch (type) {
       case ToastType.SUCCESS:
-        return "emerald-500";
+        return "bg-emerald-500";
       case ToastType.ERROR:
-        return "red-500";
+        return "bg-red-500";
       case ToastType.WARNING:
-        return "yellow-400";
+        return "bg-yellow-500";
       case ToastType.INFO:
-        return "blue-500";
+        return "bg-blue-500";
+    }
+  };
+
+  const getTextColor = () => {
+    switch (type) {
+      case ToastType.SUCCESS:
+        return "text-emerald-500";
+      case ToastType.ERROR:
+        return "text-red-500";
+      case ToastType.WARNING:
+        return "text-yellow-400";
+      case ToastType.INFO:
+        return "text-blue-500";
     }
   };
 
@@ -100,14 +113,14 @@ const Toast: React.FC<ToastProps> = ({
     >
       <div className="flex w-full max-w-sm overflow-hidden bg-white rounded-lg shadow-md dark:bg-gray-800">
         <div
-          className={`flex items-center justify-center w-14 bg-${getBackgroundColor()}`}
+          className={`flex items-center justify-center w-14 ${getBackgroundColor()}`}
         >
           {getIcon()}
         </div>
 
         <div className="px-4 py-2">
           <div className="">
-            <span className={`font-semibold text-${getBackgroundColor()}`}>
+            <span className={`font-semibold  ${getTextColor()}`}>
               {getTitle()}
             </span>
             <div className="text-sm text-gray-600 dark:text-gray-200">

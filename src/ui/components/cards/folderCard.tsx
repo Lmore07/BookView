@@ -25,7 +25,7 @@ const FolderCard: React.FC<FolderCardProps> = ({
         />
       </div>
       <div className="p-4">
-        <h3 className="text-gray-800 font-bold">{folderName}</h3>
+        <div className="text-gray-800 font-bold">{folderName}</div>
         <div className="w-full justify-between items-center mt-2">
           <ButtonOutlined
             icon={

@@ -53,6 +53,7 @@ const URLModal: React.FC<{ onUrlReady: any }> = ({ onUrlReady }) => {
           placeholder="https://www.youtube.com/..."
           type="text"
           value={value}
+          maxLength={1000}
           validations={[validateNotEmpty, validateUrl]}
           icon={
             <svg

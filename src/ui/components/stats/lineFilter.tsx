@@ -58,9 +58,9 @@ const LineChart: React.FC<LineChartProps> = ({ id, onViewClick }) => {
   return (
     <div className="shadow-2xl p-4 mt-10 rounded-lg">
       <div className="flex flex-wrap justify-between mb-5">
-        <h2 className="relative text-2xl text-primary-500 font-bold before:content-[''] before:block before:absolute before:h-full before:w-1 before:bg-primary-500 before:left-0">
+        <div className="relative text-2xl text-primary-500 font-bold before:content-[''] before:block before:absolute before:h-full before:w-1 before:bg-primary-500 before:left-0">
           <span className="ps-2">Estadisticas del libro</span>
-        </h2>
+        </div>
       </div>
       <div className="w-64">
         <Select

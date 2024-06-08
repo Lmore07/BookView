@@ -286,6 +286,7 @@ export default function Home() {
             label="Encuentra el libro que buscas"
             name="bookName"
             placeholder="Escribe el nombre o autor del libro"
+            maxLength={255}
             type="text"
             icon={
               <svg

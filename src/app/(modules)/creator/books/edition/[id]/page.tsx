@@ -410,7 +410,7 @@ export default function BookEdit({
   return (
     <div className="shadow-xl rounded-xl p-3">
       <div className="py-2">
-        <h1 className="font-custom relative text-3xl text-primary-500 font-bold">
+        <h1 className="font-custom m-0 relative text-3xl text-primary-500 font-bold">
           <span className="ps-2">Edición de Libro</span>
         </h1>
       </div>
@@ -453,9 +453,9 @@ export default function BookEdit({
         {currentStep == 0 && (
           <div className="shadow-2xl w-full rounded-xl p-3">
             <div className="">
-              <h1 className="font-custom pb-3 text-2xl text-left text-primary-500 font-bold">
+              <h2 className="font-custom pb-3 text-2xl text-left text-primary-500 font-bold">
                 <span>Información del Libro</span>
-              </h1>
+              </h2>
             </div>
             <div className="py-1 grid gap-3 w-full px-2">
               <Input
@@ -464,6 +464,7 @@ export default function BookEdit({
                 placeholder="100 años de soledad"
                 value={stepOne.bookName}
                 type="text"
+                maxLength={100}
                 icon={
                   <svg
                     viewBox="0 0 24 24"
@@ -491,9 +492,9 @@ export default function BookEdit({
                 onChange={handleChangeStepOne}
                 validations={[validateNotEmpty]}
               ></Input>
-              <h3 className="text-primary-500 font-custom font-semibold text-xl">
+              <div className="text-primary-500 font-custom font-semibold text-xl">
                 Metadatos
-              </h3>
+              </div>
               <div>
                 {authors.map((author, index) => (
                   <div key={index} className="flex items-end gap-2">
@@ -504,7 +505,7 @@ export default function BookEdit({
                       name={`author-${index}`}
                       placeholder="Gabriel García Márquez"
                       value={author.value}
-                      maxLength={60}
+                      maxLength={100}
                       type="text"
                       className="py-1"
                       icon={
@@ -599,6 +600,7 @@ export default function BookEdit({
                 name="illustrator"
                 placeholder="Luisa Rivera"
                 value={stepOne.illustrator}
+                maxLength={100}
                 type="text"
                 icon={
                   <svg
@@ -630,7 +632,7 @@ export default function BookEdit({
                 placeholder="Editorial Planeta"
                 value={stepOne.editorial}
                 type="text"
-                maxLength={50}
+                maxLength={80}
                 className="py-1"
                 icon={
                   <svg
@@ -721,14 +723,14 @@ export default function BookEdit({
         {currentStep == 1 && (
           <div className="shadow-2xl w-full rounded-xl p-3">
             <div className="">
-              <h1 className="font-custom relative ps-2 pb-3 text-2xl text-left text-primary-500 font-bold">
+              <h2 className="font-custom relative ps-2 pb-3 text-2xl text-left text-primary-500 font-bold">
                 <span>Categorías del Libro</span>
-              </h1>
+              </h2>
             </div>
             <div className="py-1 grid gap-3 w-full px-2">
-              <h3 className="text-primary-500 font-custom font-normal text-base">
+              <div className="text-primary-500 font-custom font-normal text-base">
                 Selecciona una o mas cateogrías
-              </h3>
+              </div>
               <div className="flex flex-row gap-5 flex-wrap">
                 {categories.map((category) => (
                   <label
@@ -763,9 +765,9 @@ export default function BookEdit({
         {currentStep == 3 && (
           <div className="shadow-2xl w-full rounded-xl p-3">
             <div className="flex items-center justify-between pb-2 flex-wrap">
-              <h1 className="font-custom relative ps-2 pb-3 text-2xl text-left text-primary-500 font-bold">
+              <h2 className="font-custom relative ps-2 pb-3 text-2xl text-left text-primary-500 font-bold">
                 <span>Publicar Libro</span>
-              </h1>
+              </h2>
               <div className="flex justify-center">
                 <button
                   onClick={() => {

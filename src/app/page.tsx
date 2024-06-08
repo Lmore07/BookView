@@ -84,12 +84,12 @@ export default function RootPage() {
                 <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl animate-slideInDown dark:text-black">
                   Da rienda suelta a tu creatividad con el diseño universal
                 </h2>
-                <p className="max-w-[900px] text-center text-textLanding md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-gray-400 animate-fadeIn">
+                <div className="max-w-[900px] text-center text-textLanding md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-gray-400 animate-fadeIn">
                   Nuestra aplicación le permite crear y leer libros dirigidos a
                   diversos estudiantes. Adopte los principios del Diseño
                   Universal para el Aprendizaje y abra un mundo de narración
                   inclusiva.
-                </p>
+                </div>
                 <div className="mt-6">
                   <Link
                     href="/login"
@@ -106,34 +106,34 @@ export default function RootPage() {
                 <div className="flex items-center justify-center bg-primary-500 rounded-full h-12 w-12">
                   <InfoIcon className="h-6 w-6 text-bgColorRight " />
                 </div>
-                <h3 className="text-xl font-bold">Interfaz Intuitiva</h3>
-                <p className="text-textLanding dark:text-gray-400">
+                <div className="text-xl font-bold">Interfaz Intuitiva</div>
+                <div className="text-textLanding dark:text-gray-400">
                   Experiencia sastisfactoria de creación y lectura de libros para
                   usuarios de todos los niveles.
-                </p>
+                </div>
               </div>
               <div className="flex items-center flex-col gap-4 p-8 md:p-10 hover:bg-gradient-to-r from-primary-100 to-secondary-200 transition-colors duration-300 ease-in-out">
                 <div className="flex items-center justify-center bg-primary-500 rounded-full h-12 w-12">
                   <MusicIcon className="h-6 w-6 text-bgColorRight" />
                 </div>
-                <h3 className="text-xl font-bold">Integración Multimedia</h3>
-                <p className="text-textLanding dark:text-gray-400">
+                <div className="text-xl font-bold">Integración Multimedia</div>
+                <div className="text-textLanding dark:text-gray-400">
                   Incorpore una variedad de medios, incluidos texto, imágenes,
                   audio y video, para atender diversos estilos de aprendizaje.
-                </p>
+                </div>
               </div>
               <div className="flex items-center flex-col gap-4 p-8 md:p-10 hover:bg-gradient-to-r from-primary-100 to-secondary-200 transition-colors duration-300 ease-in-out">
                 <div className="flex items-center justify-center bg-primary-500 rounded-full h-12 w-12">
                   <AccessibilityIcon className="h-6 w-6 text-bgColorRight" />
                 </div>
-                <h3 className="text-xl font-bold text-center">
+                <div className="text-xl font-bold text-center">
                   Funciones de accesibilidad
-                </h3>
-                <p className="text-textLanding dark:text-gray-400">
+                </div>
+                <div className="text-textLanding dark:text-gray-400">
                   Asegúrese de que sus libros sean accesibles para lectores con
                   discapacidades a través de tecnologías de asistencia
                   integradas.
-                </p>
+                </div>
               </div>
             </div>
           </div>
@@ -147,11 +147,11 @@ export default function RootPage() {
               <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl animate-slideInDown">
                 Experimente el poder del diseño universal
               </h2>
-              <p className="mx-auto max-w-[700px] text-textLanding md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-gray-400 animate-fadeIn">
+              <div className="mx-auto max-w-[700px] text-textLanding md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-gray-400 animate-fadeIn">
                 Mire nuestra demostración en video para ver cómo nuestra
                 aplicación le permite crear y leer libros dirigidos a diversos
                 estudiantes.
-              </p>
+              </div>
               <div className="mt-6">
                 <Link
                   href="/login"
@@ -179,16 +179,16 @@ export default function RootPage() {
           <div className="container grid items-center gap-6 px-4 md:px-6 lg:grid-cols-2 lg:gap-10">
             <div className="space-y-2 animate-fadeIn flex flex-col justify-center">
               <h2 className="text-3xl font-bold tracking-tighter md:text-4xl/tight animate-slideInLeft">
-                Adoptar el diseño universal para el aprendizaje
+                Adoptar el Diseño Universal Para El Aprendizaje
               </h2>
-              <p className="max-w-[600px] text-textLanding md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed text-left inline-block dark:text-gray-400 animate-fadeIn">
+              <div className="max-w-[600px] text-textLanding md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed text-left inline-block dark:text-gray-400 animate-fadeIn">
                 Nuestra aplicación está diseñada teniendo en cuenta los
                 principios del Diseño Universal para el Aprendizaje (DUA). El DUA
                 es un marco que guía el diseño de experiencias de aprendizaje
                 para que sean accesibles y efectivas para todas las personas,
                 independientemente de sus habilidades, antecedentes o estilos de
                 aprendizaje.
-              </p>
+              </div>
               <ul className="grid gap-4 py-4 animate-slideInRight">
                 <li className="flex items-center gap-2 bg-bgColorRight dark:bg-gray-950 rounded-lg p-4 shadow-lg">
                   <div className="flex items-center justify-center dark:bg-indigo-600 rounded-full">
@@ -239,9 +239,9 @@ export default function RootPage() {
       </main>
       <footer className="flex flex-col text-textButtonFill gap-2 sm:flex-row py-6 w-full shrink-0 items-center px-4 md:px-6 border-t bg-gradient-to-r from-primary-450 to-secondary-450 shadow-lg">
         <div className="flex flex-col sm:flex-row items-center gap-4">
-          <p className="text-xs animate-fadeIn font-semibold">
+          <div className="text-xs animate-fadeIn font-semibold">
             &copy; 2024 Universidad Técnica Estatal de Quevedo.
-          </p>
+          </div>
           <nav className="flex gap-4 sm:gap-6 animate-fadeIn">
             <Link
               href="#"

@@ -12,7 +12,7 @@ export async function generateSpeech(text: string) {
   const options = {
     method: "POST",
     headers: {
-      "xi-api-key": "c5943e12f0d17a95d1864fc1d8ee0f17",
+      "xi-api-key": `${process.env.E_LABS_API_KEY}`,
       "Content-Type": "application/json",
     },
     body: JSON.stringify(body),

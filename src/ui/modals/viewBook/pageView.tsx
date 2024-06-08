@@ -147,7 +147,9 @@ const PageContent: React.FC<PageProps> = ({ page, coverInfo }) => {
               className="flex flex-col items-center"
               onMouseUp={handleTextSelection}
             >
-              <h1 className=" text-3xl  font-bold">{coverInfo?.bookName}</h1>
+              <h1 className=" text-3xl m-0  font-bold">
+                {coverInfo?.bookName}
+              </h1>
               <div className="text-lg  font-light pb-5">
                 Autores: {coverInfo?.authors.join(", ")}
               </div>

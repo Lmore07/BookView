@@ -98,6 +98,7 @@ const CreateFolder: React.FC<CreateFolderProps> = ({
         <Input
           label="Nombre de carpeta"
           placeholder="Carpeta de matemáticas"
+          maxLength={100}
           icon={
             <svg
               xmlns="http://www.w3.org/2000/svg"

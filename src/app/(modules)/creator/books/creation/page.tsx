@@ -386,7 +386,7 @@ export default function Stepper() {
   return (
     <div className="shadow-xl rounded-xl p-3">
       <div className="py-2">
-        <h1 className="font-custom relative text-3xl text-primary-500 font-bold">
+        <h1 className="font-custom m-0 relative text-3xl text-primary-500 font-bold">
           <span className="ps-2">Creación de Libro</span>
         </h1>
       </div>
@@ -429,9 +429,9 @@ export default function Stepper() {
         {currentStep == 0 && (
           <div className="shadow-2xl w-full rounded-xl p-3">
             <div className="">
-              <h1 className="font-custom pb-3 text-2xl text-left text-primary-500 font-bold">
+              <h2 className="font-custom pb-3 text-2xl text-left text-primary-500 font-bold">
                 <span>Información del Libro</span>
-              </h1>
+              </h2>
             </div>
             <div className="py-1 grid gap-5 w-full px-2 grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3">
               <div className="w-full col-span-2">
@@ -483,7 +483,7 @@ export default function Stepper() {
                         name={`author-${index}`}
                         placeholder="Gabriel García Márquez"
                         value={author.value}
-                        maxLength={60}
+                        maxLength={100}
                         type="text"
                         className="py-1"
                         icon={
@@ -580,7 +580,7 @@ export default function Stepper() {
                   placeholder="Luisa Rivera"
                   value={stepOne.illustrator}
                   type="text"
-                  maxLength={40}
+                  maxLength={100}
                   className="py-1"
                   icon={
                     <svg
@@ -612,7 +612,7 @@ export default function Stepper() {
                   placeholder="Editorial Planeta"
                   value={stepOne.editorial}
                   type="text"
-                  maxLength={50}
+                  maxLength={80}
                   className="py-1"
                   icon={
                     <svg
@@ -703,9 +703,9 @@ export default function Stepper() {
         {currentStep == 1 && (
           <div className="shadow-2xl w-full rounded-xl p-3">
             <div className="">
-              <h1 className="font-custom relative ps-2 pb-3 text-2xl text-left text-primary-500 font-bold">
+              <h2 className="font-custom relative ps-2 pb-3 text-2xl text-left text-primary-500 font-bold">
                 <span>Categorías del Libro</span>
-              </h1>
+              </h2>
             </div>
             <div className="py-1 grid gap-3 w-full px-2">
               <span className="text-primary-500 font-custom font-normal text-base">
@@ -743,9 +743,9 @@ export default function Stepper() {
         {currentStep == 3 && (
           <div className="shadow-2xl w-full rounded-xl p-3">
             <div className="flex items-center justify-between pb-2 flex-wrap">
-              <h1 className="font-custom relative ps-2 pb-3 text-2xl text-left text-primary-500 font-bold">
+              <h2 className="font-custom relative ps-2 pb-3 text-2xl text-left text-primary-500 font-bold">
                 <span>Publicar Libro</span>
-              </h1>
+              </h2>
               <div className="flex justify-center">
                 <button
                   onClick={() => {

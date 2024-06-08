@@ -317,7 +317,7 @@ export default function UsersAdmin() {
         </div>
         <div className="my-3 border-b border-gray-300"></div>
         <div className="flex flex-wrap justify-between mb-5 mt-5">
-          <h1 className="relative font-custom text-2xl text-primary-500 font-bold before:content-[''] before:block before:absolute before:h-full before:w-1 before:bg-primary-500 before:left-0">
+          <h1 className="relative font-custom m-0 text-2xl text-primary-500 font-bold before:content-[''] before:block before:absolute before:h-full before:w-1 before:bg-primary-500 before:left-0">
             <span className="ps-2">Usuarios</span>
           </h1>
         </div>

@@ -18,7 +18,7 @@ export async function generateSpeech(text: string) {
     body: JSON.stringify(body),
   };
   const response = await fetch(
-    "https://api.elevenlabs.io/v1/text-to-speech/5Q0t7uMcjvnagumLfvZi",
+    `https://api.elevenlabs.io/v1/text-to-speech/${process.env.E_LABS_VOICE}`,
     options
   );
   const result = await response.arrayBuffer();

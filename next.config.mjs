@@ -24,6 +24,7 @@ const nextConfig = {
     REACT_APP_APP_ID: process.env.REACT_APP_APP_ID || "vacio",
     HG_API_KEY: process.env.HG_API_KEY || "vacio",
     E_LABS_API_KEY: process.env.E_LABS_API_KEY || "vacio",
+    E_LABS_VOICE: process.env.E_LABS_VOICE || "vacio",
     API_KEY_GEMINI: process.env.API_KEY_GEMINI || "vacio",
     ADMIN_MAIL: process.env.ADMIN_MAIL || "vacio",
     ADMIN_PASSWORD: process.env.ADMIN_PASSWORD || "vacio",

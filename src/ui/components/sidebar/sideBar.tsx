@@ -1,7 +1,5 @@
 "use client";
 
-//TODO AGREGAR ALT A LA IMAGEN DEL AVATAR
-
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import Cookie from "js-cookie";

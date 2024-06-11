@@ -42,8 +42,10 @@ export default function CreatorBooksPage() {
   const [isViewBook, setIsViewBook] = useState(false);
   const [pagesBook, setPagesBook] = useState<PageI[] | null | undefined>([]);
   const [selectedBook, setSelectedBook] = useState<BooksAll | null>(null);
-  const { setIsListening, finalTranscript } = useContext(VoiceRecorderContext)!;
+  const { setIsListening, finalTranscript, currentComponentRef } =
+    useContext(VoiceRecorderContext)!;
   const [loadingVoice, setLoadingVoice] = useState(false);
+  const componentRef = useRef<HTMLDivElement>(null);
 
   const headers = [
     { key: "bookName", name: "Nombre del libro" },
@@ -86,6 +88,10 @@ export default function CreatorBooksPage() {
     }
   };
 
+  useEffect(() => {
+    currentComponentRef.current = componentRef.current;
+  }, []);
+
   const changePage = (action: string, pageNumber?: number) => {
     if (action === "next") {
       if (page + 1 > totalPages) {
@@ -117,16 +123,21 @@ export default function CreatorBooksPage() {
   }, [finalTranscript]);
 
   const functionInterpret = async () => {
-    try {
-      const call = await callFunction(finalTranscript);
-      if (call.name == "addNewBook") {
-        router.push("/creator/books/creation");
-      } else if (call.name == "changePage") {
-        changePage(call.args.action, call.args.pageNumber);
+    if (componentRef.current === currentComponentRef.current) {
+      try {
+        const call = await callFunction(finalTranscript);
+        if (call.name == "addNewBook") {
+          router.push("/creator/books/creation");
+        } else if (call.name == "changePage") {
+          changePage(call.args.action, call.args.pageNumber);
+        }
+        console.log(call);
+      } catch (error) {
+        handleShowToast(
+          "No se ha podido reconocer el comando",
+          ToastType.ERROR
+        );
       }
-      console.log(call);
-    } catch (error) {
-      handleShowToast("No se ha podido reconocer el comando", ToastType.ERROR);
     }
   };
 
@@ -172,7 +183,7 @@ export default function CreatorBooksPage() {
 
   return (
     <>
-      <div className="shadow-2xl p-4  rounded-lg">
+      <div className="shadow-2xl p-4  rounded-lg" ref={componentRef}>
         <div className="flex items-center justify-end gap-2">
           <Tooltip arrow title={isPlaying ? "Detener" : "Oír"} placement="top">
             <span className="cursor-pointer">
@@ -382,7 +393,7 @@ export default function CreatorBooksPage() {
               setIsViewBook(open);
             }}
           >
-            <DialogContent className="bg-bgColorRight">
+            <DialogContent className="bg-bgColorRight w-[90dvw] min-w-[90dvw] max-w-[90dvw] h-[90dvh] flex flex-col justify-center">
               <DialogHeader>
                 <DialogDescription>
                   <FlipBook

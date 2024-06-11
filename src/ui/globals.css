@@ -19,6 +19,8 @@
   
 /* Estilos para el checkbox */
 @import url('../../public/styles//checkBox.css');
+/* Estilos para el scrollbar */
+@import url('../../public/styles/scrollbar.css');
 
 :root {
   --font-family: 'Poppins', sans-serif;

@@ -860,7 +860,7 @@ export default function BookEdit({
                     setPrevisualize(open);
                   }}
                 >
-                  <DialogContent className="bg-bgColorRight">
+                  <DialogContent className="bg-bgColorRight w-[90dvw] min-w-[90dvw] max-w-[90dvw] h-[90dvh] flex flex-col justify-center">
                     <DialogHeader>
                       <DialogDescription>
                         <FlipBook

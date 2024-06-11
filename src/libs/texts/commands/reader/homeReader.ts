@@ -33,6 +33,17 @@ export const commandsSearchBooks = [
   },
 ];
 
+export const commandsHelpBook = [
+  {
+    command: ["Avanza una página"],
+    tittle: "Avanzar a la página siguiente",
+  },
+  {
+    command: ["Regresa una página"],
+    tittle: "Regresar a la página anterior",
+  },
+];
+
 export const commandsFoldersFavorites = [
   {
     command: ["Avanza una página"],

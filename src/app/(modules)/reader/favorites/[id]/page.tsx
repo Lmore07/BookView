@@ -39,8 +39,10 @@ export default function Favorite({
   const [pagesBook, setPagesBook] = useState<PageI[] | null | undefined>([]);
   const [selectedBook, setSelectedBook] = useState<BooksAll | null>(null);
   const [openHelp, setOpenHelp] = useState(false);
-  const { setIsListening, finalTranscript } = useContext(VoiceRecorderContext)!;
+  const { setIsListening, finalTranscript, currentComponentRef } =
+    useContext(VoiceRecorderContext)!;
   const [loadingVoice, setLoadingVoice] = useState(false);
+  const componentRef = useRef<HTMLDivElement>(null);
 
   const handleChange = (event: any, value: number) => {
     setPage(value);
@@ -113,18 +115,24 @@ export default function Favorite({
   };
 
   const functionInterpret = async () => {
-    try {
-      const call = await callFunction(finalTranscript);
-      if (call.name == "selectBookByName") {
-        openBookByName(call.args.bookName);
-      } else if (call.name == "changePage") {
-        changePage(call.args.action, call.args.pageNumber);
+    if (componentRef.current === currentComponentRef.current) {
+      try {
+        const call = await callFunction(finalTranscript);
+        if (call.name == "selectBookByName") {
+          openBookByName(call.args.bookName);
+        } else if (call.name == "changePage") {
+          changePage(call.args.action, call.args.pageNumber);
+        }
+        console.log(call);
+      } catch (error) {
+        handleShowToast("No se pudo reconocer el comando", ToastType.ERROR);
       }
-      console.log(call);
-    } catch (error) {
-      handleShowToast("No se pudo reconocer el comando", ToastType.ERROR);
     }
   };
+
+  useEffect(() => {
+    currentComponentRef.current = componentRef.current;
+  }, []);
 
   const openBookByName = (bookName: string) => {
     const bookToOpen = books.find(
@@ -187,7 +195,7 @@ export default function Favorite({
   };
 
   return (
-    <div className="shadow-2xl p-4 rounded-lg">
+    <div className="shadow-2xl p-4 rounded-lg" ref={componentRef}>
       <div className="flex items-center justify-end gap-2">
         <Tooltip arrow title={isPlaying ? "Detener" : "Oír"} placement="top">
           <span className="cursor-pointer">
@@ -298,7 +306,7 @@ export default function Favorite({
           <span className="ps-2">Libros agregados</span>
         </h1>
       </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-4">
         {books.map((book) => (
           <BookCard
             key={book.idBook}
@@ -362,7 +370,7 @@ export default function Favorite({
             setIsViewBook(open);
           }}
         >
-          <DialogContent className="bg-bgColorRight">
+          <DialogContent className="bg-bgColorRight w-[90dvw] min-w-[90dvw] max-w-[90dvw] h-[90dvh] flex flex-col justify-center">
             <DialogHeader>
               <DialogDescription>
                 <FlipBook

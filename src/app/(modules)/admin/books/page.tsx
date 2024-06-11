@@ -33,7 +33,8 @@ import { format } from "date-fns";
 import { useContext, useEffect, useRef, useState } from "react";
 
 export default function BooksAdmin() {
-  const { setIsListening, finalTranscript } = useContext(VoiceRecorderContext)!;
+  const { setIsListening, finalTranscript, currentComponentRef } =
+    useContext(VoiceRecorderContext)!;
   const [openHelp, setOpenHelp] = useState(false);
   const [isOpenBook, setIsOpenBook] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -50,6 +51,7 @@ export default function BooksAdmin() {
   const [statusActiveorDesactive, setStatusActiveorDesactive] = useState<any>();
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const componentRef = useRef<HTMLDivElement>(null);
   const [showStatus, setShowStatus] = useState<any>();
   const headersBooks = [
     { key: "bookName", name: "Nombre de libro" },
@@ -61,32 +63,34 @@ export default function BooksAdmin() {
   const [loadingVoice, setLoadingVoice] = useState(false);
 
   const functionInterpret = async () => {
-    try {
-      const call = await callFunction(finalTranscript);
-      switch (call.name) {
-        case "filterByStatusOrRole":
-          if (call.args.status) {
-            setShowStatus(call.args.status);
-          }
-          break;
-        case "changePage":
-          changePage(call.args.action, call.args.pageNumber);
-          break;
-        case "removeFilter":
-          if (call.args.filter) {
-            if (call.args.filter == "status") {
+    if (componentRef.current === currentComponentRef.current) {
+      try {
+        const call = await callFunction(finalTranscript);
+        switch (call.name) {
+          case "filterByStatusOrRole":
+            if (call.args.status) {
+              setShowStatus(call.args.status);
+            }
+            break;
+          case "changePage":
+            changePage(call.args.action, call.args.pageNumber);
+            break;
+          case "removeFilter":
+            if (call.args.filter) {
+              if (call.args.filter == "status") {
+                setShowStatus(null);
+              }
+            } else {
               setShowStatus(null);
             }
-          } else {
-            setShowStatus(null);
-          }
-          break;
-        default:
-          handleShowToast("No se reconoce el comando", ToastType.ERROR);
+            break;
+          default:
+            handleShowToast("No se reconoce el comando", ToastType.ERROR);
+        }
+        console.log(call);
+      } catch (error) {
+        handleShowToast("No se reconoce el comando", ToastType.ERROR);
       }
-      console.log(call);
-    } catch (error) {
-      handleShowToast("No se reconoce el comando", ToastType.ERROR);
     }
   };
 
@@ -194,6 +198,10 @@ export default function BooksAdmin() {
   };
 
   useEffect(() => {
+    currentComponentRef.current = componentRef.current;
+  }, []);
+
+  useEffect(() => {
     loadData();
   }, [page, showStatus]);
 
@@ -240,7 +248,7 @@ export default function BooksAdmin() {
 
   return (
     <>
-      <div className="shadow-2xl p-4  rounded-lg">
+      <div className="shadow-2xl p-4  rounded-lg" ref={componentRef}>
         <div className="flex items-center justify-end gap-2">
           <Tooltip arrow title={isPlaying ? "Detener" : "Oír"} placement="top">
             <span className="cursor-pointer">
@@ -493,7 +501,7 @@ export default function BooksAdmin() {
               setIsOpenBook(open);
             }}
           >
-            <DialogContent className="bg-bgColorRight">
+            <DialogContent className="bg-bgColorRight w-[90dvw] min-w-[90dvw] max-w-[90dvw] h-[90dvh] flex flex-col justify-center">
               <DialogHeader>
                 <DialogDescription>
                   <FlipBook

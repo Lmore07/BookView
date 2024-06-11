@@ -6,6 +6,14 @@ import { Chip, Divider } from "@mui/material";
 import { add, format } from "date-fns";
 import Image from "next/image";
 import React, { useEffect, useRef, useState } from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogOverlay,
+} from "@/components/ui/dialog";
+
 interface PageProps {
   page: {
     numberPage: number;
@@ -18,6 +26,7 @@ interface PageProps {
   coverInfo?: CoverI;
 }
 
+
 const PageContent: React.FC<PageProps> = ({ page, coverInfo }) => {
   const [isPlayingAudio, setIsPlayingAudio] = useState(false);
   const [isPlayingVideo, setIsPlayingVideo] = useState(false);
@@ -28,6 +37,7 @@ const PageContent: React.FC<PageProps> = ({ page, coverInfo }) => {
   const [formatDate, setFormatDate] = useState("");
   const [loadingVoice, setLoadingVoice] = useState(false);
   const [open, setOpen] = React.useState(false);
+  const [openImage, setOpenImage] = useState(false);
 
   const handlePlayVideo = () => {
     setIsPlayingVideo(true);
@@ -131,7 +141,7 @@ const PageContent: React.FC<PageProps> = ({ page, coverInfo }) => {
   }, [open]);
 
   return (
-    <div className="py-5 bg-bgColorDark rounded-lg shadow-md flex flex-col items-center justify-center">
+    <div className="py-1 bg-bgColorDark rounded-lg shadow-md flex flex-col items-center justify-center">
       <Divider className="py-1">
         {page.numberPage == 0 ? null : (
           <Chip
@@ -141,7 +151,7 @@ const PageContent: React.FC<PageProps> = ({ page, coverInfo }) => {
           />
         )}
       </Divider>
-      <div className="px-4 pb-1 pt-2 font-custom">
+      <div className="px-4 pb-1 w-full pt-2 font-custom">
         {page.template === "Cover" && (
           <div className="overflow-hidden">
             <div
@@ -175,22 +185,53 @@ const PageContent: React.FC<PageProps> = ({ page, coverInfo }) => {
           <div className="overflow-hidden">
             <div className="flex items-center  justify-center mb-2">
               {page.image && (
-                <Image
-                  src={
-                    page.image instanceof File
-                      ? URL.createObjectURL(page.image as Blob)
-                      : page.image
-                  }
-                  alt="Imagen"
-                  className="max-h-40 max-w-64"
-                  width={300}
-                  height={150}
-                />
+                <div
+                  className="relative cursor-pointer transition-all duration-300 ease-in-out"
+                  onClick={() => {
+                    setOpenImage(true);
+                  }}
+                >
+                  <Image
+                    src={
+                      page.image instanceof File
+                        ? URL.createObjectURL(page.image as Blob)
+                        : page.image
+                    }
+                    alt="Imagen"
+                    className="max-h-40 max-w-64"
+                    onClick={() => {
+                      setOpenImage(true);
+                    }}
+                    width={300}
+                    height={150}
+                  />
+                  <div className="absolute inset-0 backdrop-blur-sm flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-300">
+                    <svg
+                      viewBox="0 0 24 24"
+                      className="w-10 h-10 text-black"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
+                      <g
+                        id="SVGRepo_tracerCarrier"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      ></g>
+                      <g id="SVGRepo_iconCarrier">
+                        <path
+                          fillRule="evenodd"
+                          clipRule="evenodd"
+                          d="M2 12C2 7.28595 2 4.92893 3.46447 3.46447C4.92893 2 7.28595 2 12 2C16.714 2 19.0711 2 20.5355 3.46447C22 4.92893 22 7.28595 22 12C22 16.714 22 19.0711 20.5355 20.5355C19.0711 22 16.714 22 12 22C7.28595 22 4.92893 22 3.46447 20.5355C2 19.0711 2 16.714 2 12ZM14 7.75C13.5858 7.75 13.25 7.41421 13.25 7C13.25 6.58579 13.5858 6.25 14 6.25H17C17.4142 6.25 17.75 6.58579 17.75 7V10C17.75 10.4142 17.4142 10.75 17 10.75C16.5858 10.75 16.25 10.4142 16.25 10V8.81066L14.0303 11.0303C13.7374 11.3232 13.2626 11.3232 12.9697 11.0303C12.6768 10.7374 12.6768 10.2626 12.9697 9.96967L15.1893 7.75H14ZM11.0303 12.9697C11.3232 13.2626 11.3232 13.7374 11.0303 14.0303L8.81066 16.25H10C10.4142 16.25 10.75 16.5858 10.75 17C10.75 17.4142 10.4142 17.75 10 17.75H7C6.58579 17.75 6.25 17.4142 6.25 17V14C6.25 13.5858 6.58579 13.25 7 13.25C7.41421 13.25 7.75 13.5858 7.75 14V15.1893L9.96967 12.9697C10.2626 12.6768 10.7374 12.6768 11.0303 12.9697ZM10.75 7C10.75 7.41421 10.4142 7.75 10 7.75H8.81066L11.0303 9.96967C11.3232 10.2626 11.3232 10.7374 11.0303 11.0303C10.7374 11.3232 10.2626 11.3232 9.96967 11.0303L7.75 8.81066V10C7.75 10.4142 7.41421 10.75 7 10.75C6.58579 10.75 6.25 10.4142 6.25 10V7C6.25 6.58579 6.58579 6.25 7 6.25H10C10.4142 6.25 10.75 6.58579 10.75 7ZM12.9697 14.0303C12.6768 13.7374 12.6768 13.2626 12.9697 12.9697C13.2626 12.6768 13.7374 12.6768 14.0303 12.9697L16.25 15.1893V14C16.25 13.5858 16.5858 13.25 17 13.25C17.4142 13.25 17.75 13.5858 17.75 14V17C17.75 17.4142 17.4142 17.75 17 17.75H14C13.5858 17.75 13.25 17.4142 13.25 17C13.25 16.5858 13.5858 16.25 14 16.25H15.1893L12.9697 14.0303Z"
+                        ></path>
+                      </g>
+                    </svg>
+                  </div>
+                </div>
               )}
             </div>
             <div
               onMouseUp={handleTextSelection}
-              className="break-words  max-w-none max-h-72 overflow-y-auto"
+              className="break-words  max-w-none h-56 overflow-y-auto"
               dangerouslySetInnerHTML={{
                 __html: page.content.replace(
                   /<ul>/g,
@@ -204,17 +245,48 @@ const PageContent: React.FC<PageProps> = ({ page, coverInfo }) => {
           <div className="grid grid-cols-5  gap-3 overflow-hidden">
             <div className="flex items-center justify-center col-span-2">
               {page.image && (
-                <Image
-                  src={
-                    page.image instanceof File
-                      ? URL.createObjectURL(page.image as Blob)
-                      : page.image
-                  }
-                  alt="Imagen 2"
-                  className="object-cover"
-                  width={200}
-                  height={300}
-                />
+                <div
+                  className="relative w-full cursor-pointer transition-all duration-300 ease-in-out"
+                  onClick={() => {
+                    setOpenImage(true);
+                  }}
+                >
+                  <Image
+                    src={
+                      page.image instanceof File
+                        ? URL.createObjectURL(page.image as Blob)
+                        : page.image
+                    }
+                    alt="Imagen 2"
+                    className="object-cover w-full h-auto"
+                    width={200}
+                    height={300}
+                    onClick={() => {
+                      setOpenImage(true);
+                    }}
+                  />
+                  <div className="absolute inset-0 backdrop-blur-sm flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-300">
+                    <svg
+                      viewBox="0 0 24 24"
+                      className="w-10 h-10 text-black"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
+                      <g
+                        id="SVGRepo_tracerCarrier"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      ></g>
+                      <g id="SVGRepo_iconCarrier">
+                        <path
+                          fillRule="evenodd"
+                          clipRule="evenodd"
+                          d="M2 12C2 7.28595 2 4.92893 3.46447 3.46447C4.92893 2 7.28595 2 12 2C16.714 2 19.0711 2 20.5355 3.46447C22 4.92893 22 7.28595 22 12C22 16.714 22 19.0711 20.5355 20.5355C19.0711 22 16.714 22 12 22C7.28595 22 4.92893 22 3.46447 20.5355C2 19.0711 2 16.714 2 12ZM14 7.75C13.5858 7.75 13.25 7.41421 13.25 7C13.25 6.58579 13.5858 6.25 14 6.25H17C17.4142 6.25 17.75 6.58579 17.75 7V10C17.75 10.4142 17.4142 10.75 17 10.75C16.5858 10.75 16.25 10.4142 16.25 10V8.81066L14.0303 11.0303C13.7374 11.3232 13.2626 11.3232 12.9697 11.0303C12.6768 10.7374 12.6768 10.2626 12.9697 9.96967L15.1893 7.75H14ZM11.0303 12.9697C11.3232 13.2626 11.3232 13.7374 11.0303 14.0303L8.81066 16.25H10C10.4142 16.25 10.75 16.5858 10.75 17C10.75 17.4142 10.4142 17.75 10 17.75H7C6.58579 17.75 6.25 17.4142 6.25 17V14C6.25 13.5858 6.58579 13.25 7 13.25C7.41421 13.25 7.75 13.5858 7.75 14V15.1893L9.96967 12.9697C10.2626 12.6768 10.7374 12.6768 11.0303 12.9697ZM10.75 7C10.75 7.41421 10.4142 7.75 10 7.75H8.81066L11.0303 9.96967C11.3232 10.2626 11.3232 10.7374 11.0303 11.0303C10.7374 11.3232 10.2626 11.3232 9.96967 11.0303L7.75 8.81066V10C7.75 10.4142 7.41421 10.75 7 10.75C6.58579 10.75 6.25 10.4142 6.25 10V7C6.25 6.58579 6.58579 6.25 7 6.25H10C10.4142 6.25 10.75 6.58579 10.75 7ZM12.9697 14.0303C12.6768 13.7374 12.6768 13.2626 12.9697 12.9697C13.2626 12.6768 13.7374 12.6768 14.0303 12.9697L16.25 15.1893V14C16.25 13.5858 16.5858 13.25 17 13.25C17.4142 13.25 17.75 13.5858 17.75 14V17C17.75 17.4142 17.4142 17.75 17 17.75H14C13.5858 17.75 13.25 17.4142 13.25 17C13.25 16.5858 13.5858 16.25 14 16.25H15.1893L12.9697 14.0303Z"
+                        ></path>
+                      </g>
+                    </svg>
+                  </div>
+                </div>
               )}
             </div>
             <div className="col-span-3">
@@ -247,17 +319,45 @@ const PageContent: React.FC<PageProps> = ({ page, coverInfo }) => {
             </div>
             <div className="flex items-center justify-center col-span-2">
               {page.image && (
-                <Image
-                  src={
-                    page.image instanceof File
-                      ? URL.createObjectURL(page.image as Blob)
-                      : page.image
-                  }
-                  alt="Imagen 2"
-                  className="object-cover"
-                  width={200}
-                  height={300}
-                />
+                <div
+                  className="relative w-full cursor-pointer transition-all duration-300 ease-in-out"
+                  onClick={() => {
+                    setOpenImage(true);
+                  }}
+                >
+                  <Image
+                    src={
+                      page.image instanceof File
+                        ? URL.createObjectURL(page.image as Blob)
+                        : page.image
+                    }
+                    alt="Imagen 2"
+                    className="object-cover w-full h-auto"
+                    width={200}
+                    height={300}
+                  />
+                  <div className="absolute inset-0 backdrop-blur-sm flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-300">
+                    <svg
+                      viewBox="0 0 24 24"
+                      className="w-10 h-10 text-black"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
+                      <g
+                        id="SVGRepo_tracerCarrier"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      ></g>
+                      <g id="SVGRepo_iconCarrier">
+                        <path
+                          fillRule="evenodd"
+                          clipRule="evenodd"
+                          d="M2 12C2 7.28595 2 4.92893 3.46447 3.46447C4.92893 2 7.28595 2 12 2C16.714 2 19.0711 2 20.5355 3.46447C22 4.92893 22 7.28595 22 12C22 16.714 22 19.0711 20.5355 20.5355C19.0711 22 16.714 22 12 22C7.28595 22 4.92893 22 3.46447 20.5355C2 19.0711 2 16.714 2 12ZM14 7.75C13.5858 7.75 13.25 7.41421 13.25 7C13.25 6.58579 13.5858 6.25 14 6.25H17C17.4142 6.25 17.75 6.58579 17.75 7V10C17.75 10.4142 17.4142 10.75 17 10.75C16.5858 10.75 16.25 10.4142 16.25 10V8.81066L14.0303 11.0303C13.7374 11.3232 13.2626 11.3232 12.9697 11.0303C12.6768 10.7374 12.6768 10.2626 12.9697 9.96967L15.1893 7.75H14ZM11.0303 12.9697C11.3232 13.2626 11.3232 13.7374 11.0303 14.0303L8.81066 16.25H10C10.4142 16.25 10.75 16.5858 10.75 17C10.75 17.4142 10.4142 17.75 10 17.75H7C6.58579 17.75 6.25 17.4142 6.25 17V14C6.25 13.5858 6.58579 13.25 7 13.25C7.41421 13.25 7.75 13.5858 7.75 14V15.1893L9.96967 12.9697C10.2626 12.6768 10.7374 12.6768 11.0303 12.9697ZM10.75 7C10.75 7.41421 10.4142 7.75 10 7.75H8.81066L11.0303 9.96967C11.3232 10.2626 11.3232 10.7374 11.0303 11.0303C10.7374 11.3232 10.2626 11.3232 9.96967 11.0303L7.75 8.81066V10C7.75 10.4142 7.41421 10.75 7 10.75C6.58579 10.75 6.25 10.4142 6.25 10V7C6.25 6.58579 6.58579 6.25 7 6.25H10C10.4142 6.25 10.75 6.58579 10.75 7ZM12.9697 14.0303C12.6768 13.7374 12.6768 13.2626 12.9697 12.9697C13.2626 12.6768 13.7374 12.6768 14.0303 12.9697L16.25 15.1893V14C16.25 13.5858 16.5858 13.25 17 13.25C17.4142 13.25 17.75 13.5858 17.75 14V17C17.75 17.4142 17.4142 17.75 17 17.75H14C13.5858 17.75 13.25 17.4142 13.25 17C13.25 16.5858 13.5858 16.25 14 16.25H15.1893L12.9697 14.0303Z"
+                        ></path>
+                      </g>
+                    </svg>
+                  </div>
+                </div>
               )}
             </div>
           </div>
@@ -277,7 +377,7 @@ const PageContent: React.FC<PageProps> = ({ page, coverInfo }) => {
           </div>
         )}
         {page.template === "Template5" && (
-          <div className="w-full h-full overflow-y-auto">
+          <div className="w-full h-full overflow-y-auto max-h-[50dvh]">
             <Image
               src={
                 page.image instanceof File
@@ -285,14 +385,14 @@ const PageContent: React.FC<PageProps> = ({ page, coverInfo }) => {
                   : page.image
               }
               alt="Imagen 2"
-              className="object-cover"
+              className="object-cover w-full h-auto"
               width={300}
-              height={400}
+              height={500}
             />
           </div>
         )}
         <div className="flex justify-end mt-4">
-          <div className="rounded-full border-2 p-1 cursor-pointer">
+          <div className="rounded-full flex items-center border-2 p-1 cursor-pointer">
             {loadingVoice ? (
               <span className="loading loading-spinner loading-lg cursor-default"></span>
             ) : isPlayingAudio ? (
@@ -387,6 +487,34 @@ const PageContent: React.FC<PageProps> = ({ page, coverInfo }) => {
         <div className="mx-2 mt-2 flex relative shadow-lg font-medium text-sm justify-center p-3 font-custom rounded-xl text-white items-center bg-primary-500 transition-all duration-500 ease-in-out transform scale-100">
           {textGenerated}
         </div>
+      )}
+      {openImage && (
+        <Dialog
+          open={openImage}
+          onOpenChange={(open: boolean) => {
+            setOpenImage(open);
+          }}
+        >
+          <DialogOverlay className="z-[100]">
+            <DialogContent className="bg-bgColorRight z-[100] h-[75dvh] ">
+              <DialogHeader>
+                <DialogDescription>
+                  <Image
+                    src={
+                      page.image instanceof File
+                        ? URL.createObjectURL(page.image as Blob)
+                        : page.image
+                    }
+                    alt="Imagen"
+                    width={500}
+                    height={600}
+                    className="w-full h-full pt-6"
+                  />
+                </DialogDescription>
+              </DialogHeader>
+            </DialogContent>
+          </DialogOverlay>
+        </Dialog>
       )}
     </div>
   );

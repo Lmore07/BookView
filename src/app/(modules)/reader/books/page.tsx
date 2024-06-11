@@ -6,10 +6,9 @@ import {
   DialogHeader,
 } from "@/components/ui/dialog";
 import { LoadingContext } from "@/libs/contexts/loadingContext";
-import { ModalContext } from "@/libs/contexts/modalContext";
 import { VoiceRecorderContext } from "@/libs/contexts/speechToTextContext";
 import { ToastContext } from "@/libs/contexts/toastContext";
-import { BooksAll, CoverI, PageI } from "@/libs/interfaces/books.interface";
+import { BooksAll, PageI } from "@/libs/interfaces/books.interface";
 import { ResponseData } from "@/libs/interfaces/response.interface";
 import { ToastType } from "@/libs/interfaces/toast.interface";
 import { callFunction } from "@/libs/services/callFunction";
@@ -26,9 +25,6 @@ import Pagination from "@mui/material/Pagination";
 import Stack from "@mui/material/Stack";
 import { useSearchParams } from "next/navigation";
 import { useContext, useEffect, useRef, useState } from "react";
-import SpeechRecognition, {
-  useSpeechRecognition,
-} from "react-speech-recognition";
 
 export default function BookSearch() {
   const paramsRouter = useSearchParams();
@@ -48,8 +44,10 @@ export default function BookSearch() {
   const [pagesBook, setPagesBook] = useState<PageI[] | null | undefined>([]);
   const [lastPage, setLastPage] = useState(0);
   const [openHelp, setOpenHelp] = useState(false);
-  const { setIsListening, finalTranscript } = useContext(VoiceRecorderContext)!;
+  const { setIsListening, finalTranscript, currentComponentRef } =
+    useContext(VoiceRecorderContext)!;
   const [loadingVoice, setLoadingVoice] = useState(false);
+  const componentRef = useRef<HTMLDivElement>(null);
 
   const handleChange = (event: any, value: number) => {
     setPage(value);
@@ -142,23 +140,29 @@ export default function BookSearch() {
     }
   };
 
+  useEffect(() => {
+    currentComponentRef.current = componentRef.current;
+  }, []);
+
   //LOGICA DE FUNCIONES
   const functionInterpret = async () => {
-    try {
-      const call = await callFunction(finalTranscript);
-      if (call.name == "sortBooks") {
-        let orderString = `${
-          call.args.sortBy == "book" ? "bookName" : call.args.sortBy
-        }_${call.args.order}`;
-        setOrderBy(orderString);
-      } else if (call.name == "selectBookByName") {
-        openBookByName(call.args.bookName);
-      } else if (call.name == "changePage") {
-        changePage(call.args.action, call.args.pageNumber);
+    if (componentRef.current === currentComponentRef.current) {
+      try {
+        const call = await callFunction(finalTranscript);
+        if (call.name == "sortBooks") {
+          let orderString = `${
+            call.args.sortBy == "book" ? "bookName" : call.args.sortBy
+          }_${call.args.order}`;
+          setOrderBy(orderString);
+        } else if (call.name == "selectBookByName") {
+          openBookByName(call.args.bookName);
+        } else if (call.name == "changePage") {
+          changePage(call.args.action, call.args.pageNumber);
+        }
+        console.log(call);
+      } catch (error) {
+        handleShowToast("No se reconoció el comando", ToastType.ERROR);
       }
-      console.log(call);
-    } catch (error) {
-      handleShowToast("No se reconoció el comando", ToastType.ERROR);
     }
   };
 
@@ -223,7 +227,7 @@ export default function BookSearch() {
   };
 
   return (
-    <div className="shadow-2xl p-4 rounded-lg">
+    <div className="shadow-2xl p-4 rounded-lg" ref={componentRef}>
       <div className="flex items-center justify-end gap-2">
         <Tooltip arrow title={isPlaying ? "Detener" : "Oír"} placement="top">
           <span className="cursor-pointer">
@@ -441,7 +445,7 @@ export default function BookSearch() {
           </button>
         </div>
       </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 pt-5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-4 pt-5">
         {books.map((book) => (
           <BookCard
             key={book.idBook}
@@ -525,7 +529,7 @@ export default function BookSearch() {
             setIsViewBook(open);
           }}
         >
-          <DialogContent className="bg-bgColorRight">
+          <DialogContent className="bg-bgColorRight w-[90dvw] min-w-[90dvw] max-w-[90dvw] h-[90dvh] flex flex-col justify-center">
             <DialogHeader>
               <DialogDescription>
                 <FlipBook

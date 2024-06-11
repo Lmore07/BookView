@@ -23,7 +23,7 @@ import Input from "@/ui/components/inputs/input";
 import BookEditor from "@/ui/modals/creation/page";
 import FlipBook from "@/ui/modals/viewBook/flipBook";
 import Image from "next/image";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 
 export default function Stepper() {
   const [currentStep, setCurrentStep] = useState(0);
@@ -64,32 +64,6 @@ export default function Stepper() {
     };
     fetchData();
   }, []);
-
-  const validateStepOne = () => {
-    const validations = [
-      {
-        fieldName: "bookName",
-        value: stepOne.bookName,
-        validations: [validateNotEmpty],
-      },
-      {
-        fieldName: "author",
-        value: stepOne.authors,
-        validations: [validateNotEmpty],
-      },
-      {
-        fieldName: "publicationDate",
-        value: stepOne.publicationDate.toString(),
-        validations: [validateCorrectDate],
-      },
-    ];
-
-    const formIsValid = validations.every((field) =>
-      field.validations.every((validation) => !validation(field.value))
-    );
-
-    return formIsValid;
-  };
 
   const steps = [
     {
@@ -848,7 +822,7 @@ export default function Stepper() {
                     setPrevisualize(open);
                   }}
                 >
-                  <DialogContent className="bg-bgColorRight">
+                  <DialogContent className="bg-bgColorRight w-[90dvw] min-w-[90dvw] max-w-[90dvw] h-[90dvh] flex flex-col justify-center">
                     <DialogHeader>
                       <DialogDescription>
                         <FlipBook

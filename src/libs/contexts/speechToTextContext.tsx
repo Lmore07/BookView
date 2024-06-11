@@ -1,6 +1,6 @@
 "use client";
 import ButtonOutlined from "@/ui/components/buttons/ButtonOutlined";
-import React, { createContext, useEffect, useState } from "react";
+import React, { createContext, useEffect, useRef, useState } from "react";
 import SpeechRecognition, {
   useSpeechRecognition,
 } from "react-speech-recognition";
@@ -9,6 +9,7 @@ import "./styles.css";
 export interface VoiceRecorderContextValue {
   finalTranscript: string;
   setIsListening: React.Dispatch<React.SetStateAction<boolean>>;
+  currentComponentRef: React.MutableRefObject<HTMLDivElement | null>;
 }
 
 export const VoiceRecorderContext =
@@ -23,6 +24,7 @@ export const VoiceRecorderProvider = ({
     useSpeechRecognition();
   const [isListening, setIsListening] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
+  const currentComponentRef = useRef<HTMLDivElement | null>(null);
 
   const startListening = () => {
     SpeechRecognition.startListening({
@@ -35,6 +37,7 @@ export const VoiceRecorderProvider = ({
   useEffect(() => {
     if (transcript.length > 0) {
       setIsAnimating(true);
+      console.log(transcript);
     }
   }, [transcript]);
 
@@ -59,7 +62,9 @@ export const VoiceRecorderProvider = ({
   };
 
   return (
-    <VoiceRecorderContext.Provider value={{ setIsListening, finalTranscript }}>
+    <VoiceRecorderContext.Provider
+      value={{ setIsListening, finalTranscript, currentComponentRef }}
+    >
       {isListening && (
         <div
           className={`fixed flex flex-col z-[100] top-0 left-0 w-full h-full items-center justify-center`}
@@ -68,25 +73,28 @@ export const VoiceRecorderProvider = ({
           <div className="relative z-10 flex flex-col bg-bgColorRight p-5 rounded-full">
             <div className="flex flex-row">
               <div
-                className={`h-8 w-4 bg-primary rounded-full mx-2 ${isAnimating ? "animate-wave-1" : ""
-                  }`}
+                className={`h-8 w-4 bg-primary rounded-full mx-2 ${
+                  isAnimating ? "animate-wave-1" : ""
+                }`}
               ></div>
               <div
-                className={`h-8 w-4 bg-primary rounded-full mx-2 ${isAnimating ? "animate-wave-2" : ""
-                  }`}
+                className={`h-8 w-4 bg-primary rounded-full mx-2 ${
+                  isAnimating ? "animate-wave-2" : ""
+                }`}
               ></div>
               <div
-                className={`h-8 w-4 bg-primary rounded-full mx-2 ${isAnimating ? "animate-wave-3" : ""
-                  }`}
+                className={`h-8 w-4 bg-primary rounded-full mx-2 ${
+                  isAnimating ? "animate-wave-3" : ""
+                }`}
               ></div>
               <div
-                className={`h-8 w-4 bg-primary rounded-full mx-2 ${isAnimating ? "animate-wave-4" : ""
-                  }`}
+                className={`h-8 w-4 bg-primary rounded-full mx-2 ${
+                  isAnimating ? "animate-wave-4" : ""
+                }`}
               ></div>
             </div>
             <div className="flex items-center justify-center mt-3">
               <ButtonOutlined
-              
                 onClick={() => {
                   setIsListening(false);
                 }}
@@ -98,7 +106,6 @@ export const VoiceRecorderProvider = ({
               </ButtonOutlined>
             </div>
           </div>
-
         </div>
       )}
       {children}

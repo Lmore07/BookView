@@ -49,88 +49,11 @@ const FlipBook: React.FC<FlipBookProps> = ({
   const componentRef = useRef<HTMLDivElement>(null);
   const { handleShowToast } = useContext(ToastContext)!;
 
-  const handlePrevPage = () => {
-    if (currentPage > 0 && !isFlipping) {
-      setFlipDirection("prev");
-      setIsFlipping(true);
-    } else {
-      setFlipDirection("prev");
-      setIsFlipping(true);
-    }
-  };
-
-  const handleNextPage = () => {
-    if (currentPage < pages.length - 1 && !isFlipping) {
-      setFlipDirection("next");
-      setIsFlipping(true);
-    }
-  };
-
-  const functionInterpret = async () => {
-    if (componentRef.current === currentComponentRef.current) {
-      try {
-        const call = await callFunction(finalTranscript);
-        if (call.name == "changePage") {
-          changePage(call.args.action, call.args.pageNumber);
-        }
-        console.log(call);
-      } catch (error) {
-        handleShowToast("No se reconoció el comando", ToastType.ERROR);
-      }
-    }
-  };
-
-  const changePage = (action: string, pageNumber?: number) => {
-    if (action === "next") {
-      handleNextPage();
-    } else if (action === "previous") {
-      handlePrevPage();
-    }
-  };
-
   useEffect(() => {
     if (finalTranscript && finalTranscript != "") {
       functionInterpret();
     }
   }, [finalTranscript]);
-
-  const handleDragStart = (e: React.DragEvent<HTMLDivElement>) => {
-    e.dataTransfer.setData("text/plain", "");
-  };
-
-  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
-  };
-
-  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
-    if (!isFlipping) {
-      const offsetX = e.nativeEvent.offsetX;
-      const bookWidth = bookRef.current?.offsetWidth ?? 0;
-
-      if (offsetX < bookWidth / 3 && currentPage > 0) {
-        setFlipDirection("prev");
-        setIsFlipping(true);
-      } else if (
-        offsetX > (bookWidth * 2) / 3 &&
-        currentPage < pages.length - 1
-      ) {
-        setFlipDirection("next");
-        setIsFlipping(true);
-      }
-    }
-  };
-
-  const updateLastPage = async () => {
-    if (!isViewed) {
-      await fetch("../../api/books/views", {
-        method: "PUT",
-        body: JSON.stringify({
-          idBook: coverInfo.idBook,
-          lastPage: currentPage,
-        }),
-      });
-    }
-  };
 
   useEffect(() => {
     updateLastPage();
@@ -139,6 +62,10 @@ const FlipBook: React.FC<FlipBookProps> = ({
 
   useEffect(() => {
     currentComponentRef.current = componentRef.current;
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
   }, []);
 
   useEffect(() => {
@@ -170,6 +97,70 @@ const FlipBook: React.FC<FlipBookProps> = ({
       }
     }
   }, [isFlipping, flipDirection, currentPage, pages.length]);
+
+  const handlePrevPage = () => {
+    if (currentPage > 0 && !isFlipping) {
+      setFlipDirection("prev");
+      setIsFlipping(true);
+    }
+  };
+
+  const handleNextPage = () => {
+    if (currentPage < pages.length - 1 && !isFlipping) {
+      setFlipDirection("next");
+      setIsFlipping(true);
+    }
+  };
+
+  const handlePrevPageRef = useRef(handlePrevPage);
+  const handleNextPageRef = useRef(handleNextPage);
+
+  useEffect(() => {
+    handlePrevPageRef.current = handlePrevPage;
+    handleNextPageRef.current = handleNextPage;
+  }, [handlePrevPage, handleNextPage]);
+
+  const functionInterpret = async () => {
+    if (componentRef.current === currentComponentRef.current) {
+      try {
+        const call = await callFunction(finalTranscript);
+        if (call.name == "changePage") {
+          changePage(call.args.action, call.args.pageNumber);
+        }
+        console.log(call);
+      } catch (error) {
+        handleShowToast("No se reconoció el comando", ToastType.ERROR);
+      }
+    }
+  };
+
+  const changePage = (action: string, pageNumber?: number) => {
+    if (action === "next") {
+      handleNextPage();
+    } else if (action === "previous") {
+      handlePrevPage();
+    }
+  };
+
+  const updateLastPage = async () => {
+    if (!isViewed) {
+      await fetch("../../api/books/views", {
+        method: "PUT",
+        body: JSON.stringify({
+          idBook: coverInfo.idBook,
+          lastPage: currentPage,
+        }),
+      });
+    }
+  };
+
+  const handleKeyDown = (event: KeyboardEvent) => {
+    if (event.key === "ArrowLeft") {
+      handlePrevPageRef.current();
+    } else if (event.key === "ArrowRight") {
+      handleNextPageRef.current();
+    }
+  };
 
   return (
     <div
@@ -223,9 +214,6 @@ const FlipBook: React.FC<FlipBookProps> = ({
       <div
         className="flex items-center w-full justify-center mb-3"
         ref={bookRef}
-        onDragStart={handleDragStart}
-        onDragOver={handleDragOver}
-        onDrop={handleDrop}
       >
         <div className="mr-5">
           <button

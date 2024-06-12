@@ -235,7 +235,7 @@ const PageContent: React.FC<PageProps> = ({ page, coverInfo }) => {
               dangerouslySetInnerHTML={{
                 __html: page.content.replace(
                   /<ul>/g,
-                  '<ul style="list-style: disc; padding-left: 40px;">'
+                  '<ul style="list-style: disc; padding-left: 60px;">'
                 ),
               }}
             ></div>
@@ -296,7 +296,7 @@ const PageContent: React.FC<PageProps> = ({ page, coverInfo }) => {
                 dangerouslySetInnerHTML={{
                   __html: page.content.replace(
                     /<ul>/g,
-                    '<ul style="list-style: disc; padding-left: 40px;">'
+                    '<ul style="list-style: disc; padding-left: 60px;">'
                   ),
                 }}
               ></div>
@@ -312,7 +312,7 @@ const PageContent: React.FC<PageProps> = ({ page, coverInfo }) => {
                 dangerouslySetInnerHTML={{
                   __html: page.content.replace(
                     /<ul>/g,
-                    '<ul style="list-style: disc; padding-left: 40px;">'
+                    '<ul style="list-style: disc; padding-left: 60px;">'
                   ),
                 }}
               ></div>
@@ -370,7 +370,7 @@ const PageContent: React.FC<PageProps> = ({ page, coverInfo }) => {
               dangerouslySetInnerHTML={{
                 __html: page.content.replace(
                   /<ul>/g,
-                  '<ul style="list-style: disc; padding-left: 40px;">'
+                  '<ul style="list-style: disc; padding-left: 60px;">'
                 ),
               }}
             ></div>

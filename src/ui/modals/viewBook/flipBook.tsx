@@ -45,7 +45,6 @@ const FlipBook: React.FC<FlipBookProps> = ({
   const bookRef = useRef<HTMLDivElement>(null);
   const { setIsListening, finalTranscript, currentComponentRef } =
     useContext(VoiceRecorderContext)!;
-  const [openHelp, setOpenHelp] = useState(false);
   const componentRef = useRef<HTMLDivElement>(null);
   const { handleShowToast } = useContext(ToastContext)!;
 
@@ -61,6 +60,7 @@ const FlipBook: React.FC<FlipBookProps> = ({
   }, [currentPage]);
 
   useEffect(() => {
+    console.log(pages)
     currentComponentRef.current = componentRef.current;
     window.addEventListener("keydown", handleKeyDown);
     return () => {
@@ -193,7 +193,10 @@ const FlipBook: React.FC<FlipBookProps> = ({
           <span
             className="cursor-pointer"
             onClick={() => {
-              setOpenHelp(true);
+              const dialog = document.getElementById(
+                "helpModal"
+              ) as HTMLDialogElement;
+              dialog.showModal();
             }}
           >
             <svg
@@ -286,24 +289,16 @@ const FlipBook: React.FC<FlipBookProps> = ({
         />
         <span className="w-auto text-nowrap">Página {pages.length - 1}</span>
       </div>
-      {openHelp && (
-        <Dialog
-          open={openHelp}
-          onOpenChange={(open: boolean) => {
-            setOpenHelp(open);
-          }}
-        >
-          <DialogOverlay className="z-[100]">
-            <DialogContent className="bg-bgColorRight z-[100]">
-              <DialogHeader>
-                <DialogDescription>
-                  <Help commands={commandsHelpBook} page="libro"></Help>
-                </DialogDescription>
-              </DialogHeader>
-            </DialogContent>
-          </DialogOverlay>
-        </Dialog>
-      )}
+      <dialog id="helpModal" className="modal">
+        <div className="modal-box">
+          <form method="dialog">
+            <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
+              ✕
+            </button>
+          </form>
+          <Help commands={commandsHelpBook} page="perfil"></Help>
+        </div>
+      </dialog>
     </div>
   );
 };

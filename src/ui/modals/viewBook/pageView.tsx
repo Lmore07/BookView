@@ -37,13 +37,13 @@ const PageContent: React.FC<PageProps> = ({ page, coverInfo }) => {
   const [formatDate, setFormatDate] = useState("");
   const [loadingVoice, setLoadingVoice] = useState(false);
   const [open, setOpen] = React.useState(false);
-  const [openImage, setOpenImage] = useState(false);
 
   const handlePlayVideo = () => {
     setIsPlayingVideo(true);
   };
 
   useEffect(() => {
+    console.log(page)
     if (
       typeof coverInfo?.publicationDate != "string" &&
       coverInfo?.publicationDate
@@ -188,7 +188,10 @@ const PageContent: React.FC<PageProps> = ({ page, coverInfo }) => {
                 <div
                   className="relative cursor-pointer transition-all duration-300 ease-in-out"
                   onClick={() => {
-                    setOpenImage(true);
+                    const dialog = document.getElementById(
+                      "imagePreview"
+                    ) as HTMLDialogElement;
+                    dialog.showModal();
                   }}
                 >
                   <Image
@@ -200,7 +203,10 @@ const PageContent: React.FC<PageProps> = ({ page, coverInfo }) => {
                     alt="Imagen"
                     className="max-h-40 max-w-64"
                     onClick={() => {
-                      setOpenImage(true);
+                      const dialog = document.getElementById(
+                        "imagePreview"
+                      ) as HTMLDialogElement;
+                      dialog.showModal();
                     }}
                     width={300}
                     height={150}
@@ -248,7 +254,10 @@ const PageContent: React.FC<PageProps> = ({ page, coverInfo }) => {
                 <div
                   className="relative w-full cursor-pointer transition-all duration-300 ease-in-out"
                   onClick={() => {
-                    setOpenImage(true);
+                    const dialog = document.getElementById(
+                      "imagePreview"
+                    ) as HTMLDialogElement;
+                    dialog.showModal();
                   }}
                 >
                   <Image
@@ -262,7 +271,10 @@ const PageContent: React.FC<PageProps> = ({ page, coverInfo }) => {
                     width={200}
                     height={300}
                     onClick={() => {
-                      setOpenImage(true);
+                      const dialog = document.getElementById(
+                        "imagePreview"
+                      ) as HTMLDialogElement;
+                      dialog.showModal();
                     }}
                   />
                   <div className="absolute inset-0 backdrop-blur-sm flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-300">
@@ -322,7 +334,10 @@ const PageContent: React.FC<PageProps> = ({ page, coverInfo }) => {
                 <div
                   className="relative w-full cursor-pointer transition-all duration-300 ease-in-out"
                   onClick={() => {
-                    setOpenImage(true);
+                    const dialog = document.getElementById(
+                      "imagePreview"
+                    ) as HTMLDialogElement;
+                    dialog.showModal();
                   }}
                 >
                   <Image
@@ -335,6 +350,12 @@ const PageContent: React.FC<PageProps> = ({ page, coverInfo }) => {
                     className="object-cover w-full h-auto"
                     width={200}
                     height={300}
+                    onClick={() => {
+                      const dialog = document.getElementById(
+                        "imagePreview"
+                      ) as HTMLDialogElement;
+                      dialog.showModal();
+                    }}
                   />
                   <div className="absolute inset-0 backdrop-blur-sm flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-300">
                     <svg
@@ -452,11 +473,10 @@ const PageContent: React.FC<PageProps> = ({ page, coverInfo }) => {
           </div>
           {page.video && (
             <button
-              className={`p-2 rounded-full focus:outline-none ${
-                isPlayingVideo
-                  ? "bg-red-500 text-white"
-                  : "bg-gray-300 text-gray-700"
-              }`}
+              className={`p-2 rounded-full focus:outline-none ${isPlayingVideo
+                ? "bg-red-500 text-white"
+                : "bg-gray-300 text-gray-700"
+                }`}
               onClick={handlePlayVideo}
             >
               <svg
@@ -488,34 +508,28 @@ const PageContent: React.FC<PageProps> = ({ page, coverInfo }) => {
           {textGenerated}
         </div>
       )}
-      {openImage && (
-        <Dialog
-          open={openImage}
-          onOpenChange={(open: boolean) => {
-            setOpenImage(open);
-          }}
-        >
-          <DialogOverlay className="z-[100]">
-            <DialogContent className="bg-bgColorRight z-[100] h-[75dvh] ">
-              <DialogHeader>
-                <DialogDescription>
-                  <Image
-                    src={
-                      page.image instanceof File
-                        ? URL.createObjectURL(page.image as Blob)
-                        : page.image
-                    }
-                    alt="Imagen"
-                    width={500}
-                    height={600}
-                    className="w-full h-full pt-6"
-                  />
-                </DialogDescription>
-              </DialogHeader>
-            </DialogContent>
-          </DialogOverlay>
-        </Dialog>
-      )}
+      <dialog id="imagePreview" className="modal">
+        <div className="modal-box">
+          <form method="dialog">
+            <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
+              ✕
+            </button>
+          </form>
+          {page.image != null && (
+            <Image
+              src={
+                page.image instanceof File
+                  ? URL.createObjectURL(page.image as Blob)
+                  : page.image
+              }
+              alt="Imagen"
+              width={500}
+              height={600}
+              className="w-full h-full pt-6"
+            />
+          )}
+        </div>
+      </dialog>
     </div>
   );
 };

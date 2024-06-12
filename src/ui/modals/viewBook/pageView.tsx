@@ -525,7 +525,7 @@ const PageContent: React.FC<PageProps> = ({ page, coverInfo }) => {
               alt="Imagen"
               width={500}
               height={600}
-              className="w-full h-full pt-6"
+              className="w-full object-contain h-full pt-6"
             />
           )}
         </div>

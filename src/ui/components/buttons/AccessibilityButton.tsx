@@ -69,7 +69,7 @@ export default function AccessibilityButton() {
 
   return (
     <div
-      className={`fixed flex right-2 bottom-2 rounded-s-full z-[100] bg-bgButtonAccesible`}
+      className={`fixed flex right-2 bottom-2 rounded-s-full z-[9999] bg-bgButtonAccesible`}
     >
       <button
         className=" text-textButtonAccesible font-bold py-2 px-4"

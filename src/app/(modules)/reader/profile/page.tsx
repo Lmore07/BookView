@@ -374,7 +374,7 @@ export default function ProfileReader() {
                 />
               )}
             </div>
-            <div className="flex flex-shrink-0 mt-5 justify-between">
+            <div className="flex flex-shrink-0 mt-5 gap-2 flex-wrap justify-between">
               <ButtonOutlined
                 icon={
                   <svg
@@ -558,15 +558,6 @@ export default function ProfileReader() {
           <Help commands={commandsProfile} page="perfil"></Help>
         </div>
       </dialog>
-      {openHelp && (
-        <ModalParent
-          onClose={() => {
-            setOpenHelp(false);
-          }}
-        >
-          <Help commands={commandsProfile} page="perfil"></Help>
-        </ModalParent>
-      )}
     </div>
   );
 }

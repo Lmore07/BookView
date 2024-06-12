@@ -167,9 +167,9 @@ export default function Home() {
     }
     router.push(
       "/reader/books?searchTerm=" +
-        searchTerm +
-        "&categories=" +
-        filterCategories.join(",")
+      searchTerm +
+      "&categories=" +
+      filterCategories.join(",")
     );
   };
 
@@ -274,7 +274,12 @@ export default function Home() {
               <span
                 className="cursor-pointer"
                 aria-label="Ayuda"
-                onClick={() => setOpenHelp(true)}
+                onClick={() => {
+                  const dialog = document.getElementById(
+                    "my_modal_3"
+                  ) as HTMLDialogElement;
+                  dialog.showModal();
+                }}
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -376,24 +381,16 @@ export default function Home() {
           </div>
         </div>
       </div>
-      <div>
-        {openHelp && (
-          <Dialog
-            open={openHelp}
-            onOpenChange={(open: boolean) => {
-              setOpenHelp(open);
-            }}
-          >
-            <DialogContent className="bg-bgColorRight">
-              <DialogHeader>
-                <DialogDescription>
-                  <Help commands={commandsHomeReader} page="inicio"></Help>
-                </DialogDescription>
-              </DialogHeader>
-            </DialogContent>
-          </Dialog>
-        )}
-      </div>
+      <dialog id="my_modal_3" className="modal">
+        <div className="modal-box">
+          <form method="dialog">
+            <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
+              ✕
+            </button>
+          </form>
+          <Help commands={commandsHomeReader} page="perfil"></Help>
+        </div>
+      </dialog>
     </div>
   );
 }

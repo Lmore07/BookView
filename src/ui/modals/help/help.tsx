@@ -63,7 +63,7 @@ const Help: React.FC<VoiceCommandProps> = ({ commands, page }) => {
   };
 
   return (
-    <div className="w-full rounded-lg flex flex-col items-start justify-start me-10">
+    <div className="w-full rounded-lg flex flex-col items-start justify-start">
       <div className="flex items-center text-left font-bold text-lg text-primary-500 font-custom">
         <div>
           <svg

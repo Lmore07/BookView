@@ -295,7 +295,7 @@ export default function AdminPage() {
                 router.push("/admin/books");
               }}
             >
-              Ver Todos
+              Ver todos
             </Button>
           </div>
         </div>
@@ -340,7 +340,7 @@ export default function AdminPage() {
                 router.push("/admin/users");
               }}
             >
-              Ver Todos
+              Ver todos
             </Button>
           </div>
         </div>

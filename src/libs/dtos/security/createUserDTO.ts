@@ -10,7 +10,7 @@ import {
 } from "class-validator";
 
 export class CreateUserDTO {
-  @IsString({ message: "Los nomrbes solo pueden contener letras" })
+  @IsString({ message: "Los nombres solo pueden contener letras" })
   @IsNotEmpty({ message: "Los nombres son requeridos" })
   @Length(3, 60, {
     message: "Los nombres deben tener entre 3 y 60 caracteres",

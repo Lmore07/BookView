@@ -56,7 +56,7 @@ export default function BooksAdmin() {
   const headersBooks = [
     { key: "bookName", name: "Nombre de libro" },
     { key: "authors", name: "Autores" },
-    { key: "categoryNames", name: "Categorias" },
+    { key: "categoryNames", name: "Categorías" },
     { key: "countViews", name: "Vistas" },
     { key: "status", name: "Estado" },
   ];

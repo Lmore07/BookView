@@ -115,7 +115,7 @@ const VideoUpload: React.FC<{ onAudioSelected: any }> = ({
                 </g>
               </svg>
             </span>
-            <span className="font-custom text-iconBgColor">Click aqui</span>
+            <span className="font-custom text-iconBgColor">Click aquí</span>
           </div>
         )}
       </div>

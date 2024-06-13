@@ -122,7 +122,7 @@ const Sidebar: React.FC<SidebarProps> = ({ optionsRoutes, children }) => {
                       </g>
                     </svg>
                   </div>
-                  <span>{"Cerrar Sesión"}</span>
+                  <span>{"Cerrar sesión"}</span>
                 </Link>
               </nav>
             </SheetContent>
@@ -188,7 +188,7 @@ const Sidebar: React.FC<SidebarProps> = ({ optionsRoutes, children }) => {
                   </g>
                 </svg>
               </div>
-              <span>{"Cerrar Sesión"}</span>
+              <span>{"Cerrar sesión"}</span>
             </Link>
           </nav>
         </div>

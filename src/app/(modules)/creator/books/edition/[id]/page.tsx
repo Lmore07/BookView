@@ -183,7 +183,7 @@ export default function BookEdit({
       ),
     },
     {
-      name: "Categorias",
+      name: "Categorías",
       icon: (
         <svg
           viewBox="0 0 24 24"
@@ -411,7 +411,7 @@ export default function BookEdit({
     <div className="shadow-xl rounded-xl p-3">
       <div className="py-2">
         <h1 className="font-custom m-0 relative text-3xl text-primary-500 font-bold">
-          <span className="ps-2">Edición de Libro</span>
+          <span className="ps-2">Edición de libro</span>
         </h1>
       </div>
       <div className="flex items-center justify-center flex-wrap gap-3 py-2 px-4 rounded-lg shadow-xl mx-5">
@@ -454,7 +454,7 @@ export default function BookEdit({
           <div className="shadow-2xl w-full rounded-xl p-3">
             <div className="">
               <h2 className="font-custom pb-3 text-2xl text-left text-primary-500 font-bold">
-                <span>Información del Libro</span>
+                <span>Información del libro</span>
               </h2>
             </div>
             <div className="py-1 grid gap-3 w-full px-2">
@@ -724,12 +724,12 @@ export default function BookEdit({
           <div className="shadow-2xl w-full rounded-xl p-3">
             <div className="">
               <h2 className="font-custom relative ps-2 pb-3 text-2xl text-left text-primary-500 font-bold">
-                <span>Categorías del Libro</span>
+                <span>Categorías del libro</span>
               </h2>
             </div>
             <div className="py-1 grid gap-3 w-full px-2">
               <div className="text-primary-500 font-custom font-normal text-base">
-                Selecciona una o mas cateogrías
+                Selecciona una o mas categorías
               </div>
               <div className="flex flex-row gap-5 flex-wrap">
                 {categories.map((category) => (
@@ -766,7 +766,7 @@ export default function BookEdit({
           <div className="shadow-2xl w-full rounded-xl p-3">
             <div className="flex items-center justify-between pb-2 flex-wrap">
               <h2 className="font-custom relative ps-2 pb-3 text-2xl text-left text-primary-500 font-bold">
-                <span>Publicar Libro</span>
+                <span>Publicar libro</span>
               </h2>
               <div className="flex justify-center">
                 <button

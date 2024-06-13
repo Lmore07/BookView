@@ -280,7 +280,7 @@ export default function CreatorPage() {
                 router.push("creator/books/creation");
               }}
             >
-              Nuevo Libro
+              Nuevo libro
             </ButtonOutlined>
             <Button
               icon={
@@ -310,7 +310,7 @@ export default function CreatorPage() {
                 router.push("creator/books");
               }}
             >
-              Ver Todos
+              Ver todos
             </Button>
           </div>
         </div>

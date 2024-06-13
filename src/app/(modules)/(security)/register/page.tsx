@@ -142,7 +142,7 @@ export default function Register() {
       <section className="md:px-5 xl:px-10 sm:px-8 bg-bgColorRight flex items-center grid-cols-1">
         <div className="shadow-2xl w-full rounded-lg py-5 bg-bgColorLeft">
           <div className="pb-3 ps-10 pt-5 text-left font-bold text-3xl text-primary-500 font-custom">
-            Registrate
+            Regístrate
           </div>
           <div className="py-2 gap-4 grid md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-2 md:gap-4 xl:gap-5 sm:gap-4 lg:gap-5 sm:grid-cols-1 px-10">
             <Input
@@ -240,7 +240,7 @@ export default function Register() {
           </div>
           <div className="py-2 gap-4 grid md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-2 md:gap-4 xl:gap-5 sm:gap-4 lg:gap-5 sm:grid-cols-1 px-10">
             <Select
-              label="Tipo de Usuario"
+              label="Tipo de usuario"
               name="role"
               icon={
                 <svg
@@ -300,7 +300,7 @@ export default function Register() {
                 href="../login"
                 className="ps-5 text-textRegisterLabel text-right underline"
               >
-                Inicia Sesión Aquí
+                Inicia sesión aquí
               </a>
             </div>
           </div>

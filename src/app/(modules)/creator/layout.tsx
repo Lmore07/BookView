@@ -23,7 +23,7 @@ export default function RootCreatorLayout({
       ),
     },
     {
-      name: "Mis Libros",
+      name: "Mis libros",
       route: "/creator/books",
       key: "favorites",
       icon: (
@@ -67,7 +67,7 @@ export default function RootCreatorLayout({
       ),
     },
     {
-      name: "Mi Perfil",
+      name: "Mi perfil",
       route: "/creator/profile",
       key: "profile",
       icon: (

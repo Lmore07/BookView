@@ -1,12 +1,8 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import udlPrinciples from "../../public/imgs/duaPrincipios.webp";
-import persons from "../../public/imgs/landing.webp";
-import notFound from "../../public/imgs/illustration.svg";
-import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import notFound from "../../public/imgs/illustration.svg";
 
 export default function RootPage() {
     //Variables declaradas

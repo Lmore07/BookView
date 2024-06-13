@@ -94,7 +94,7 @@ export default function Stepper() {
       ),
     },
     {
-      name: "Categorias",
+      name: "Categorías",
       icon: (
         <svg
           viewBox="0 0 24 24"
@@ -204,7 +204,7 @@ export default function Stepper() {
       if (page.template === "Template5" && !page.audio) {
         return {
           isValid: false,
-          message: "Las páginas que son solo imagenes deben incluir un audio",
+          message: "Las páginas que son solo imágenes deben incluir un audio",
         };
       }
     }
@@ -361,7 +361,7 @@ export default function Stepper() {
     <div className="shadow-xl rounded-xl p-3">
       <div className="py-2">
         <h1 className="font-custom m-0 relative text-3xl text-primary-500 font-bold">
-          <span className="ps-2">Creación de Libro</span>
+          <span className="ps-2">Creación de libro</span>
         </h1>
       </div>
       <div className="flex items-center justify-center flex-wrap gap-3 py-2 px-4 rounded-lg shadow-xl mx-5">
@@ -404,7 +404,7 @@ export default function Stepper() {
           <div className="shadow-2xl w-full rounded-xl p-3">
             <div className="">
               <h2 className="font-custom pb-3 text-2xl text-left text-primary-500 font-bold">
-                <span>Información del Libro</span>
+                <span>Información del libro</span>
               </h2>
             </div>
             <div className="py-1 grid gap-5 w-full px-2 grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3">
@@ -678,12 +678,12 @@ export default function Stepper() {
           <div className="shadow-2xl w-full rounded-xl p-3">
             <div className="">
               <h2 className="font-custom relative ps-2 pb-3 text-2xl text-left text-primary-500 font-bold">
-                <span>Categorías del Libro</span>
+                <span>Categorías del libro</span>
               </h2>
             </div>
             <div className="py-1 grid gap-3 w-full px-2">
               <span className="text-primary-500 font-custom font-normal text-base">
-                Selecciona una o mas cateogrías
+                Selecciona una o mas categorías
               </span>
               <div className="flex flex-row gap-5 flex-wrap">
                 {categories.map((category) => (
@@ -718,7 +718,7 @@ export default function Stepper() {
           <div className="shadow-2xl w-full rounded-xl p-3">
             <div className="flex items-center justify-between pb-2 flex-wrap">
               <h2 className="font-custom relative ps-2 pb-3 text-2xl text-left text-primary-500 font-bold">
-                <span>Publicar Libro</span>
+                <span>Publicar libro</span>
               </h2>
               <div className="flex justify-center">
                 <button

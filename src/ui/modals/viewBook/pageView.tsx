@@ -121,7 +121,7 @@ const PageContent: React.FC<PageProps> = ({ page, coverInfo }) => {
   const handleTextSelection = async (event: any) => {
     const selection = window.getSelection();
     const selectedText = selection?.toString().trim();
-    setSelectedText(selectedText ?? "vacio");
+    setSelectedText(selectedText ?? "vació");
     if (selectedText != "" && selectedText != null) {
       setTextGenerated(await generateText(selectedText));
       setOpen(true);

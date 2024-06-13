@@ -84,7 +84,7 @@ export default function Login() {
           handleShowToast(response.error, ToastType.ERROR);
         }
       } catch (error) {
-        handleShowToast("Ocurrio un error inesperado", ToastType.ERROR);
+        handleShowToast("Ocurrió un error inesperado", ToastType.ERROR);
       } finally {
         setIsLoading(false);
       }
@@ -126,7 +126,7 @@ export default function Login() {
           <section className="md:px-5 xl:px-32 sm:px-8 bg-bgColorRight flex items-center grid-cols-1">
             <div className="shadow-2xl w-full rounded-lg py-5 bg-bgColorLeft">
               <div className="pb-3 ps-10 pt-5 text-left font-bold text-3xl text-primary-500 font-custom">
-                Iniciar Sesión
+                Iniciar sesión
               </div>
               <div className="py-1 grid px-10">
                 <Input
@@ -188,7 +188,7 @@ export default function Login() {
               </div>
               <div className="py-2 grid px-10">
                 <Button type="submit" onClick={handleClick}>
-                  Iniciar Sesión
+                  Iniciar sesión
                 </Button>
               </div>
               <div className="py-4">
@@ -206,7 +206,7 @@ export default function Login() {
                     href="/forgot"
                     className="flex px-10 justify-center underline font-custom text-sm font-normal text-textForgotPassword"
                   >
-                    ¿Olvidaste tu contraseña?
+                    ¿Olvidó su contraseña?
                   </a>
                 </div>
               </div>

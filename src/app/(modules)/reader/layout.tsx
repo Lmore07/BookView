@@ -23,7 +23,7 @@ export default function RootLayout({
       ),
     },
     {
-      name: "Mis Favoritos",
+      name: "Mis favoritos",
       route: "/reader/favorites",
       key: "favorites",
       icon: (
@@ -57,7 +57,7 @@ export default function RootLayout({
       ),
     },
     {
-      name: "Mi Perfil",
+      name: "Mi perfil",
       route: "/reader/profile",
       key: "profile",
       icon: (

@@ -336,7 +336,7 @@ export default function BookSearch() {
 
       <div className="flex flex-wrap justify-between mb-5">
         <h1 className="font-custom m-0 relative text-2xl text-primary-500 font-bold before:content-[''] before:block before:absolute before:h-full before:w-1 before:bg-primary-500 before:left-0">
-          <span className="ps-2">Busqueda</span>
+          <span className="ps-2">Búsqueda</span>
         </h1>
       </div>
       <div className="flex flex-wrap justify-between">

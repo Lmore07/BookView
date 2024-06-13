@@ -145,7 +145,7 @@ export default function Favorite({
     }
   };
 
-  const openBook = async (book: any) => {
+  const openBook = async (book: any): Promise<any> => {
     setIsLoading(true);
     try {
       const response = await fetch(`../../api/books/pages?book=${book.idBook}`);

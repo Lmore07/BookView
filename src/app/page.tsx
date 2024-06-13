@@ -61,7 +61,7 @@ export default function RootPage() {
             className="inline-flex h-9 items-center justify-center rounded-md bg-bgButtonFill px-4 py-2 text-sm font-semibold text-textButtonFill shadow-sm transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:bg-gray-950 dark:text-white dark:hover:bg-gray-800 dark:focus:ring-gray-300"
             prefetch={false}
           >
-            Iniciar Sesión
+            Iniciar sesión
           </Link>
         </div>
       </header>
@@ -106,9 +106,9 @@ export default function RootPage() {
                 <div className="flex items-center justify-center bg-primary-500 rounded-full h-12 w-12">
                   <InfoIcon className="h-6 w-6 text-bgColorRight " />
                 </div>
-                <div className="text-xl font-bold">Interfaz Intuitiva</div>
+                <div className="text-xl font-bold">Interfaz intuitiva</div>
                 <div className="text-textLanding dark:text-gray-400">
-                  Experiencia sastisfactoria de creación y lectura de libros para
+                  Experiencia satisfactoria de creación y lectura de libros para
                   usuarios de todos los niveles.
                 </div>
               </div>
@@ -116,7 +116,7 @@ export default function RootPage() {
                 <div className="flex items-center justify-center bg-primary-500 rounded-full h-12 w-12">
                   <MusicIcon className="h-6 w-6 text-bgColorRight" />
                 </div>
-                <div className="text-xl font-bold">Integración Multimedia</div>
+                <div className="text-xl font-bold">Integración multimedia</div>
                 <div className="text-textLanding dark:text-gray-400">
                   Incorpore una variedad de medios, incluidos texto, imágenes,
                   audio y video, para atender diversos estilos de aprendizaje.

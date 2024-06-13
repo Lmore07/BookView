@@ -69,7 +69,7 @@ const CategoryComponent: React.FC<{
           handleShowToast(response.error, ToastType.ERROR);
         }
       } catch (error) {
-        handleShowToast("Ocurrio un error inesperado", ToastType.ERROR);
+        handleShowToast("Ocurrió un error inesperado", ToastType.ERROR);
       } finally {
         setIsLoading(false);
         onFinish();

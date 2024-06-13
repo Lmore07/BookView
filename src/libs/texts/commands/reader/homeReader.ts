@@ -11,6 +11,10 @@ export const commandsHomeReader = [
     command: ["Ingresa en la búsqueda *"],
     tittle: "Agregar nombre del libro o autor al cuadro de texto",
   },
+  {
+    command: ["Abre el libro: (nombre del libro)"],
+    tittle: "Abrir un libro",
+  },
 ];
 
 export const commandsSearchBooks = [
@@ -30,6 +34,10 @@ export const commandsSearchBooks = [
   {
     command: ["Ve hacia la página :número"],
     tittle: "Ir a una página específica",
+  },
+  {
+    command: ["Abre el libro: (nombre del libro)"],
+    tittle: "Abrir un libro",
   },
 ];
 

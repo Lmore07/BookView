@@ -154,7 +154,11 @@ export const POST = apiMiddleware(async (request: NextRequest) => {
   parsedEntries.pages.push({
     template: "Cover",
     numberPage: 0,
-    content: `Hola, el nombre del libro es: ${parsedEntries.bookName} los autores son:  y lo publicó el: ${parsedEntries.publicationDate}`,
+    content: `Hola, el nombre del libro es: ${
+      parsedEntries.bookName
+    } los autores son: ${parsedEntries.authors?.join(", ")}  y lo publicó el: ${
+      parsedEntries.publicationDate
+    }`,
   });
   parsedEntries.pages.push(...parsedPages.pages);
   const validatedFields = bookSchema.safeParse(parsedEntries);
@@ -225,70 +229,47 @@ export const PUT = apiMiddleware(async (request: NextRequest) => {
   }
 
   const formData = await request.formData();
-  const data: {
-    bookName?: string;
-    authors?: string[];
-    illustrator?: string;
-    publicationDate?: Date;
-    bookCover?: Blob;
-    editorial?: string;
-    pages: {
-      idPage?: number;
-      template?: string;
-      content?: string;
-      numberPage?: number;
-      image?: Blob;
-      audio?: Blob;
-      video?: Blob;
-    }[];
-    categoriesIds?: number[];
-    [key: string]: any;
-  } = { pages: [] };
-  Object.assign(data, Object.fromEntries(formData.entries()));
+  const parsedPages = parsePagesField(formData);
+  const parsedEntries: AddBookBodyRequest = { pages: [], publicationDate: "" };
+  Object.assign(parsedEntries, Object.fromEntries(formData.entries()));
 
-  if (
-    !data.bookName ||
-    !data.publicationDate ||
-    !data.editorial ||
-    !data.illustrator ||
-    !data.bookCover
-  ) {
-    throw new Error("Faltan campos requeridos");
+  if (typeof parsedEntries.categoriesIds === "string") {
+    parsedEntries.categoriesIds = JSON.parse(parsedEntries.categoriesIds);
+  }
+  if (typeof parsedEntries.authors === "string") {
+    parsedEntries.authors = JSON.parse(parsedEntries.authors);
+  }
+  for (const key of Object.keys(parsedEntries)) {
+    if (key.startsWith("pages")) {
+      delete parsedEntries[key];
+    }
   }
 
+  parsedEntries.pages = [];
+  parsedEntries.pages.push({
+    template: "Cover",
+    numberPage: 0,
+    content: `Hola, el nombre del libro es: ${
+      parsedEntries.bookName
+    } los autores son: ${parsedEntries.authors?.join(", ")}  y lo publicó el: ${
+      parsedEntries.publicationDate
+    }`,
+  });
+  parsedEntries.pages.push(...parsedPages.pages);
+  const validatedFields = bookSchema.safeParse(parsedEntries);
+  if (!validatedFields.success) {
+    return NextResponse.json(
+      {
+        message: "Campos inválidos",
+        errors: validatedFields.error.errors,
+      },
+      { status: 400 }
+    );
+  }
   const url = new URL(request.url);
   const idBook = parseInt(url.searchParams.get("id") ?? "0", 10);
   if (idBook == 0) {
     throw new Error("El id del libro es requerido");
-  }
-  if (typeof data.categoriesIds === "string") {
-    data.categoriesIds = JSON.parse(data.categoriesIds);
-  }
-  if (typeof data.publicationDate === "string") {
-    data.publicationDate = new Date(data.publicationDate);
-  }
-
-  for (let i = 0, j = 1; data[`pages[${i}][template]`]; i++, j++) {
-    data.pages.push({
-      idPage: parseInt(data[`pages[${i}][idPage]`]),
-      template: data[`pages[${i}][template]`],
-      content: data[`pages[${i}][content]`],
-      numberPage: j,
-      image: data[`pages[${i}][image]`],
-      audio: data[`pages[${i}][audio]`],
-      video: data[`pages[${i}][video]`],
-    });
-  }
-
-  data.authors = [];
-  for (let i = 0; data[`authors[${i}]`]; i++) {
-    data.authors.push(data[`authors[${i}]`]);
-  }
-
-  for (const key in data) {
-    if (key.startsWith("pages[") || key.startsWith("authors[")) {
-      delete data[key];
-    }
   }
 
   const pagesBook = await prisma.pages.findMany({
@@ -311,13 +292,17 @@ export const PUT = apiMiddleware(async (request: NextRequest) => {
       },
     },
     data: {
-      content: `Hola, el nombre del libro es: ${data.bookName} el autor es: ${data.authors} y lo publicó el: ${data.publicationDate}`,
+      content: `Hola, el nombre del libro es: ${
+        parsedEntries.bookName
+      } los autores son: ${parsedEntries.authors?.join(", ")} y lo publicó el: ${
+        parsedEntries.publicationDate
+      }`,
     },
   });
 
   try {
     const pagesToUpdate = pagesBook.filter(
-      (page) => !data.pages.some((p) => p.numberPage === page.numberPage)
+      (page) => !parsedEntries.pages.some((p) => p.numberPage === page.numberPage)
     );
 
     const isToUpdate = pagesToUpdate
@@ -347,26 +332,26 @@ export const PUT = apiMiddleware(async (request: NextRequest) => {
         Pages: true,
       },
       data: {
-        authors: data.authors,
-        editorial: data.editorial,
-        illustrator: data.illustrator,
-        bookName: data.bookName,
-        publicationDate: data.publicationDate,
+        authors: parsedEntries.authors,
+        editorial: parsedEntries.editorial,
+        illustrator: parsedEntries.illustrator,
+        bookName: parsedEntries.bookName,
+        publicationDate: parsedEntries.publicationDate,
         updatedBy: authResult.userId,
-        coverPhoto: await saveImage(data.bookCover),
+        coverPhoto: await saveImage(parsedEntries.bookCover),
         BookCategories: {
           deleteMany: {
             idBook: idBook,
           },
           create: [
-            ...data.categoriesIds!.map((idCategory: any) => ({
+            ...parsedEntries.categoriesIds!.map((idCategory: any) => ({
               Categories: { connect: { idCategory } },
             })),
           ],
         },
         Pages: {
           updateMany: await Promise.all(
-            data.pages
+            parsedEntries.pages
               .filter((page: any) => page.idPage)
               .map(async (page: any) => ({
                 where: { idPage: page.idPage },
@@ -384,7 +369,7 @@ export const PUT = apiMiddleware(async (request: NextRequest) => {
           ),
           createMany: {
             data: await Promise.all(
-              data.pages
+              parsedEntries.pages
                 .filter((page: any) => !page.idPage)
                 .map(async (page: any) => ({
                   numberPage: page.numberPage,

@@ -6,8 +6,8 @@ import {
   DialogDescription,
   DialogHeader,
 } from "@/components/ui/dialog";
+import { BreadcrumbContext } from "@/libs/contexts/breadcrumbContext";
 import { LoadingContext } from "@/libs/contexts/loadingContext";
-import { ModalContext } from "@/libs/contexts/modalContext";
 import { VoiceRecorderContext } from "@/libs/contexts/speechToTextContext";
 import { ToastContext } from "@/libs/contexts/toastContext";
 import { BooksAll, PageI } from "@/libs/interfaces/books.interface";
@@ -17,6 +17,10 @@ import { callFunction } from "@/libs/services/callFunction";
 import { generateSpeech } from "@/libs/services/generateSpeech";
 import { commandsBookCreator } from "@/libs/texts/commands/creator/commandsCreator";
 import { messageBooks } from "@/libs/texts/messages/creator/message";
+import {
+  HomeCreatorBreadCrumb,
+  myBooksBreadCrumb,
+} from "@/libs/utils/itemsBreadCrumbCreator";
 import ButtonOutlined from "@/ui/components/buttons/ButtonOutlined";
 import Table from "@/ui/components/tabble/table";
 import Help from "@/ui/modals/help/help";
@@ -25,9 +29,6 @@ import { Pagination, Stack, Tooltip } from "@mui/material";
 import { add, format } from "date-fns";
 import { useRouter } from "next/navigation";
 import { useContext, useEffect, useRef, useState } from "react";
-import SpeechRecognition, {
-  useSpeechRecognition,
-} from "react-speech-recognition";
 export default function CreatorBooksPage() {
   const router = useRouter();
   const [openHelp, setOpenHelp] = useState(false);
@@ -46,6 +47,8 @@ export default function CreatorBooksPage() {
     useContext(VoiceRecorderContext)!;
   const [loadingVoice, setLoadingVoice] = useState(false);
   const componentRef = useRef<HTMLDivElement>(null);
+  const { addBreadcrumbManyItems, removeAllBreadcrumbItems } =
+    useContext(BreadcrumbContext);
 
   const headers = [
     { key: "bookName", name: "Nombre del libro" },
@@ -90,6 +93,12 @@ export default function CreatorBooksPage() {
 
   useEffect(() => {
     currentComponentRef.current = componentRef.current;
+    removeAllBreadcrumbItems();
+    addBreadcrumbManyItems([HomeCreatorBreadCrumb, myBooksBreadCrumb]);
+
+    return () => {
+      removeAllBreadcrumbItems();
+    };
   }, []);
 
   const changePage = (action: string, pageNumber?: number) => {

@@ -5,6 +5,7 @@ import {
   DialogDescription,
   DialogHeader,
 } from "@/components/ui/dialog";
+import { BreadcrumbContext } from "@/libs/contexts/breadcrumbContext";
 import { LoadingContext } from "@/libs/contexts/loadingContext";
 import { VoiceRecorderContext } from "@/libs/contexts/speechToTextContext";
 import { ToastContext } from "@/libs/contexts/toastContext";
@@ -15,6 +16,11 @@ import { callFunction } from "@/libs/services/callFunction";
 import { generateSpeech } from "@/libs/services/generateSpeech";
 import { commandsSearchBooks } from "@/libs/texts/commands/reader/homeReader";
 import { searchBooks } from "@/libs/texts/messages/reader/homeReader";
+import {
+  HomeBreadCrumb,
+  searchBooksBreadCrumb,
+} from "@/libs/utils/itemsBreadCrumbReader";
+import { BreadcrumbItem } from "@/ui/components/breadcumbs/breadcumbs";
 import BookCard from "@/ui/components/cards/bookCard";
 import AddToFavorite from "@/ui/modals/folders/addToFavorite";
 import Help from "@/ui/modals/help/help";
@@ -48,6 +54,8 @@ export default function BookSearch() {
     useContext(VoiceRecorderContext)!;
   const [loadingVoice, setLoadingVoice] = useState(false);
   const componentRef = useRef<HTMLDivElement>(null);
+  const { addBreadcrumbManyItems, removeAllBreadcrumbItems } =
+    useContext(BreadcrumbContext);
 
   const handleChange = (event: any, value: number) => {
     setPage(value);
@@ -142,6 +150,12 @@ export default function BookSearch() {
 
   useEffect(() => {
     currentComponentRef.current = componentRef.current;
+    removeAllBreadcrumbItems();
+    addBreadcrumbManyItems([HomeBreadCrumb, searchBooksBreadCrumb]);
+
+    return () => {
+      removeAllBreadcrumbItems();
+    };
   }, []);
 
   //LOGICA DE FUNCIONES

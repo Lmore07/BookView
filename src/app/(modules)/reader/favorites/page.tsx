@@ -11,6 +11,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { BreadcrumbContext } from "@/libs/contexts/breadcrumbContext";
 import { LoadingContext } from "@/libs/contexts/loadingContext";
 import { VoiceRecorderContext } from "@/libs/contexts/speechToTextContext";
 import { ToastContext } from "@/libs/contexts/toastContext";
@@ -21,6 +22,11 @@ import { callFunction } from "@/libs/services/callFunction";
 import { generateSpeech } from "@/libs/services/generateSpeech";
 import { commandsFoldersFavorites } from "@/libs/texts/commands/reader/homeReader";
 import { favoritesReader } from "@/libs/texts/messages/reader/homeReader";
+import {
+  favoritesBreadCrumb,
+  HomeBreadCrumb,
+} from "@/libs/utils/itemsBreadCrumbReader";
+import { BreadcrumbItem } from "@/ui/components/breadcumbs/breadcumbs";
 import Button from "@/ui/components/buttons/ButtonFill";
 import FolderCard from "@/ui/components/cards/folderCard";
 import CreateFolder from "@/ui/modals/folders/createFolder";
@@ -46,12 +52,26 @@ export default function Favorites() {
   const source = useRef<AudioBufferSourceNode | null>(null);
   const { setIsListening, finalTranscript } = useContext(VoiceRecorderContext)!;
   const [loadingVoice, setLoadingVoice] = useState(false);
+  const { addBreadcrumbManyItems, setBreadcrumbItems } =
+    useContext(BreadcrumbContext);
 
   useEffect(() => {
     if (finalTranscript && finalTranscript != "") {
       functionInterpret();
     }
   }, [finalTranscript]);
+
+  useEffect(() => {
+    addBreadcrumbManyItems([HomeBreadCrumb, favoritesBreadCrumb]);
+
+    return () => {
+      setBreadcrumbItems([]);
+      setIsListening(false);
+      if (source.current) {
+        stopSpeech();
+      }
+    };
+  }, []);
 
   const functionInterpret = async () => {
     try {

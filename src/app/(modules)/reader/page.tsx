@@ -11,6 +11,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { BreadcrumbContext } from "@/libs/contexts/breadcrumbContext";
 import { LoadingContext } from "@/libs/contexts/loadingContext";
 import { VoiceRecorderContext } from "@/libs/contexts/speechToTextContext";
 import { ToastContext } from "@/libs/contexts/toastContext";
@@ -22,6 +23,7 @@ import { callFunction } from "@/libs/services/callFunction";
 import { generateSpeech } from "@/libs/services/generateSpeech";
 import { commandsHomeReader } from "@/libs/texts/commands/reader/homeReader";
 import { homeReader } from "@/libs/texts/messages/reader/homeReader";
+import { HomeBreadCrumb } from "@/libs/utils/itemsBreadCrumbReader";
 import ButtonOutlined from "@/ui/components/buttons/ButtonOutlined";
 import BookCard from "@/ui/components/cards/bookCard";
 import Input from "@/ui/components/inputs/input";
@@ -52,6 +54,8 @@ export default function Home() {
   const [selectedBook, setSelectedBook] = useState<BooksAll | null>(null);
   const { setIsLoading } = useContext(LoadingContext)!;
   const [isViewBook, setIsViewBook] = useState(false);
+  const { addBreadcrumbManyItems, removeAllBreadcrumbItems } =
+    useContext(BreadcrumbContext);
 
   const addCategoriesToFilter = (categoryNames: string[]) => {
     categoryNames.map((name) => {
@@ -154,6 +158,16 @@ export default function Home() {
     };
     fetchData();
     loadLastBooks();
+    removeAllBreadcrumbItems();
+    addBreadcrumbManyItems([HomeBreadCrumb]);
+
+    return () => {
+      removeAllBreadcrumbItems();
+      setIsListening(false);
+      if (source.current) {
+        stopSpeech();
+      }
+    };
   }, []);
 
   const handleCategoryChange = (event: any) => {

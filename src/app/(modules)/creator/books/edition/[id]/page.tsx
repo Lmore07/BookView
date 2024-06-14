@@ -25,6 +25,12 @@ import { useRouter } from "next/navigation";
 import { useContext, useEffect, useState } from "react";
 import { add, format } from "date-fns";
 import Image from "next/image";
+import { BreadcrumbContext } from "@/libs/contexts/breadcrumbContext";
+import {
+  editBookBreadCrumb,
+  HomeCreatorBreadCrumb,
+  myBooksBreadCrumb,
+} from "@/libs/utils/itemsBreadCrumbCreator";
 
 export default function BookEdit({
   params,
@@ -58,6 +64,8 @@ export default function BookEdit({
     bookImage: null,
   });
   const router = useRouter();
+  const { addBreadcrumbManyItems, removeAllBreadcrumbItems } =
+    useContext(BreadcrumbContext);
 
   const fetchDataCategories = async () => {
     setIsLoading(true);
@@ -101,6 +109,15 @@ export default function BookEdit({
   useEffect(() => {
     fetchDataCategories();
     fetchDataInfo();
+    removeAllBreadcrumbItems();
+    addBreadcrumbManyItems([
+      HomeCreatorBreadCrumb,
+      myBooksBreadCrumb,
+      editBookBreadCrumb,
+    ]);
+    return () => {
+      removeAllBreadcrumbItems();
+    };
   }, []);
 
   const addAuthor = () => {
@@ -238,7 +255,6 @@ export default function BookEdit({
   };
 
   function validateBody(body: any) {
-    console.log(body);
     if (!body.stepOne || Object.keys(body.stepOne).length === 0) {
       return {
         isValid: false,
@@ -370,9 +386,6 @@ export default function BookEdit({
     }
   };
 
-  useEffect(() => {
-    console.log("paginas prev: ", pagesToPrev);
-  }, [pagesToPrev]);
 
   const handleImageUpload = () => {
     const input = document.createElement("input");
@@ -748,7 +761,6 @@ export default function BookEdit({
           <BookEditor
             pagesEdit={pages}
             onChangedPages={(pages: any) => {
-              console.log("cambiaron las pages");
               setPages(pages);
             }}
           />
@@ -847,7 +859,6 @@ export default function BookEdit({
                 <Dialog
                   open={previsualize}
                   onOpenChange={(open: boolean) => {
-                    console.log("Esto mando: ", pagesToPrev);
                     setPrevisualize(open);
                   }}
                 >

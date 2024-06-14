@@ -5,6 +5,7 @@ import {
   DialogDescription,
   DialogHeader,
 } from "@/components/ui/dialog";
+import { BreadcrumbContext } from "@/libs/contexts/breadcrumbContext";
 import { LoadingContext } from "@/libs/contexts/loadingContext";
 import { VoiceRecorderContext } from "@/libs/contexts/speechToTextContext";
 import { ToastContext } from "@/libs/contexts/toastContext";
@@ -15,6 +16,12 @@ import { callFunction } from "@/libs/services/callFunction";
 import { generateSpeech } from "@/libs/services/generateSpeech";
 import { commandsBooksFavorites } from "@/libs/texts/commands/reader/homeReader";
 import { speechFavorites } from "@/libs/texts/messages/reader/homeReader";
+import {
+  favoritesBreadCrumb,
+  folderBreadCrumb,
+  HomeBreadCrumb,
+} from "@/libs/utils/itemsBreadCrumbReader";
+import { BreadcrumbItem } from "@/ui/components/breadcumbs/breadcumbs";
 import BookCard from "@/ui/components/cards/bookCard";
 import Help from "@/ui/modals/help/help";
 import FlipBook from "@/ui/modals/viewBook/flipBook";
@@ -43,7 +50,9 @@ export default function Favorite({
     useContext(VoiceRecorderContext)!;
   const [loadingVoice, setLoadingVoice] = useState(false);
   const componentRef = useRef<HTMLDivElement>(null);
-
+  const { addBreadcrumbManyItems, removeAllBreadcrumbItems } =
+    useContext(BreadcrumbContext);
+  const [folderName, setFolderName] = useState("Carpeta");
   const handleChange = (event: any, value: number) => {
     setPage(value);
   };
@@ -61,6 +70,7 @@ export default function Favorite({
         setTotalPages(data.pagination?.totalPages ?? 0);
         setPage(data.pagination?.currentPage ?? 0);
         setBooks(data.data ?? []);
+        setFolderName(data.data[0].nameFolder);
       }
     } catch (error) {
       handleShowToast("Error al cargar las carpetas", ToastType.ERROR);
@@ -132,7 +142,21 @@ export default function Favorite({
 
   useEffect(() => {
     currentComponentRef.current = componentRef.current;
-  }, []);
+    removeAllBreadcrumbItems();
+    addBreadcrumbManyItems([
+      HomeBreadCrumb,
+      favoritesBreadCrumb,
+      folderBreadCrumb({ label: folderName }),
+    ]);
+
+    return () => {
+      removeAllBreadcrumbItems();
+      setIsListening(false);
+      if (source.current) {
+        stopSpeech();
+      }
+    };
+  }, [folderName]);
 
   const openBookByName = (bookName: string) => {
     const bookToOpen = books.find(

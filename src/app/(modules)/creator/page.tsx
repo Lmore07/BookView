@@ -28,6 +28,8 @@ import { commandsHomeCreator } from "@/libs/texts/commands/creator/commandsCreat
 import { messageHome } from "@/libs/texts/messages/creator/message";
 import { callFunction } from "@/libs/services/callFunction";
 import { VoiceRecorderContext } from "@/libs/contexts/speechToTextContext";
+import { BreadcrumbContext } from "@/libs/contexts/breadcrumbContext";
+import { HomeCreatorBreadCrumb } from "@/libs/utils/itemsBreadCrumbCreator";
 
 export default function CreatorPage() {
   const router = useRouter();
@@ -42,6 +44,8 @@ export default function CreatorPage() {
   const [tableData, setTableData] = useState<any>([]);
   const { setIsListening, finalTranscript } = useContext(VoiceRecorderContext)!;
   const [loadingVoice, setLoadingVoice] = useState(false);
+  const { addBreadcrumbManyItems, removeAllBreadcrumbItems } =
+    useContext(BreadcrumbContext);
 
   useEffect(() => {
     if (finalTranscript && finalTranscript != "") {
@@ -148,6 +152,12 @@ export default function CreatorPage() {
 
   useEffect(() => {
     lastestBooks();
+    removeAllBreadcrumbItems();
+    addBreadcrumbManyItems([HomeCreatorBreadCrumb]);
+
+    return () => {
+      removeAllBreadcrumbItems();
+    };
   }, []);
 
   return (

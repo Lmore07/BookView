@@ -9,6 +9,7 @@ import Script from "next/script";
 import "reflect-metadata";
 import "regenerator-runtime/runtime";
 import "../ui/globals.css";
+import { BreadcrumbProvider } from "@/libs/contexts/breadcrumbContext";
 
 export const metadata: Metadata = {
   title: "BookView",
@@ -26,14 +27,13 @@ export default function RootLayout({
   return (
     <html lang="es">
       <head>
-
         <>
           <Script
-            strategy='lazyOnload'
+            strategy="lazyOnload"
             src={`https://www.googletagmanager.com/gtag/js?id=G-EFDRNJKG97`}
           />
 
-          <Script id='' strategy='lazyOnload'>
+          <Script id="" strategy="lazyOnload">
             {`
               window.dataLayer = window.dataLayer || [];
               function gtag(){dataLayer.push(arguments);}
@@ -48,12 +48,14 @@ export default function RootLayout({
       <body>
         <Providers>
           <LoadingProvider>
-            <ModalProvider>
-              <ToastProvider>
-                <VoiceRecorderProvider>{children}</VoiceRecorderProvider>
-                <AccessibilityButton />
-              </ToastProvider>
-            </ModalProvider>
+            <BreadcrumbProvider>
+              <ModalProvider>
+                <ToastProvider>
+                  <VoiceRecorderProvider>{children}</VoiceRecorderProvider>
+                  <AccessibilityButton />
+                </ToastProvider>
+              </ModalProvider>
+            </BreadcrumbProvider>
           </LoadingProvider>
         </Providers>
       </body>

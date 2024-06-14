@@ -1,3 +1,5 @@
+import { BreadcrumbProvider } from "@/libs/contexts/breadcrumbContext";
+import Breadcrumbs from "@/ui/components/breadcumbs/breadcumbs";
 import Sidebar from "@/ui/components/sidebar/sideBar";
 
 export default function RootCreatorLayout({
@@ -89,7 +91,12 @@ export default function RootCreatorLayout({
 
   return (
     <div>
-      <Sidebar optionsRoutes={optionsRoutes}>{children}</Sidebar>
+      <BreadcrumbProvider>
+        <Sidebar optionsRoutes={optionsRoutes}>
+          <Breadcrumbs />
+          {children}
+        </Sidebar>
+      </BreadcrumbProvider>
     </div>
   );
 }

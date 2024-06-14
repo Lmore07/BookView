@@ -5,6 +5,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { BreadcrumbContext } from "@/libs/contexts/breadcrumbContext";
 import { LoadingContext } from "@/libs/contexts/loadingContext";
 import { VoiceRecorderContext } from "@/libs/contexts/speechToTextContext";
 import { ToastContext } from "@/libs/contexts/toastContext";
@@ -15,6 +16,10 @@ import { callFunction } from "@/libs/services/callFunction";
 import { generateSpeech } from "@/libs/services/generateSpeech";
 import { commandsProfile } from "@/libs/texts/commands/reader/homeReader";
 import { profileMessage } from "@/libs/texts/messages/reader/homeReader";
+import {
+  HomeCreatorBreadCrumb,
+  profileCreatorBreadCrumb,
+} from "@/libs/utils/itemsBreadCrumbCreator";
 import Button from "@/ui/components/buttons/ButtonFill";
 import ButtonOutlined from "@/ui/components/buttons/ButtonOutlined";
 import Input from "@/ui/components/inputs/input";
@@ -31,6 +36,8 @@ export default function ProfileCreator() {
   const [isPlaying, setIsPlaying] = useState(false);
   const audioContext = useRef<AudioContext | null>(null);
   const source = useRef<AudioBufferSourceNode | null>(null);
+  const { addBreadcrumbManyItems, removeAllBreadcrumbItems } =
+    useContext(BreadcrumbContext);
   const router = useRouter();
   const { setIsListening, finalTranscript } = useContext(VoiceRecorderContext)!;
   const [loadingVoice, setLoadingVoice] = useState(false);
@@ -169,6 +176,13 @@ export default function ProfileCreator() {
 
   useEffect(() => {
     fetchData();
+
+    removeAllBreadcrumbItems();
+    addBreadcrumbManyItems([HomeCreatorBreadCrumb, profileCreatorBreadCrumb]);
+
+    return () => {
+      removeAllBreadcrumbItems();
+    };
   }, []);
 
   const handleChange = (e: any) => {

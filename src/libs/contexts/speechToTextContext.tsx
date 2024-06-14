@@ -37,7 +37,6 @@ export const VoiceRecorderProvider = ({
   useEffect(() => {
     if (transcript.length > 0) {
       setIsAnimating(true);
-      console.log(transcript);
     }
   }, [transcript]);
 

@@ -24,6 +24,12 @@ import BookEditor from "@/ui/modals/creation/page";
 import FlipBook from "@/ui/modals/viewBook/flipBook";
 import Image from "next/image";
 import { useContext, useEffect, useRef, useState } from "react";
+import { BreadcrumbContext } from "@/libs/contexts/breadcrumbContext";
+import {
+  creationBookBreadCrumb,
+  HomeCreatorBreadCrumb,
+  myBooksBreadCrumb,
+} from "@/libs/utils/itemsBreadCrumbCreator";
 
 export default function Stepper() {
   const [currentStep, setCurrentStep] = useState(0);
@@ -37,6 +43,8 @@ export default function Stepper() {
   const [pagesToPrev, setPagesToPrev] = useState<any[]>([]);
   const { setIsLoading } = useContext(LoadingContext)!;
   const router = useRouter();
+  const { addBreadcrumbManyItems, removeAllBreadcrumbItems } =
+    useContext(BreadcrumbContext);
   const [selectedBook, setSelectedBook] = useState<BooksAll | null>(null);
   const [stepOne, setStepOne] = useState<{
     bookName: string;
@@ -63,6 +71,16 @@ export default function Stepper() {
       setCategories(data.data ?? []);
     };
     fetchData();
+    removeAllBreadcrumbItems();
+    addBreadcrumbManyItems([
+      HomeCreatorBreadCrumb,
+      myBooksBreadCrumb,
+      creationBookBreadCrumb,
+    ]);
+
+    return () => {
+      removeAllBreadcrumbItems();
+    };
   }, []);
 
   const steps = [

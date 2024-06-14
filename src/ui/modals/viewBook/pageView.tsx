@@ -26,7 +26,6 @@ interface PageProps {
   coverInfo?: CoverI;
 }
 
-
 const PageContent: React.FC<PageProps> = ({ page, coverInfo }) => {
   const [isPlayingAudio, setIsPlayingAudio] = useState(false);
   const [isPlayingVideo, setIsPlayingVideo] = useState(false);
@@ -43,7 +42,6 @@ const PageContent: React.FC<PageProps> = ({ page, coverInfo }) => {
   };
 
   useEffect(() => {
-    console.log(page)
     if (
       typeof coverInfo?.publicationDate != "string" &&
       coverInfo?.publicationDate
@@ -473,10 +471,11 @@ const PageContent: React.FC<PageProps> = ({ page, coverInfo }) => {
           </div>
           {page.video && (
             <button
-              className={`p-2 rounded-full focus:outline-none ${isPlayingVideo
-                ? "bg-red-500 text-white"
-                : "bg-gray-300 text-gray-700"
-                }`}
+              className={`p-2 rounded-full focus:outline-none ${
+                isPlayingVideo
+                  ? "bg-red-500 text-white"
+                  : "bg-gray-300 text-gray-700"
+              }`}
               onClick={handlePlayVideo}
             >
               <svg

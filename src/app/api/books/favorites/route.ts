@@ -47,7 +47,7 @@ export const DELETE = apiMiddleware(async (request: NextRequest) => {
   if (body instanceof NextResponse) {
     return body;
   }
-  
+
   const userFavoriteFolder = await prisma.favorite_Folders.findFirst({
     where: {
       idUser: authResult.userId,
@@ -138,6 +138,12 @@ export const GET = apiMiddleware(async (request: NextRequest) => {
       },
     });
 
+    const folder = await prisma.favorite_Folders.findUnique({
+      where: {
+        idFolder: folderId,
+      },
+    });
+
     const userViewedBooks = await prisma.viewBooks.findMany({
       where: {
         idUser: authResult.userId,
@@ -157,6 +163,7 @@ export const GET = apiMiddleware(async (request: NextRequest) => {
       isViewed: userViewedBooks.some(
         (viewedBook) => viewedBook.idBook === book.idBook
       ),
+      nameFolder: folder?.folderName,
     }));
     if (booksWithIsFavorite.length > 0) {
       return NextResponse.json(

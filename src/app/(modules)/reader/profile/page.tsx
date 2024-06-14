@@ -5,6 +5,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { BreadcrumbContext } from "@/libs/contexts/breadcrumbContext";
 import { LoadingContext } from "@/libs/contexts/loadingContext";
 import { VoiceRecorderContext } from "@/libs/contexts/speechToTextContext";
 import { ToastContext } from "@/libs/contexts/toastContext";
@@ -15,6 +16,7 @@ import { callFunction } from "@/libs/services/callFunction";
 import { generateSpeech } from "@/libs/services/generateSpeech";
 import { commandsProfile } from "@/libs/texts/commands/reader/homeReader";
 import { profileMessage } from "@/libs/texts/messages/reader/homeReader";
+import { HomeBreadCrumb, profileBreadCrumb } from "@/libs/utils/itemsBreadCrumbReader";
 import Button from "@/ui/components/buttons/ButtonFill";
 import ButtonOutlined from "@/ui/components/buttons/ButtonOutlined";
 import Input from "@/ui/components/inputs/input";
@@ -32,6 +34,8 @@ export default function ProfileReader() {
   const source = useRef<AudioBufferSourceNode | null>(null);
   const { setIsListening, finalTranscript } = useContext(VoiceRecorderContext)!;
   const [loadingVoice, setLoadingVoice] = useState(false);
+  const { addBreadcrumbManyItems, removeAllBreadcrumbItems } =
+    useContext(BreadcrumbContext);
   const [userInfo, setUserInfo] = useState<UserInfo>({
     mail: "",
     profilePicture: "",
@@ -165,6 +169,12 @@ export default function ProfileReader() {
 
   useEffect(() => {
     fetchData();
+    removeAllBreadcrumbItems();
+    addBreadcrumbManyItems([HomeBreadCrumb, profileBreadCrumb]);
+
+    return () => {
+      removeAllBreadcrumbItems();
+    };
   }, []);
 
   const handleChange = (e: any) => {

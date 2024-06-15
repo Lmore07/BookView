@@ -239,6 +239,7 @@ export const PUT = apiMiddleware(async (request: NextRequest) => {
   if (typeof parsedEntries.authors === "string") {
     parsedEntries.authors = JSON.parse(parsedEntries.authors);
   }
+
   for (const key of Object.keys(parsedEntries)) {
     if (key.startsWith("pages")) {
       delete parsedEntries[key];
@@ -294,15 +295,16 @@ export const PUT = apiMiddleware(async (request: NextRequest) => {
     data: {
       content: `Hola, el nombre del libro es: ${
         parsedEntries.bookName
-      } los autores son: ${parsedEntries.authors?.join(", ")} y lo publicó el: ${
-        parsedEntries.publicationDate
-      }`,
+      } los autores son: ${parsedEntries.authors?.join(
+        ", "
+      )} y lo publicó el: ${parsedEntries.publicationDate}`,
     },
   });
 
   try {
     const pagesToUpdate = pagesBook.filter(
-      (page) => !parsedEntries.pages.some((p) => p.numberPage === page.numberPage)
+      (page) =>
+        !parsedEntries.pages.some((p) => p.numberPage === page.numberPage)
     );
 
     const isToUpdate = pagesToUpdate
@@ -336,7 +338,7 @@ export const PUT = apiMiddleware(async (request: NextRequest) => {
         editorial: parsedEntries.editorial,
         illustrator: parsedEntries.illustrator,
         bookName: parsedEntries.bookName,
-        publicationDate: parsedEntries.publicationDate,
+        publicationDate: new Date(parsedEntries.publicationDate).toISOString(),
         updatedBy: authResult.userId,
         coverPhoto: await saveImage(parsedEntries.bookCover),
         BookCategories: {
@@ -370,7 +372,9 @@ export const PUT = apiMiddleware(async (request: NextRequest) => {
           createMany: {
             data: await Promise.all(
               parsedEntries.pages
-                .filter((page: any) => !page.idPage)
+                .filter((page: any) => {
+                  return !page.idPage && page.numberPage != 0;
+                })
                 .map(async (page: any) => ({
                   numberPage: page.numberPage,
                   createdBy: authResult.userId,

@@ -193,7 +193,6 @@ export default function Stepper() {
   };
 
   function validateBody(body: any) {
-    console.log(body);
     if (!body.stepOne || Object.keys(body.stepOne).length === 0) {
       return {
         isValid: false,

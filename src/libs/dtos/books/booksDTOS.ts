@@ -8,20 +8,23 @@ export const bookSchema = z.object({
   illustrator: z.string().min(1, "El ilustrador es requerido"),
   publicationDate: z.string(),
   editorial: z.string().min(1, "La editorial es requerida"),
-  bookCover: z.instanceof(Blob, {
-    message: "La portada del libro es requerida",
-  }),
+  bookCover: z
+    .instanceof(Blob, {
+      message: "La portada del libro es requerida",
+    })
+    .or(z.string()),
   pages: z.array(
     z.object({
       template: z.string(),
       content: z.string(),
       numberPage: z.number(),
-      image: z.instanceof(Blob).optional(),
-      audio: z.instanceof(Blob).optional(),
-      video: z.instanceof(Blob).optional(),
+      image: z.instanceof(Blob).or(z.string()).optional(),
+      audio: z.instanceof(Blob).or(z.string()).optional(),
+      video: z.instanceof(Blob).or(z.string()).optional(),
     })
   ),
   categoriesIds: z.array(z.number()),
+  idPage: z.number().optional(),
 });
 
 export interface AddBookBodyRequest {
@@ -40,6 +43,7 @@ export interface AddBookBodyRequest {
     video?: Blob;
   }[];
   categoriesIds?: number[];
+  idPage?: number;
   [key: string]: any;
 }
 
@@ -52,6 +56,7 @@ export function parsePagesField<T>(formData: FormData): Record<
     image?: Blob;
     audio?: Blob;
     video?: Blob;
+    idPage?: number;
   }[]
 > {
   const result: Record<
@@ -79,6 +84,8 @@ export function parsePagesField<T>(formData: FormData): Record<
       if (field === "template" || field === "content") {
         (result.pages[pageIndex] as any)[field] = value as string;
       } else if (field === "numberPage") {
+        (result.pages[pageIndex] as any)[field] = parseInt(value as string, 10);
+      } else if (field === "idPage") {
         (result.pages[pageIndex] as any)[field] = parseInt(value as string, 10);
       } else {
         (result.pages[pageIndex] as any)[field] = value as Blob;

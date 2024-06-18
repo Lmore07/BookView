@@ -12,7 +12,7 @@ import {
   DialogDescription,
   DialogHeader,
   DialogOverlay,
-} from "@/components/ui/dialog";
+} from "@/ui/shadcn/ui/dialog";
 
 interface PageProps {
   page: {

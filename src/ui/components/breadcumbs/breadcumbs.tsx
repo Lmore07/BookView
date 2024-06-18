@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@/ui/shadcn/ui/button";
 import { BreadcrumbContext } from "@/libs/contexts/breadcrumbContext";
 import Link from "next/link";
 import React, { useContext } from "react";

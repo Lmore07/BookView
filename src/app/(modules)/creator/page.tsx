@@ -22,7 +22,7 @@ import {
   DialogContent,
   DialogDescription,
   DialogHeader,
-} from "@/components/ui/dialog";
+} from "@/ui/shadcn/ui/dialog";
 import Help from "@/ui/modals/help/help";
 import { commandsHomeCreator } from "@/libs/texts/commands/creator/commandsCreator";
 import { messageHome } from "@/libs/texts/messages/creator/message";

@@ -1,10 +1,9 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
+import Image from "next/image";
+import Link from "next/link";
 import udlPrinciples from "../../public/imgs/duaPrincipios.webp";
 import persons from "../../public/imgs/landing.webp";
-import Link from "next/link";
-import Image from "next/image";
 
 export default function RootPage() {
   //Variables declaradas

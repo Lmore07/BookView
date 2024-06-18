@@ -4,8 +4,8 @@ import {
   DialogDescription,
   DialogHeader,
   DialogOverlay,
-} from "@/components/ui/dialog";
-import { Slider } from "@/components/ui/slider";
+} from "@/ui/shadcn/ui/dialog";
+import { Slider } from "@/ui/shadcn/ui/slider";
 import { VoiceRecorderContext } from "@/libs/contexts/speechToTextContext";
 import { ToastContext } from "@/libs/contexts/toastContext";
 import { CoverI } from "@/libs/interfaces/books.interface";

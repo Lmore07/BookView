@@ -1,7 +1,7 @@
 "use client";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Avatar, AvatarFallback, AvatarImage } from "@/ui/shadcn/ui/avatar";
+import { Sheet, SheetContent, SheetTrigger } from "@/ui/shadcn/ui/sheet";
 import Cookie from "js-cookie";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";

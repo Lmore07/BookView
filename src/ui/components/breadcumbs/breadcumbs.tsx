@@ -70,7 +70,7 @@ const Breadcrumbs: React.FC = () => {
                 ></path>
               </g>
             </svg>
-            <span className="hidden lg:block md:block sm:block mr-1">
+            <span className="hidden  lg:block md:block sm:block mr-1">
               Volver
             </span>
           </Button>

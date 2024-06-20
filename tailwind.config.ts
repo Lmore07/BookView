@@ -38,6 +38,10 @@ const config = {
       },
       colors: {
         bgColorLeft: "var(--bgColorLeft)",
+        bgHeaderTable: "var(--header-table--background)",
+        textHeaderTable: "var(--header-table--text)",
+        bgRowsTable: "var(--rows-table--background)",
+        textRowsTable: "var(--rows-table--text)",
         bgColorDark: "var(--bgColorDark)",
         bgColorRight: "var(--bgColorRight)",
         textLanding: "var(--text-landing)",

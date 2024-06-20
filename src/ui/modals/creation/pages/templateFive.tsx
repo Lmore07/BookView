@@ -127,12 +127,12 @@ const Template5: React.FC<{
               <audio controls>
                 <source
                   src={
-                    audioBlob instanceof File
-                      ? URL.createObjectURL(audioBlob as Blob)
-                      : (audioBlob as string)
+                    audioBlob instanceof Blob
+                      ? URL.createObjectURL(audioBlob)
+                      : audioBlob
                   }
                   type={
-                    audioBlob instanceof File ? audioBlob.type : "audio/mpeg"
+                    audioBlob instanceof Blob ? audioBlob.type : "audio/mpeg"
                   }
                 />
               </audio>

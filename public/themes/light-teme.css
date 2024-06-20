@@ -65,6 +65,11 @@
         /* Button Previsualization Fill Hover*/
         --bg--ButtonPrevFillHover: #1b7505;
         --text--ButtonPrevFillHover: #fff;
+
+        --header-table--background: #1b7505;
+        --header-table--text: #fff;
+        --rows-table--background: #fff;
+        --rows-table--text: #6f7787;
     
         --primary--100: #eefee9;
         --primary--150: #cafcbe;

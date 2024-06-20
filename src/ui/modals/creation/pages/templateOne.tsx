@@ -54,6 +54,7 @@ const Template1: React.FC<{
 
   useEffect(() => {
     if (audioBlob) {
+      console.log("AudioBlob: ", audioBlob);
       onContentChange(content, imageBlob, audioBlob, videoBlob);
     } else {
       onContentChange(content, imageBlob, null, videoBlob);
@@ -163,12 +164,12 @@ const Template1: React.FC<{
               <audio controls>
                 <source
                   src={
-                    audioBlob instanceof File
-                      ? URL.createObjectURL(audioBlob as Blob)
-                      : (audioBlob as string)
+                    audioBlob instanceof Blob
+                      ? URL.createObjectURL(audioBlob)
+                      : audioBlob
                   }
                   type={
-                    audioBlob instanceof File ? audioBlob.type : "audio/mpeg"
+                    audioBlob instanceof Blob ? audioBlob.type : "audio/mpeg"
                   }
                 />
               </audio>
@@ -186,6 +187,7 @@ const Template1: React.FC<{
           ) : (
             <AudioUpload
               onAudioSelected={(file: any) => {
+                console.log("LLegando archivo: ", file);
                 setAudioBlob(file);
               }}
             ></AudioUpload>

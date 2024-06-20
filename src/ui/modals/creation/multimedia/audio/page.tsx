@@ -1,9 +1,13 @@
+import ButtonOutlined from "@/ui/components/buttons/ButtonOutlined";
 import React, { useRef, useState } from "react";
 
 const AudioUpload: React.FC<{ onAudioSelected: any }> = ({
   onAudioSelected,
 }) => {
   const [showOptions, setShowOptions] = useState(false);
+  const [isRecording, setIsRecording] = useState(false);
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const audioChunksRef = useRef<Blob[]>([]);
 
   const handleUploadAudio = (event: any) => {
     const input = document.createElement("input");
@@ -26,10 +30,36 @@ const AudioUpload: React.FC<{ onAudioSelected: any }> = ({
     input.click();
   };
 
-  const handleRecordAudio = () => {
+  const handleRecordAudio = async () => {
     // Lógica para grabar un audio desde el dispositivo
-    const audioBlob = new Blob(["audio data"], { type: "audio/mpeg" });
-    onAudioSelected(audioBlob);
+    if (!isRecording) {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({
+          audio: true,
+        });
+        mediaRecorderRef.current = new MediaRecorder(stream);
+        audioChunksRef.current = [];
+        mediaRecorderRef.current.ondataavailable = (event) => {
+          audioChunksRef.current.push(event.data);
+        };
+        mediaRecorderRef.current.onstop = () => {
+          console.log("Termino de grabar");
+          const audioBlob = new Blob(audioChunksRef.current, {
+            type: "audio/wav",
+          });
+          console.log("AudioBlob generado: ", audioBlob);
+          onAudioSelected(audioBlob);
+        };
+        mediaRecorderRef.current.start();
+        console.log("Empezo a grabar");
+        setIsRecording(true);
+      } catch (error) {
+        console.error("Error accessing the microphone", error);
+      }
+    } else {
+      mediaRecorderRef.current?.stop();
+      setIsRecording(false);
+    }
   };
 
   return (
@@ -76,7 +106,7 @@ const AudioUpload: React.FC<{ onAudioSelected: any }> = ({
               className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded"
               onClick={handleRecordAudio}
             >
-              Grabar audio
+              {isRecording ? "Detener grabación" : "Grabar audio"}
             </button>
           </div>
         ) : (
@@ -108,6 +138,41 @@ const AudioUpload: React.FC<{ onAudioSelected: any }> = ({
           </div>
         )}
       </div>
+      {isRecording && (
+        <div
+          className={`fixed flex flex-col z-[100] top-0 left-0 w-full h-full items-center justify-center`}
+        >
+          <div className="absolute inset-0 bg-black bg-opacity-25 backdrop-blur-sm"></div>
+          <div className="relative z-10 flex flex-col bg-bgColorRight p-5 rounded-full">
+            <div className="flex flex-row">
+              <div
+                className={`h-8 w-4 bg-primary rounded-full mx-2 ${"animate-wave-1"}`}
+              ></div>
+              <div
+                className={`h-8 w-4 bg-primary rounded-full mx-2 ${"animate-wave-2"}`}
+              ></div>
+              <div
+                className={`h-8 w-4 bg-primary rounded-full mx-2 ${"animate-wave-3"}`}
+              ></div>
+              <div
+                className={`h-8 w-4 bg-primary rounded-full mx-2 ${"animate-wave-4"}`}
+              ></div>
+            </div>
+            <div className="flex items-center justify-center mt-3">
+              <ButtonOutlined
+                onClick={() => {
+                  handleRecordAudio();
+                }}
+                className={
+                  "border-primary text-primary hover:text-white hover:bg-primary"
+                }
+              >
+                Cancelar
+              </ButtonOutlined>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

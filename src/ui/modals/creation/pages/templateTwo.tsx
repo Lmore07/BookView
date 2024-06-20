@@ -162,11 +162,11 @@ const Template2: React.FC<{
             <div className="bg-bgColorRight rounded-lg shadow-md p-4">
               <source
                 src={
-                  audioBlob instanceof File
-                    ? URL.createObjectURL(audioBlob as Blob)
-                    : (audioBlob as string)
+                  audioBlob instanceof Blob
+                    ? URL.createObjectURL(audioBlob)
+                    : audioBlob
                 }
-                type={audioBlob instanceof File ? audioBlob.type : "audio/mpeg"}
+                type={audioBlob instanceof Blob ? audioBlob.type : "audio/mpeg"}
               />
               <ButtonOutlined
                 onClick={() => {

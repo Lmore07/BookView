@@ -10,7 +10,7 @@ const PreviewContent: React.FC<{ content: any[] }> = ({ content }) => {
           <div>
             <Divider className="py-2">
               <Chip
-                className="font-semibold"
+                className="font-semibold text-textRegisterLabel"
                 label={`Página N° ${page.numberPage}`}
                 size="medium"
               />

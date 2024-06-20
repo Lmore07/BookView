@@ -1,9 +1,8 @@
-import React, { useEffect, useRef, useState } from "react";
-import dynamic from "next/dynamic";
 import ButtonOutlined from "@/ui/components/buttons/ButtonOutlined";
+import { Editor } from "@tinymce/tinymce-react";
+import React, { useEffect, useState } from "react";
 import AudioUpload from "../multimedia/audio/page";
 import VideoUpload from "../multimedia/video/page";
-import { Editor } from "@tinymce/tinymce-react";
 
 const Template4: React.FC<{
   content: any;
@@ -112,12 +111,12 @@ const Template4: React.FC<{
               <audio controls>
                 <source
                   src={
-                    audioBlob instanceof File
-                      ? URL.createObjectURL(audioBlob as Blob)
-                      : (audioBlob as string)
+                    audioBlob instanceof Blob
+                      ? URL.createObjectURL(audioBlob)
+                      : audioBlob
                   }
                   type={
-                    audioBlob instanceof File ? audioBlob.type : "audio/mpeg"
+                    audioBlob instanceof Blob ? audioBlob.type : "audio/mpeg"
                   }
                 />
               </audio>

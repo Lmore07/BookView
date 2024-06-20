@@ -75,7 +75,7 @@ const BookEditor: React.FC<{ onChangedPages: any; pagesEdit?: any[] }> = ({
             <div key={index} className="mb-8">
               <div className="mb-2 font-semibold">
                 <Divider className="border-t-black">
-                  <Chip label={`Pagina N° ${page.numberPage}`} size="medium" />
+                  <Chip label={`Pagina N° ${page.numberPage}`} size="medium" className="text-textRegisterLabel" />
                 </Divider>
               </div>
               <div className="bg-bgColorLeft p-6 rounded-lg shadow-xl">

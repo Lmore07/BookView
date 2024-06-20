@@ -1,17 +1,10 @@
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogOverlay,
-} from "@/ui/shadcn/ui/dialog";
-import { Slider } from "@/ui/shadcn/ui/slider";
 import { VoiceRecorderContext } from "@/libs/contexts/speechToTextContext";
 import { ToastContext } from "@/libs/contexts/toastContext";
 import { CoverI } from "@/libs/interfaces/books.interface";
 import { ToastType } from "@/libs/interfaces/toast.interface";
 import { callFunction } from "@/libs/services/callFunction";
 import { commandsHelpBook } from "@/libs/texts/commands/reader/homeReader";
+import { Slider } from "@/ui/shadcn/ui/slider";
 import { Tooltip } from "@mui/material";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import Help from "../help/help";

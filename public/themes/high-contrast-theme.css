@@ -3,67 +3,76 @@
   
     /* High Contrast */
     filter: contrast(200%) brightness(0.8);
-  
-            /* Button Previsualization Fill */
-            --bg--ButonPrevFill: #eefee9;
-            --text--ButtonPrevFill: #000000;
-          
-            /* Button Previsualization Fill Hover*/
-            --bg--ButtonPrevFillHover: #1b7505;
-            --text--ButtonPrevFillHover: #fff;
-  
+  /* Principal Page */
+  --bgColorLeft:rgba(88, 88, 88, 0.16);
+  --bgColorDark: rgb(240, 239, 239);
+  --bgColorRight: white;
+
   /* Accessible Button */
   --bg--ButtonAccesible: #1b7505;
   --text--ButtonAccesible: #ffffff;
   --bg--SelectTheme: #ffffff;
   --text--SelectTheme: #000000;
-  
+  --text-landing: rgb(107 114 128);
   /* Input */
-  --label--inputText:#7f8083;
-  --bg--InputTextColor: rgb(255, 255, 255);
-  
+  --label--inputText:#424856;
+  --bg--InputTextColor: rgb(239, 248, 241);
+
   /* Focus Input */
   --focus--ColorInput:rgba(189,193,202,1);
   --focus--BgInput: #fff;
-  
+
   /* Hover Input */
   --bg--HoverInput: #000;
-  
+
   /* Button Fill */
-  --bg--ButonFill: #1b7505;
+  --bg--ButonFill: #1a6e05;
   --text--ButtonFill: #fff;
-  
+
   /* Button Fill Hover*/
   --bg--ButtonFillHover: #26a107;
   --text--ButtonFillHover: #fff;
-  
+
   /* Button Outlined */
   --bg--ButtonOutlined: #fff;
   --text--ButtonOutlined: #1b7505;
-  
+
   /* Button Outlined Hover*/
   --bg--ButtonOutlinedHover: #1b7505;
   --text--ButtonOutlinedHover: #fff;
-  
+
   /* Register label */
-  --text--RegisterLabel: #dba112;
+  --text--RegisterLabel: #000000;
   --text-ForgotPassword: #1b7505;
   --label--Label: #1b7505;
-  
+
   /* Color Icon */
   --icon-bgColor: #4c4c4c;
-  
+
   /*Text sidebar no selected*/
   --text-SideBar-NS: rgba(86,93,109,1);
-  
-      /* COLORS PAGINATION */
-  
-      --text-no-select: #9095a1;
-      --bg-no-select: #fff;
-      --hover-text-not-select: #6f7787;
-      --border-not-select: #dee1e6;
-      --bg-select:#fff;
-  
+
+  /* COLORS PAGINATION */
+
+  --text-no-select: #9095a1;
+  --bg-no-select: #fff;
+  --hover-text-not-select: #6f7787;
+  --border-not-select: #dee1e6;
+  --bg-select:#fff;
+
+  /* Button Previsualization Fill */
+  --bg--ButonPrevFill: #eefee9;
+  --text--ButtonPrevFill: #1b7505;
+
+  /* Button Previsualization Fill Hover*/
+  --bg--ButtonPrevFillHover: #1b7505;
+  --text--ButtonPrevFillHover: #fff;
+
+  --header-table--background: #1b7505;
+  --header-table--text: #fff;
+  --rows-table--background: #fff;
+  --rows-table--text: #6f7787;
+
   --primary--100: #eefee9;
   --primary--150: #cafcbe;
   --primary--200: #a7fa92;
@@ -78,7 +87,7 @@
   --primary--650: #145504;
   --primary--700: #114a03;
   --primary--750: #0f3f03;
-  
+
   --secondary--100: #f5faf6;
   --secondary--150: #cfe6d5;
   --secondary--200: #a9d3b4;
@@ -93,7 +102,7 @@
   --secondary--650: #0d1910;
   --secondary--700: #0d1a11;
   --secondary--750: #0e1b11;
-  
+
   --tertiary--100: #fef9ee;
   --tertiary--150: #fbefd1;
   --tertiary--200: #f9e5b3;

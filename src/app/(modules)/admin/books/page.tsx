@@ -350,8 +350,8 @@ export default function BooksAdmin() {
         </div>
         <div className="my-3 border-b border-gray-300"></div>
         <div className="flex flex-wrap justify-between mb-5 mt-5">
-          <h1 className="font-custom m-0 relative text-2xl text-primary-500 font-bold before:content-[''] before:block before:absolute before:h-full before:w-1 before:bg-primary-500 before:left-0">
-            <span className="ps-2">Libros</span>
+          <h1 className="font-custom m-0 relative text-2xl text-primary-500 font-bold lg:before:content-[''] lg:before:block md:before:absolute lg:before:absolute xl:before:absolute before:h-full before:w-1 before:bg-primary-500 before:left-0">
+            <span className="xl:ps-2 lg:ps-2 md:ps-2">Libros</span>
           </h1>
         </div>
         <div className="flex mb-3 gap-2">

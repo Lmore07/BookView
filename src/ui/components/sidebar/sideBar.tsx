@@ -79,7 +79,7 @@ const Sidebar: React.FC<SidebarProps> = ({ optionsRoutes, children }) => {
                     onClick={() => setSelectedOption(route.name)}
                     className={`flex items-center gap-2 px-3 py-2 bg-transparent cursor-pointer transition-colors ${
                       selectedOption == route.name
-                        ? "hover:bg-secondary-150 relative font-bold text-primary-500 before:content-[''] before:block before:h-full before:w-1 before:bg-primary-500 before:absolute before:left-0"
+                        ? "hover:bg-secondary-150 relative font-bold text-primary-500 lg:before:content-[''] lg:before:block before:h-full before:w-1 before:bg-primary-500 md:before:absolute lg:before:absolute xl:before:absolute before:left-0"
                         : "text-textSidebar hover:bg-secondary-150"
                     }`}
                   >
@@ -140,7 +140,7 @@ const Sidebar: React.FC<SidebarProps> = ({ optionsRoutes, children }) => {
                 onClick={() => setSelectedOption(route.name)}
                 className={`flex items-center gap-2 px-3 py-2 bg-transparent cursor-pointer transition-colors ${
                   selectedOption == route.name
-                    ? "hover:bg-secondary-150 relative font-bold text-primary-500 before:content-[''] before:block before:h-full before:w-1 before:bg-primary-500 before:absolute before:left-0"
+                    ? "hover:bg-secondary-150 relative font-bold text-primary-500 lg:before:content-[''] lg:before:block before:h-full before:w-1 before:bg-primary-500 md:before:absolute lg:before:absolute xl:before:absolute before:left-0"
                     : "text-textSidebar hover:bg-secondary-150"
                 }`}
               >

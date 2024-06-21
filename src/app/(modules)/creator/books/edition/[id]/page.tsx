@@ -415,7 +415,7 @@ export default function BookEdit({
     <div className="shadow-xl rounded-xl p-3">
       <div className="py-2">
         <h1 className="font-custom m-0 relative text-3xl text-primary-500 font-bold">
-          <span className="ps-2">Edición de libro</span>
+          <span className="xl:ps-2 lg:ps-2 md:ps-2">Edición de libro</span>
         </h1>
       </div>
       <div className="flex items-center justify-center flex-wrap gap-3 py-2 px-4 rounded-lg shadow-xl mx-5">

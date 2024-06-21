@@ -482,7 +482,7 @@ export default function Home() {
       </div>
       <div className="shadow-xl p-8 grid rounded-md">
         <div className="flex flex-wrap justify-between mb-5">
-          <h1 className="font-custom m-0 relative text-2xl text-primary-500 font-bold lg:before:content-[''] lg:before:block md:md:before:absolute lg:before:absolute xl:before:absolute lg:md:before:absolute lg:before:absolute xl:before:absolute xl:md:before:absolute lg:before:absolute xl:before:absolute before:h-full before:w-1 before:bg-primary-500 before:left-0">
+          <h1 className="font-custom m-0 relative text-2xl text-primary-500 font-bold lg:before:content-[''] lg:before:block md:before:absolute lg:before:absolute xl:before:absolute before:h-full before:w-1 before:bg-primary-500 before:left-0">
             <span className="xl:ps-2 lg:ps-2 md:ps-2">Últimos libros agregados</span>
           </h1>
         </div>

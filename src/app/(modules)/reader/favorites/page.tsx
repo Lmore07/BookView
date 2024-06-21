@@ -314,8 +314,8 @@ export default function Favorites() {
       </div>
       <div className="my-2 border-b border-gray-300"></div>
       <div className="flex flex-wrap justify-between mb-5">
-        <h1 className="font-custom relative text-2xl m-0 text-primary-500 font-bold before:content-[''] before:block before:absolute before:h-full before:w-1 before:bg-primary-500 before:left-0">
-          <span className="ps-2">Mis favoritos</span>
+        <h1 className="font-custom relative text-2xl m-0 text-primary-500 font-bold lg:before:content-[''] lg:before:block md:before:absolute lg:before:absolute xl:before:absolute before:h-full before:w-1 before:bg-primary-500 before:left-0">
+          <span className="xl:ps-2 lg:ps-2 md:ps-2">Mis favoritos</span>
         </h1>
         <Button
           onClick={() => {

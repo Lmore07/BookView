@@ -1,10 +1,4 @@
 "use client";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-} from "@/ui/shadcn/ui/dialog";
 import { BreadcrumbContext } from "@/libs/contexts/breadcrumbContext";
 import { LoadingContext } from "@/libs/contexts/loadingContext";
 import { VoiceRecorderContext } from "@/libs/contexts/speechToTextContext";
@@ -20,12 +14,18 @@ import {
   HomeBreadCrumb,
   searchBooksBreadCrumb,
 } from "@/libs/utils/itemsBreadCrumbReader";
-import { BreadcrumbItem } from "@/ui/components/breadcumbs/breadcumbs";
 import BookCard from "@/ui/components/cards/bookCard";
+import ConfirmRemoveBook from "@/ui/modals/folders/confirm";
 import AddToFavorite from "@/ui/modals/folders/addToFavorite";
 import Help from "@/ui/modals/help/help";
 import ModalParent from "@/ui/modals/modal";
 import FlipBook from "@/ui/modals/viewBook/flipBook";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+} from "@/ui/shadcn/ui/dialog";
 import { Tooltip } from "@mui/material";
 import Pagination from "@mui/material/Pagination";
 import Stack from "@mui/material/Stack";
@@ -52,6 +52,7 @@ export default function BookSearch() {
   const [openHelp, setOpenHelp] = useState(false);
   const { setIsListening, finalTranscript, currentComponentRef } =
     useContext(VoiceRecorderContext)!;
+  const [isRemoveBook, setIsRemoveBook] = useState(false);
   const [loadingVoice, setLoadingVoice] = useState(false);
   const componentRef = useRef<HTMLDivElement>(null);
   const { addBreadcrumbManyItems, removeAllBreadcrumbItems } =
@@ -472,11 +473,11 @@ export default function BookSearch() {
             imageUrl={book.coverPhoto}
             isFavorite={book.isFavorite}
             onFavoriteClick={() => {
+              setSelectedBook(book);
               if (!book.isFavorite) {
-                setSelectedBook(book);
                 setIsFavorite(true);
               } else {
-                //TODO AQUI HAY QUE SACAR EL LIBRO DE FAVORITOS
+                setIsRemoveBook(true);
               }
             }}
           ></BookCard>
@@ -531,6 +532,7 @@ export default function BookSearch() {
             }}
             onAddFavorite={() => {
               setIsFavorite(false);
+              fetchData();
             }}
             book={selectedBook!}
           ></AddToFavorite>
@@ -557,6 +559,30 @@ export default function BookSearch() {
                     idBook: selectedBook!.idBook,
                   }}
                 />
+              </DialogDescription>
+            </DialogHeader>
+          </DialogContent>
+        </Dialog>
+      )}
+      {isRemoveBook && (
+        <Dialog
+          open={isRemoveBook}
+          onOpenChange={(open: boolean) => {
+            setIsRemoveBook(open);
+          }}
+        >
+          <DialogContent className="bg-bgColorRight">
+            <DialogHeader>
+              <DialogDescription>
+                <ConfirmRemoveBook
+                  action={"desactive"}
+                  status={false}
+                  idItem={selectedBook?.idBook!}
+                  onFinish={() => {
+                    setIsRemoveBook(false);
+                    fetchData();
+                  }}
+                ></ConfirmRemoveBook>
               </DialogDescription>
             </DialogHeader>
           </DialogContent>

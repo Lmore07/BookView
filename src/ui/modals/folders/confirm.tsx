@@ -5,22 +5,20 @@ import { ToastType } from "@/libs/interfaces/toast.interface";
 import Button from "@/ui/components/buttons/ButtonFill";
 import { useContext } from "react";
 
-const ConfirmActiveOrDesactive: React.FC<{
+const ConfirmRemoveBook: React.FC<{
   action: "active" | "desactive";
   idItem: number;
   status: boolean;
   onFinish: () => void;
-  entity: string;
-  route: string;
-}> = ({ action, idItem, onFinish, status, route, entity }) => {
+}> = ({ action, idItem, onFinish, status }) => {
   const { handleShowToast } = useContext(ToastContext)!;
   const { setIsLoading } = useContext(LoadingContext)!;
 
   const handleActiveOrDeactive = async () => {
     try {
       setIsLoading(true);
-      const response = await fetch(`../api/admin/${route}?id=${idItem}`, {
-        method: "PATCH",
+      const response = await fetch(`../api/books/favorites/?idBook=${idItem}`, {
+        method: "DELETE",
         headers: {
           "Content-Type": "application/json",
         },
@@ -34,7 +32,7 @@ const ConfirmActiveOrDesactive: React.FC<{
       }
     } catch (error) {
       handleShowToast(
-        `Ocurrió un error al actualizar el ${entity}`,
+        `Ocurrió un error al remover el libro de sus favoritos`,
         ToastType.ERROR
       );
     } finally {
@@ -84,13 +82,14 @@ const ConfirmActiveOrDesactive: React.FC<{
           )}
         </div>
         <span>
-          {action == "active" ? "Activar" : "Desactivar"} {entity}
+          {action == "active" ? "Activar" : "Remover"}{" "}
+          {"el libro de sus favoritos"}
         </span>
       </div>
       <div className="my-5">
         <span className="font-custom">
-          ¿Está seguro que desea {action == "active" ? "activar" : "desactivar"}{" "}
-          {entity}?
+          ¿Está seguro que desea {action == "active" ? "activar" : "remover"}{" "}
+          {"el libro de sus favoritos"}?
         </span>
       </div>
       <div className="mx-36">
@@ -107,4 +106,4 @@ const ConfirmActiveOrDesactive: React.FC<{
   );
 };
 
-export default ConfirmActiveOrDesactive;
+export default ConfirmRemoveBook;

@@ -27,6 +27,7 @@ import Help from "@/ui/modals/help/help";
 import FlipBook from "@/ui/modals/viewBook/flipBook";
 import { Pagination, Stack, Tooltip } from "@mui/material";
 import { useContext, useEffect, useRef, useState } from "react";
+import ConfirmRemoveBook from "@/ui/modals/folders/confirm";
 
 export default function Favorite({
   params,
@@ -56,6 +57,8 @@ export default function Favorite({
   const handleChange = (event: any, value: number) => {
     setPage(value);
   };
+  const [isRemoveBook, setIsRemoveBook] = useState(false);
+
 
   const fetchData = async () => {
     setIsLoading(true);
@@ -341,7 +344,8 @@ export default function Favorite({
             isFavorite={book.isFavorite}
             onFavoriteClick={() => {
               console.log("Favorite");
-              //TODO HAY QUE SACARLO DE FAVORITOS
+              setSelectedBook(book);
+              setIsRemoveBook(true);
             }}
             onReadClick={() => {
               setSelectedBook(book);
@@ -428,6 +432,30 @@ export default function Favorite({
                     commands={commandsBooksFavorites}
                     page="libros favoritos"
                   ></Help>
+                </DialogDescription>
+              </DialogHeader>
+            </DialogContent>
+          </Dialog>
+        )}
+        {isRemoveBook && (
+          <Dialog
+            open={isRemoveBook}
+            onOpenChange={(open: boolean) => {
+              setIsRemoveBook(open);
+            }}
+          >
+            <DialogContent className="bg-bgColorRight">
+              <DialogHeader>
+                <DialogDescription>
+                  <ConfirmRemoveBook
+                    action={"desactive"}
+                    status={false}
+                    idItem={selectedBook?.idBook!}
+                    onFinish={() => {
+                      setIsRemoveBook(false);
+                      fetchData();
+                    }}
+                  ></ConfirmRemoveBook>
                 </DialogDescription>
               </DialogHeader>
             </DialogContent>

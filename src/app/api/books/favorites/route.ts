@@ -43,9 +43,14 @@ export const DELETE = apiMiddleware(async (request: NextRequest) => {
     return authResult;
   }
 
-  const body = await withValidation(AddBookToFolder, request);
-  if (body instanceof NextResponse) {
-    return body;
+  const url = new URL(request.url);
+  const idBook = parseInt(url.searchParams.get("idBook") ?? "");
+
+  if (!idBook) {
+    return NextResponse.json(
+      { error: "Se requiere id del libro" },
+      { status: 400 }
+    );
   }
 
   const userFavoriteFolder = await prisma.favorite_Folders.findFirst({
@@ -53,7 +58,7 @@ export const DELETE = apiMiddleware(async (request: NextRequest) => {
       idUser: authResult.userId,
       Favorite_Books: {
         some: {
-          idBook: body.idBook,
+          idBook: idBook,
         },
       },
     },
@@ -62,20 +67,18 @@ export const DELETE = apiMiddleware(async (request: NextRequest) => {
     },
   });
 
+  console.log(userFavoriteFolder);
+
   if (userFavoriteFolder) {
-    const updatedFavoriteBook = await prisma.favorite_Books.updateMany({
+    await prisma.favorite_Books.deleteMany({
       where: {
-        idBook: body.idBook,
+        idBook: idBook,
         idFolder: userFavoriteFolder.idFolder,
-      },
-      data: {
-        status: false,
       },
     });
 
     return NextResponse.json(
       {
-        data: [],
         message: `Libro eliminado de favoritos correctamente`,
       },
       { status: 200 }

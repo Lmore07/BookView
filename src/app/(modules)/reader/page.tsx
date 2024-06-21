@@ -34,12 +34,14 @@ import ModalParent from "@/ui/modals/modal";
 import FlipBook from "@/ui/modals/viewBook/flipBook";
 import { useRouter } from "next/navigation";
 import { useContext, useEffect, useRef, useState } from "react";
+import ConfirmRemoveBook from "@/ui/modals/folders/confirm";
 
 export default function Home() {
   //Variables declaradas
   const [searchTerm, setSearchTerm] = useState("");
   const [categories, setCategories] = useState<CategoriesAll[]>([]);
   const [filterCategories, setFilterCategories] = useState<number[]>([]);
+  const [isRemoveBook, setIsRemoveBook] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const audioContext = useRef<AudioContext | null>(null);
   const source = useRef<AudioBufferSourceNode | null>(null);
@@ -497,16 +499,40 @@ export default function Home() {
               imageUrl={book.coverPhoto}
               isFavorite={book.isFavorite}
               onFavoriteClick={() => {
+                setSelectedBook(book);
                 if (!book.isFavorite) {
-                  setSelectedBook(book);
                   setIsFavorite(true);
                 } else {
-                  //TODO AQUI HAY QUE SACAR EL LIBRO DE FAVORITOS
+                  setIsRemoveBook(true);
                 }
               }}
             ></BookCard>
           ))}
         </div>
+        {isRemoveBook && (
+          <Dialog
+            open={isRemoveBook}
+            onOpenChange={(open: boolean) => {
+              setIsRemoveBook(open);
+            }}
+          >
+            <DialogContent className="bg-bgColorRight">
+              <DialogHeader>
+                <DialogDescription>
+                  <ConfirmRemoveBook
+                    action={"desactive"}
+                    status={false}
+                    idItem={selectedBook?.idBook!}
+                    onFinish={() => {
+                      setIsRemoveBook(false);
+                      loadLastBooks();
+                    }}
+                  ></ConfirmRemoveBook>
+                </DialogDescription>
+              </DialogHeader>
+            </DialogContent>
+          </Dialog>
+        )}
         {isFavorite && (
           <ModalParent
             onClose={() => {
@@ -519,6 +545,7 @@ export default function Home() {
               }}
               onAddFavorite={() => {
                 setIsFavorite(false);
+                loadLastBooks();
               }}
               book={selectedBook!}
             ></AddToFavorite>

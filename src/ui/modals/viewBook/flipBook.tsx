@@ -168,7 +168,7 @@ const FlipBook: React.FC<FlipBookProps> = ({
     const addPage = (index: any) => {
       marksPages.push({
         value: index,
-        label: index === 0 ? "Portada" : `Página ${index}`,
+        label: index === 0 ? "Portada" : `${index}`,
       });
     };
 

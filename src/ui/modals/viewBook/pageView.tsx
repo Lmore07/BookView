@@ -30,7 +30,6 @@ const PageContent: React.FC<PageProps> = ({ page, coverInfo }) => {
   const source = useRef<AudioBufferSourceNode | null>(null);
   const [selectedText, setSelectedText] = useState("");
   const [textGenerated, setTextGenerated] = useState("");
-  const [formatDate, setFormatDate] = useState("");
   const [loadingVoice, setLoadingVoice] = useState(false);
   const [open, setOpen] = React.useState(false);
 
@@ -187,7 +186,7 @@ const PageContent: React.FC<PageProps> = ({ page, coverInfo }) => {
                 height={200}
               />
               <div className="text-lg  font-light pt-5">
-                Publicado: {formatDate}
+                Publicado: {coverInfo?.publicationDate.substring(0, 10)}
               </div>
             </div>
           </div>

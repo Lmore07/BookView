@@ -155,6 +155,10 @@ const FlipBook: React.FC<FlipBookProps> = ({
     }
   };
 
+  useEffect(() =>{
+    console.log(coverInfo)
+  },[])
+
   return (
     <div
       className="flex w-full justify-between h-full py-1 flex-col font-custom"

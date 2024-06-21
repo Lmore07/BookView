@@ -55,10 +55,30 @@ export const POST = apiMiddleware(async (request: NextRequest) => {
     });
 
     cookies().set(`token`, token, {
-      expires: new Date(Date.now() + 1000 * 60 * 30),
+      expires: new Date(Date.now() + 1000 * 60 * 60 * 2),
     });
     cookies().set(`profile`, user.profilePicture ?? "", {
-      expires: new Date(Date.now() + 1000 * 60 * 30),
+      expires: new Date(Date.now() + 1000 * 60 * 60 * 2),
+    });
+    cookies().set(
+      `userType`,
+      user.rol == "CREATOR"
+        ? "Creador"
+        : user.rol == "READER"
+        ? "Lector"
+        : "Administrador",
+      {
+        expires: new Date(Date.now() + 1000 * 60 * 60 * 2),
+      }
+    );
+    cookies().set(`email`, user.mail ?? "", {
+      expires: new Date(Date.now() + 1000 * 60 * 60 * 2),
+    });
+    cookies().set(`initials`, user.Person.names[0] + user.Person.lastNames[0], {
+      expires: new Date(Date.now() + 1000 * 60 * 60 * 2),
+    });
+    cookies().set(`username`, user.Person.names, {
+      expires: new Date(Date.now() + 1000 * 60 * 60 * 2),
     });
 
     return NextResponse.json(

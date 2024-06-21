@@ -7,7 +7,6 @@ export const withAuth = async (request: NextRequest) => {
   const cookieStore = cookies();
   const token = cookieStore.get("token");
   if (!token) {
-    //NextResponse.redirect("login");
     return NextResponse.json(
       { message: "Falta el token de autorización" },
       { status: 401 }

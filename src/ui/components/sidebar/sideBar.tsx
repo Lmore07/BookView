@@ -62,7 +62,7 @@ const Sidebar: React.FC<SidebarProps> = ({ optionsRoutes, children }) => {
               <span className="sr-only">Toggle sidebar</span>
             </SheetTrigger>
             <SheetContent
-              className="w-64 border-r border-gray-200 dark:border-gray-700 bg-bgColorRight"
+              className="w-64 border-r ms-0 flex flex-col border-gray-200 dark:border-gray-700 bg-bgColorRight"
               side="left"
             >
               <div className="flex items-center mb-6 ">
@@ -87,57 +87,52 @@ const Sidebar: React.FC<SidebarProps> = ({ optionsRoutes, children }) => {
                     <span>{route.name}</span>
                   </Link>
                 ))}
-                <Link
-                  href={"../login"}
+              </nav>
+              <div className="mt-auto p-3  bg-bgColorRight rounded-lg shadow-inner">
+                <div className="flex items-center space-x-3 mb-3">
+                  <Avatar className="ring-2 ring-primary-500 ring-offset-2">
+                    <AvatarImage
+                      src={Cookie.get("profile")}
+                      alt="Foto de Perfil"
+                    />
+                    <AvatarFallback className="bg-black text-white">
+                      {Cookie.get("initials")}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div>
+                    <p className="text-sm ms-0 font-semibold text-textLanding">
+                      {Cookie.get("username") ?? "Usuario"}
+                    </p>
+                    <p className="text-xs ms-0 text-textLanding">
+                      {Cookie.get("email") ?? "email@example.com"}
+                    </p>
+                    <span className="inline-block px-2 py-1 text-xs font-medium bg-bgButtonFill text-textButtonFill rounded-full mt-1">
+                      {Cookie.get("userType") ?? "Tipo de Usuario"}
+                    </span>
+                  </div>
+                </div>
+                <button
                   onClick={() => {
                     Cookie.remove("token");
-                    window.location.reload()
+                    Cookie.remove("username");
+                    Cookie.remove("email");
+                    Cookie.remove("profile");
+                    Cookie.remove("userType");
+                    window.location.reload();
                   }}
-                  className={`flex items-center gap-2 px-3 py-2 bg-transparent cursor-pointer transition-colors ${
-                    selectedOption == "logOut"
-                      ? "hover:bg-secondary-150 relative font-bold text-primary-500 before:content-[''] before:block before:h-full before:w-1 before:bg-primary-500 before:absolute before:left-0"
-                      : "text-textSidebar hover:bg-secondary-150"
-                  }`}
+                  className="w-full py-2 px-4 bg-red-700 hover:bg-red-600 text-white rounded-md transition-colors duration-200 flex items-center justify-center space-x-2"
                 >
-                  <div>
-                    <svg
-                      viewBox="0 0 24 24"
-                      fill="currentColor"
-                      className="w-10"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
-                      <g
-                        id="SVGRepo_tracerCarrier"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      ></g>
-                      <g id="SVGRepo_iconCarrier">
-                        <path
-                          fillRule="evenodd"
-                          clipRule="evenodd"
-                          d="M16.125 12C16.125 11.5858 15.7892 11.25 15.375 11.25L4.40244 11.25L6.36309 9.56944C6.67759 9.29988 6.71401 8.8264 6.44444 8.51191C6.17488 8.19741 5.7014 8.16099 5.38691 8.43056L1.88691 11.4306C1.72067 11.573 1.625 11.7811 1.625 12C1.625 12.2189 1.72067 12.427 1.88691 12.5694L5.38691 15.5694C5.7014 15.839 6.17488 15.8026 6.44444 15.4881C6.71401 15.1736 6.67759 14.7001 6.36309 14.4306L4.40244 12.75L15.375 12.75C15.7892 12.75 16.125 12.4142 16.125 12Z"
-                        ></path>{" "}
-                        <path d="M9.375 8C9.375 8.70219 9.375 9.05329 9.54351 9.3055C9.61648 9.41471 9.71025 9.50848 9.81946 9.58145C10.0717 9.74996 10.4228 9.74996 11.125 9.74996L15.375 9.74996C16.6176 9.74996 17.625 10.7573 17.625 12C17.625 13.2426 16.6176 14.25 15.375 14.25L11.125 14.25C10.4228 14.25 10.0716 14.25 9.8194 14.4185C9.71023 14.4915 9.6165 14.5852 9.54355 14.6944C9.375 14.9466 9.375 15.2977 9.375 16C9.375 18.8284 9.375 20.2426 10.2537 21.1213C11.1324 22 12.5464 22 15.3748 22L16.3748 22C19.2032 22 20.6174 22 21.4961 21.1213C22.3748 20.2426 22.3748 18.8284 22.3748 16L22.3748 8C22.3748 5.17158 22.3748 3.75736 21.4961 2.87868C20.6174 2 19.2032 2 16.3748 2L15.3748 2C12.5464 2 11.1324 2 10.2537 2.87868C9.375 3.75736 9.375 5.17157 9.375 8Z"></path>
-                      </g>
-                    </svg>
-                  </div>
-                  <span>{"Cerrar sesión"}</span>
-                </Link>
-              </nav>
+                  <LogOutIcon className="w-4 h-4" />
+                  <span>Cerrar sesión</span>
+                </button>
+              </div>
             </SheetContent>
           </Sheet>
-          <Avatar className="h-9 w-9 bg-slate-400">
-            <AvatarImage src={Cookie.get("profile")} alt="Foto de Perfil" />
-            <AvatarFallback>
-              <Image src={userImg.src} alt="Foto de Perfil por defecto" width={300} height={100} />
-            </AvatarFallback>
-          </Avatar>
         </div>
       </header>
       <div className="flex h-auto min-h-[90dvh] font-custom">
-        <div className="hidden lg:block bg-bgColorRight w-64 border-r shadow-lg fixed top-20 bottom-0 left-0 overflow-y-auto">
-          <nav className="space-y-1">
+        <div className="hidden lg:flex  flex-col bg-bgColorRight w-64 border-r shadow-lg fixed top-20 bottom-0 left-0 overflow-y-auto">
+          <nav className="space-y-1 flex-grow">
             {optionsRoutes.map((route) => (
               <Link
                 key={route.key}
@@ -153,44 +148,43 @@ const Sidebar: React.FC<SidebarProps> = ({ optionsRoutes, children }) => {
                 <span>{route.name}</span>
               </Link>
             ))}
-            <Link
-              href={"../login"}
+          </nav>
+          <hr />
+          <div className="mt-auto p-3  bg-bgColorRight rounded-lg shadow-inner">
+            <div className="flex items-center space-x-3 mb-3">
+              <Avatar className="ring-2 ring-primary-500 ring-offset-2">
+                <AvatarImage src={Cookie.get("profile")} alt="Foto de Perfil" />
+                <AvatarFallback className="bg-black text-white">
+                  {Cookie.get("initials")}
+                </AvatarFallback>
+              </Avatar>
+              <div>
+                <p className="text-sm ms-0 font-semibold text-textLanding">
+                  {Cookie.get("username") ?? "Usuario"}
+                </p>
+                <p className="text-xs ms-0 text-textLanding">
+                  {Cookie.get("email") ?? "email@example.com"}
+                </p>
+                <span className="inline-block px-2 py-1 text-xs font-medium bg-bgButtonFill text-textButtonFill rounded-full mt-1">
+                  {Cookie.get("userType") ?? "Tipo de Usuario"}
+                </span>
+              </div>
+            </div>
+            <button
               onClick={() => {
                 Cookie.remove("token");
+                Cookie.remove("username");
+                Cookie.remove("email");
+                Cookie.remove("profile");
+                Cookie.remove("userType");
                 window.location.reload();
               }}
-              className={`flex items-center gap-2 px-3 py-2 bg-transparent cursor-pointer transition-colors ${
-                selectedOption == "logOut"
-                  ? "hover:bg-secondary-150 relative font-bold text-primary-500 before:content-[''] before:block before:h-full before:w-1 before:bg-primary-500 before:absolute before:left-0"
-                  : "text-textSidebar hover:bg-secondary-150"
-              }`}
+              className="w-full py-2 px-4 bg-red-700 hover:bg-red-600 text-white rounded-md transition-colors duration-200 flex items-center justify-center space-x-2"
             >
-              <div>
-                <svg
-                  viewBox="0 0 24 24"
-                  fill="currentColor"
-                  className="w-10"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
-                  <g
-                    id="SVGRepo_tracerCarrier"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  ></g>
-                  <g id="SVGRepo_iconCarrier">
-                    <path
-                      fillRule="evenodd"
-                      clipRule="evenodd"
-                      d="M16.125 12C16.125 11.5858 15.7892 11.25 15.375 11.25L4.40244 11.25L6.36309 9.56944C6.67759 9.29988 6.71401 8.8264 6.44444 8.51191C6.17488 8.19741 5.7014 8.16099 5.38691 8.43056L1.88691 11.4306C1.72067 11.573 1.625 11.7811 1.625 12C1.625 12.2189 1.72067 12.427 1.88691 12.5694L5.38691 15.5694C5.7014 15.839 6.17488 15.8026 6.44444 15.4881C6.71401 15.1736 6.67759 14.7001 6.36309 14.4306L4.40244 12.75L15.375 12.75C15.7892 12.75 16.125 12.4142 16.125 12Z"
-                    ></path>{" "}
-                    <path d="M9.375 8C9.375 8.70219 9.375 9.05329 9.54351 9.3055C9.61648 9.41471 9.71025 9.50848 9.81946 9.58145C10.0717 9.74996 10.4228 9.74996 11.125 9.74996L15.375 9.74996C16.6176 9.74996 17.625 10.7573 17.625 12C17.625 13.2426 16.6176 14.25 15.375 14.25L11.125 14.25C10.4228 14.25 10.0716 14.25 9.8194 14.4185C9.71023 14.4915 9.6165 14.5852 9.54355 14.6944C9.375 14.9466 9.375 15.2977 9.375 16C9.375 18.8284 9.375 20.2426 10.2537 21.1213C11.1324 22 12.5464 22 15.3748 22L16.3748 22C19.2032 22 20.6174 22 21.4961 21.1213C22.3748 20.2426 22.3748 18.8284 22.3748 16L22.3748 8C22.3748 5.17158 22.3748 3.75736 21.4961 2.87868C20.6174 2 19.2032 2 16.3748 2L15.3748 2C12.5464 2 11.1324 2 10.2537 2.87868C9.375 3.75736 9.375 5.17157 9.375 8Z"></path>
-                  </g>
-                </svg>
-              </div>
-              <span>{"Cerrar sesión"}</span>
-            </Link>
-          </nav>
+              <LogOutIcon className="w-4 h-4" />
+              <span>Cerrar sesión</span>
+            </button>
+          </div>
         </div>
         <div className="flex-1 m-6 lg:ps-64 pt-[10dvh] overflow-y-auto overflow-x-hidden">
           {children}
@@ -199,6 +193,25 @@ const Sidebar: React.FC<SidebarProps> = ({ optionsRoutes, children }) => {
     </>
   );
 };
+
+function LogOutIcon(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      {...props}
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+      />
+    </svg>
+  );
+}
 
 function MenuIcon(props: any) {
   return (

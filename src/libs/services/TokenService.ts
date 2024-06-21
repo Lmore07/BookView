@@ -1,15 +1,15 @@
-var jwt = require("jsonwebtoken");
+const jwt = require("jsonwebtoken");
 
 class TokenService {
   private secretKey = "token_decode";
 
   public async sign(payload: any) {
-    var token = jwt.sign(
+    const token = jwt.sign(
       {
         data: payload,
       },
       this.secretKey,
-      { expiresIn: "1h" }
+      { expiresIn: "2h" }
     );
     return token;
   }

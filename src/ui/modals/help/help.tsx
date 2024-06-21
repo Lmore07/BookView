@@ -126,7 +126,7 @@ const Help: React.FC<VoiceCommandProps> = ({ commands, page }) => {
                 <svg
                   viewBox="0 0 24 24"
                   fill="currentColor"
-                  className="w-10 h-10 text-black"
+                  className="w-10 h-10"
                   xmlns="http://www.w3.org/2000/svg"
                 >
                   <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>

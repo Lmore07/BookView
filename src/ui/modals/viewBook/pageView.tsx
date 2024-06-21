@@ -224,7 +224,7 @@ const PageContent: React.FC<PageProps> = ({ page, coverInfo }) => {
                   <div className="absolute inset-0 backdrop-blur-sm flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-300">
                     <svg
                       viewBox="0 0 24 24"
-                      className="w-10 h-10 text-black"
+                      className="w-10 h-10"
                       xmlns="http://www.w3.org/2000/svg"
                     >
                       <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
@@ -290,7 +290,7 @@ const PageContent: React.FC<PageProps> = ({ page, coverInfo }) => {
                   <div className="absolute inset-0 backdrop-blur-sm flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-300">
                     <svg
                       viewBox="0 0 24 24"
-                      className="w-10 h-10 text-black"
+                      className="w-10 h-10"
                       xmlns="http://www.w3.org/2000/svg"
                     >
                       <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
@@ -370,7 +370,7 @@ const PageContent: React.FC<PageProps> = ({ page, coverInfo }) => {
                   <div className="absolute inset-0 backdrop-blur-sm flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-300">
                     <svg
                       viewBox="0 0 24 24"
-                      className="w-10 h-10 text-black"
+                      className="w-10 h-10"
                       xmlns="http://www.w3.org/2000/svg"
                     >
                       <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
@@ -457,7 +457,7 @@ const PageContent: React.FC<PageProps> = ({ page, coverInfo }) => {
                       <svg
                         viewBox="0 0 24 24"
                         fill="currentColor"
-                        className="w-10 h-10 text-black"
+                        className="w-10 h-10"
                         xmlns="http://www.w3.org/2000/svg"
                       >
                         <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>

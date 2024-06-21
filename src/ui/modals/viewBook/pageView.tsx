@@ -11,6 +11,8 @@ import {
 import { Chip, Divider } from "@mui/material";
 import Image from "next/image";
 import React, { useEffect, useRef, useState } from "react";
+import "./styles.css";
+
 interface PageProps {
   page: {
     numberPage: number;
@@ -150,7 +152,7 @@ const PageContent: React.FC<PageProps> = ({ page, coverInfo }) => {
   }, [open]);
 
   return (
-    <div className="py-1 bg-bgColorDark rounded-lg shadow-md flex flex-col items-center justify-center">
+    <div className="bg-bgColorDark rounded-lg shadow-md  flex flex-col items-center justify-center">
       <Divider className="py-1">
         {page.numberPage == 0 ? null : (
           <Chip
@@ -163,29 +165,29 @@ const PageContent: React.FC<PageProps> = ({ page, coverInfo }) => {
       </Divider>
       <div className="px-4 pb-1 w-full pt-2 font-custom">
         {page.template === "Cover" && (
-          <div className="overflow-hidden">
+          <div className="overflow-y-auto min-h-[10dvh] max-h-[60dvh]">
             <div
               className="flex flex-col items-center"
               onMouseUp={handleTextSelection}
             >
-              <h1 className=" text-3xl m-0  font-bold">
+              <h1 className="text-3xl responsiveText m-0 font-bold">
                 {coverInfo?.bookName}
               </h1>
               <div className="text-lg  font-light pb-5">
                 Autores: {coverInfo?.authors.join(", ")}
               </div>
               <Image
-                className="rounded-md"
                 src={
                   coverInfo!.coverPhoto instanceof File
                     ? URL.createObjectURL(coverInfo!.coverPhoto as Blob)
                     : coverInfo!.coverPhoto
                 }
+                className="max-w-64 max-h-auto"
                 alt="Portada del libro"
-                width={200}
-                height={200}
+                width={500}
+                height={500}
               />
-              <div className="text-lg  font-light pt-5">
+              <div className="text-sm  font-light pt-5">
                 Publicado: {coverInfo?.publicationDate.substring(0, 10)}
               </div>
             </div>
@@ -247,7 +249,7 @@ const PageContent: React.FC<PageProps> = ({ page, coverInfo }) => {
             </div>
             <div
               onMouseUp={handleTextSelection}
-              className="break-words  max-w-none h-56 overflow-y-auto"
+              className="break-words  max-w-none min-h-[10dvh] max-h-[50dvh] overflow-y-auto"
               dangerouslySetInnerHTML={{
                 __html: page.content.replace(
                   /<ul>/g,
@@ -313,7 +315,7 @@ const PageContent: React.FC<PageProps> = ({ page, coverInfo }) => {
             </div>
             <div className="col-span-3">
               <div
-                className="break-words  max-w-none max-h-96 overflow-y-auto"
+                className="break-words  max-w-none min-h-[10dvh] max-h-[50dvh] overflow-y-auto"
                 onMouseUp={handleTextSelection}
                 dangerouslySetInnerHTML={{
                   __html: page.content.replace(
@@ -329,7 +331,7 @@ const PageContent: React.FC<PageProps> = ({ page, coverInfo }) => {
           <div className="grid grid-cols-5 gap-3 overflow-hidden">
             <div className="col-span-3">
               <div
-                className="break-words max-w-none max-h-96 overflow-y-auto"
+                className="break-words max-w-none  min-h-[10dvh] max-h-[50dvh] overflow-y-auto"
                 onMouseUp={handleTextSelection}
                 dangerouslySetInnerHTML={{
                   __html: page.content.replace(
@@ -397,7 +399,7 @@ const PageContent: React.FC<PageProps> = ({ page, coverInfo }) => {
           <div>
             <div
               onMouseUp={handleTextSelection}
-              className="break-words max-w-none max-h-96 overflow-y-auto"
+              className="break-words max-w-none  min-h-[10dvh] max-h-[50dvh] overflow-y-auto"
               dangerouslySetInnerHTML={{
                 __html: page.content.replace(
                   /<ul>/g,
@@ -422,7 +424,7 @@ const PageContent: React.FC<PageProps> = ({ page, coverInfo }) => {
             />
           </div>
         )}
-        <div className="flex justify-end mt-4 gap-2">
+        <div className="flex justify-end mt-1 gap-2">
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger>

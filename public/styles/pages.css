@@ -1,12 +1,12 @@
 .pages {
     width: auto; /* Ajusta el ancho según tus necesidades */
-    max-height: 80dvh;
+    max-height: 70dvh;
     height: auto;
   }
   
   .page {
     backface-visibility: hidden;
-    width: 80dvh;
+    width: 70dvh;
     height: auto;
   }
   

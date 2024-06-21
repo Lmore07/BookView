@@ -1,0 +1,29 @@
+@media (min-height: 640px) {
+    .responsiveText {
+      font-size: 1.125rem;
+    }
+  }
+
+  @media (min-height: 200px) {
+    .responsiveText {
+      font-size: 1.125rem;
+    }
+  }
+
+  @media (min-height: 768px) {
+    .responsiveText {
+      font-size: 1.875rem; /* equivalente a text-4xl */
+    }
+  }
+  
+  @media (min-height: 1024px) {
+    .responsiveText {
+      font-size: 1.875rem; /* equivalente a text-5xl */
+    }
+  }
+  
+  @media (min-height: 1280px) {
+    .responsiveText {
+      font-size: 1.5rem; /* equivalente a text-6xl */
+    }
+  }

@@ -4,11 +4,11 @@ import { CoverI } from "@/libs/interfaces/books.interface";
 import { ToastType } from "@/libs/interfaces/toast.interface";
 import { callFunction } from "@/libs/services/callFunction";
 import { commandsHelpBook } from "@/libs/texts/commands/reader/homeReader";
-import { Slider } from "@/ui/shadcn/ui/slider";
 import { Tooltip } from "@mui/material";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import Help from "../help/help";
 import PageContent from "./pageView";
+import Slider from "@mui/material/Slider";
 
 interface FlipBookProps {
   pages: {
@@ -40,6 +40,7 @@ const FlipBook: React.FC<FlipBookProps> = ({
     useContext(VoiceRecorderContext)!;
   const componentRef = useRef<HTMLDivElement>(null);
   const { handleShowToast } = useContext(ToastContext)!;
+  const [marks, setMarks] = useState<{ value: number; label: string }[]>([]);
 
   useEffect(() => {
     if (finalTranscript && finalTranscript != "") {
@@ -53,7 +54,6 @@ const FlipBook: React.FC<FlipBookProps> = ({
   }, [currentPage]);
 
   useEffect(() => {
-    console.log(pages)
     currentComponentRef.current = componentRef.current;
     window.addEventListener("keydown", handleKeyDown);
     return () => {
@@ -148,20 +148,55 @@ const FlipBook: React.FC<FlipBookProps> = ({
   };
 
   const handleKeyDown = (event: KeyboardEvent) => {
+    console.log(event.key);
     if (event.key === "ArrowLeft") {
       handlePrevPageRef.current();
     } else if (event.key === "ArrowRight") {
       handleNextPageRef.current();
+    } else if (event.key === "Home") {
+      setCurrentPage(0);
+    } else if (event.key === "End") {
+      setCurrentPage(pages.length - 1);
     }
   };
 
-  useEffect(() =>{
-    console.log(coverInfo)
-  },[])
+  useEffect(() => {
+    const totalPages = pages.length;
+    let marksPages = [];
+
+    // Función para añadir una página al array de marks
+    const addPage = (index: any) => {
+      marksPages.push({
+        value: index,
+        label: index === 0 ? "Portada" : `Página ${index}`,
+      });
+    };
+
+    // Añadir las primeras 4 páginas
+    for (let i = 0; i < Math.min(4, totalPages); i++) {
+      addPage(i);
+    }
+
+    // Si hay más de 10 páginas, añadir puntos suspensivos en el medio
+    if (totalPages > 8) {
+      const middleIndex = Math.floor(totalPages / 2);
+      console.log(middleIndex);
+      marksPages.push({ value: middleIndex, label: "..." });
+    }
+
+    // Añadir las últimas 4 páginas, si hay más de 4 páginas en total
+    if (totalPages > 4) {
+      for (let i = Math.max(4, totalPages - 4); i < totalPages; i++) {
+        addPage(i);
+      }
+    }
+
+    setMarks(marksPages);
+  }, [pages]);
 
   return (
     <div
-      className="flex w-full justify-between h-full py-1 flex-col font-custom"
+      className="flex w-full h-full py-1 flex-col font-custom"
       ref={componentRef}
     >
       <div className="flex items-center justify-end gap-2 mr-14">
@@ -215,28 +250,30 @@ const FlipBook: React.FC<FlipBookProps> = ({
         className="flex items-center w-full justify-center mb-3"
         ref={bookRef}
       >
-        <div className="mr-5">
-          <button
-            className="bg-gray-300 p-2 rounded-full focus:outline-none"
-            onClick={handlePrevPage}
-            disabled={currentPage == 0}
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-6 w-6"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
+        {currentPage != 0 && (
+          <div className="mr-5 sm:mr-2 md:mr-2">
+            <button
+              className="bg-gray-300 p-2 rounded-full focus:outline-none"
+              onClick={handlePrevPage}
+              disabled={currentPage == 0}
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M15 19l-7-7 7-7"
-              />
-            </svg>
-          </button>
-        </div>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M15 19l-7-7 7-7"
+                />
+              </svg>
+            </button>
+          </div>
+        )}
         <div className="pages w-full flex items-center justify-center font-custom">
           <div className={`page w-full front no-cover`}>
             {currentPage == 0 ? (
@@ -246,45 +283,46 @@ const FlipBook: React.FC<FlipBookProps> = ({
             )}
           </div>
         </div>
-        <div className="ml-5">
-          <button
-            className="bg-gray-300 p-2 rounded-full focus:outline-none"
-            onClick={handleNextPage}
-            disabled={currentPage === pages.length - 1}
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-6 w-6"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
+        {currentPage != pages.length - 1 && (
+          <div className="ml-5 sm:ml-2 md:ml-2">
+            <button
+              className="bg-gray-300 p-2 rounded-full focus:outline-none"
+              onClick={handleNextPage}
+              disabled={currentPage === pages.length - 1}
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M9 5l7 7-7 7"
-              />
-            </svg>
-          </button>
-        </div>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 5l7 7-7 7"
+                />
+              </svg>
+            </button>
+          </div>
+        )}
       </div>
-      <div className="my-1 w-full flex gap-3 font-custom items-end">
-        <span className="w-auto text-nowrap">Portada</span>
+      <div className="justify-center mx-10 flex gap-3 font-custom items-end">
         <Slider
-          onValueCommit={(value: any) => {
+          onChange={(event, value: any) => {
+            console.log(value[0]);
             setCurrentPage(value[0]);
           }}
-          onValueChange={(value: any) => {
-            setSliderValue(value[0]);
-          }}
           value={[sliderValue]}
+          aria-label="Custom marks"
+          valueLabelDisplay="auto"
           defaultValue={[currentPage]}
+          marks={marks}
           max={pages.length - 1}
           min={0}
           step={1}
         />
-        <span className="w-auto text-nowrap">Página {pages.length - 1}</span>
       </div>
       <dialog id="helpModal" className="modal">
         <div className="modal-box">

@@ -545,7 +545,7 @@ export default function BookSearch() {
             setIsViewBook(open);
           }}
         >
-          <DialogContent className="bg-bgColorRight w-[90dvw] min-w-[90dvw] max-w-[90dvw] h-[90dvh] flex flex-col justify-center">
+          <DialogContent className="bg-bgColorRight w-[90dvw] min-w-[90dvw] max-w-[90dvw] h-[auto] max-h-[90dvh] flex flex-col justify-center">
             <DialogHeader>
               <DialogDescription>
                 <FlipBook

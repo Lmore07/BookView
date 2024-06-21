@@ -8,6 +8,7 @@ const config = {
     "./app/**/*.{ts,tsx}",
     "./src/**/*.{ts,tsx}",
     "./src/components/*.{ts,tsx}",
+    "node_modules/keep-react/**/*.{js,jsx,ts,tsx}",
   ],
   prefix: "",
   theme: {

@@ -1,4 +1,11 @@
+import db from "../utils/db";
+
 export async function generateSpeech(text: string) {
+  const audio = await db.audios.get(text);
+  if (audio) {
+    return audio.audioData;
+  }
+
   const body = {
     text: text,
     voice_settings: {
@@ -24,5 +31,6 @@ export async function generateSpeech(text: string) {
     options
   );
   const result = await response.arrayBuffer();
+  await db.audios.put({ url: text, audioData: result });
   return result;
 }

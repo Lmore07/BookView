@@ -439,12 +439,12 @@ export default function Home() {
           </div>
         </div>
         <div className="pb-3 pt-5 text-left font-bold text-xl text-primary-500 font-custom">
-          Filtros
+          Categorías
         </div>
         <div className="shadow-md rounded-md p-3">
           <div className="flex items-center justify-between">
             <span className="font-custom text-secondary-400 font-normal text-sm">
-              Categorías
+              Selecciona una o varias categorías y luego busca el libro
             </span>
           </div>
           <div className="pt-3">

@@ -8,8 +8,10 @@ import "./styles.css";
 
 export interface VoiceRecorderContextValue {
   finalTranscript: string;
+  transcript: string;
   setIsListening: React.Dispatch<React.SetStateAction<boolean>>;
   currentComponentRef: React.MutableRefObject<HTMLDivElement | null>;
+  continuos?: boolean;
 }
 
 export const VoiceRecorderContext =
@@ -24,12 +26,13 @@ export const VoiceRecorderProvider = ({
     useSpeechRecognition();
   const [isListening, setIsListening] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
+  const [isContinuos, setIsContinuos] = useState(false);
   const currentComponentRef = useRef<HTMLDivElement | null>(null);
 
   const startListening = () => {
     SpeechRecognition.startListening({
       language: "es-EC",
-      continuous: false,
+      continuous: isContinuos,
       interimResults: true,
     });
   };
@@ -62,7 +65,13 @@ export const VoiceRecorderProvider = ({
 
   return (
     <VoiceRecorderContext.Provider
-      value={{ setIsListening, finalTranscript, currentComponentRef }}
+      value={{
+        setIsListening,
+        finalTranscript,
+        transcript,
+        currentComponentRef,
+        continuos: true,
+      }}
     >
       {isListening && (
         <div

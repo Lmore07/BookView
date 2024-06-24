@@ -887,7 +887,9 @@ export default function BookEdit({
       </div>
       <div className="flex items-center justify-end mt-4 px-5 gap-3">
         <ButtonOutlined
-          onClick={() => {}}
+          onClick={() => {
+            router.back();
+          }}
           className={
             "border-red-600 text-red-600 hover:text-white hover:bg-red-600"
           }

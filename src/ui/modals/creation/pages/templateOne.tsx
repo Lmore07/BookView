@@ -1,10 +1,12 @@
-import React, { useEffect, useRef, useState } from "react";
-import AudioUpload from "../multimedia/audio/page";
-import dynamic from "next/dynamic";
-import VideoUpload from "../multimedia/video/page";
+"use client";
+import { VoiceRecorderContext } from "@/libs/contexts/speechToTextContext";
 import ButtonOutlined from "@/ui/components/buttons/ButtonOutlined";
-import Image from "next/image";
 import { Editor } from "@tinymce/tinymce-react";
+import Image from "next/image";
+import React, { useContext, useEffect, useRef, useState } from "react";
+import AudioUpload from "../multimedia/audio/page";
+import VideoUpload from "../multimedia/video/page";
+import { Tooltip } from "@mui/material";
 
 const Template1: React.FC<{
   content: any;
@@ -16,6 +18,31 @@ const Template1: React.FC<{
   const [imageBlob, setImageBlob] = useState<File | null | string>(null);
   const [audioBlob, setAudioBlob] = useState<Blob | null | string>(null);
   const [videoBlob, setVideoBlob] = useState<Blob | string | null>(null);
+  const { setIsListening, finalTranscript, transcript, currentComponentRef } =
+    useContext(VoiceRecorderContext)!;
+  const [contentVoice, setContentVoice] = useState(content);
+  const [contentVoiceTemp, setContentVoiceTemp] = useState(contentVoice);
+  const componentRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    console.log("Component del listening: ", currentComponentRef.current);
+    console.log("Component del template: ", componentRef.current);
+    if (
+      transcript.length > 0 &&
+      componentRef.current === currentComponentRef.current
+    ) {
+      setContentVoice(contentVoiceTemp + "\n" + transcript);
+    }
+  }, [transcript]);
+
+  useEffect(() => {
+    if (
+      finalTranscript.length > 0 &&
+      componentRef.current === currentComponentRef.current
+    ) {
+      setContentVoiceTemp(contentVoice);
+    }
+  }, [finalTranscript]);
 
   useEffect(() => {
     if (image) {
@@ -46,26 +73,26 @@ const Template1: React.FC<{
 
   useEffect(() => {
     if (imageBlob) {
-      onContentChange(content, imageBlob, audioBlob, videoBlob);
+      onContentChange(contentVoice, imageBlob, audioBlob, videoBlob);
     } else {
-      onContentChange(content, null, audioBlob, videoBlob);
+      onContentChange(contentVoice, null, audioBlob, videoBlob);
     }
   }, [imageBlob]);
 
   useEffect(() => {
     if (audioBlob) {
       console.log("AudioBlob: ", audioBlob);
-      onContentChange(content, imageBlob, audioBlob, videoBlob);
+      onContentChange(contentVoice, imageBlob, audioBlob, videoBlob);
     } else {
-      onContentChange(content, imageBlob, null, videoBlob);
+      onContentChange(contentVoice, imageBlob, null, videoBlob);
     }
   }, [audioBlob]);
 
   useEffect(() => {
     if (videoBlob) {
-      onContentChange(content, imageBlob, audioBlob, videoBlob);
+      onContentChange(contentVoice, imageBlob, audioBlob, videoBlob);
     } else {
-      onContentChange(content, imageBlob, audioBlob, null);
+      onContentChange(contentVoice, imageBlob, audioBlob, null);
     }
   }, [videoBlob]);
 
@@ -98,8 +125,15 @@ const Template1: React.FC<{
     return matches ? matches[5] : null;
   };
 
+  useEffect(() => {
+    currentComponentRef.current = componentRef.current;
+  }, []);
+
   return (
-    <div className="bg-bgColorDark p-8 rounded shadow-md w-full max-w-4xl mx-auto items-center justify-center">
+    <div
+      className="bg-bgColorDark p-8 rounded shadow-md w-full max-w-4xl mx-auto items-center justify-center"
+      ref={componentRef}
+    >
       <div
         className="bg-gray-200 h-64 w-full flex items-center justify-center mb-4 cursor-pointer"
         onClick={handleImageUpload}
@@ -122,11 +156,42 @@ const Template1: React.FC<{
           </span>
         )}
       </div>
-      <div className="max-w-2xl inline">
+      <div className="max-w-2xl relative inline">
+        <div className="absolute z-50 right-2 top-2">
+          <Tooltip arrow title={"Dictar"} placement="top">
+            <span
+              className="cursor-pointer"
+              onClick={() => {
+                setIsListening(true);
+              }}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="w-9 h-9"
+                viewBox="0 0 16 16"
+                fill="#c5910d"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M8 1a2 2 0 0 0-2 2v4a2 2 0 1 0 4 0V3a2 2 0 0 0-2-2"
+                />
+                <path d="M4.5 7A.75.75 0 0 0 3 7a5.001 5.001 0 0 0 4.25 4.944V13.5h-1.5a.75.75 0 0 0 0 1.5h4.5a.75.75 0 0 0 0-1.5h-1.5v-1.556A5.001 5.001 0 0 0 13 7a.75.75 0 0 0-1.5 0a3.5 3.5 0 1 1-7 0" />
+              </svg>
+            </span>
+          </Tooltip>
+        </div>
         <Editor
           apiKey="pxp94q2uamitsp5ok6hrdctn5uu10ei9emrfbozu7576fwa4"
+          onFocusIn={() => {
+            currentComponentRef.current = componentRef.current;
+          }}
           onEditorChange={(newContent) => {
-            onContentChange(newContent, imageBlob, audioBlob, videoBlob);
+            console.log("new content:", newContent);
+            if (newContent.length == 0) {
+              setContentVoiceTemp(newContent);
+            }
+            setContentVoice(newContent);
+            onContentChange(contentVoice, imageBlob, audioBlob, videoBlob);
           }}
           init={{
             plugins: "wordcount advlist lists help",
@@ -154,7 +219,7 @@ const Template1: React.FC<{
             toolbar:
               "undo redo | blocks fontfamily fontsize | forecolor backcolor | bold italic underline strikethrough  | align lineheight | numlist bullist",
           }}
-          value={content}
+          value={contentVoice}
         />
       </div>
       <div className="mt-4 gap-4 flex flex-wrap items-center justify-center">

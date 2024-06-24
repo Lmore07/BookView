@@ -483,7 +483,9 @@ export default function Home() {
       <div className="shadow-xl p-8 grid rounded-md">
         <div className="flex flex-wrap justify-between mb-5">
           <h1 className="font-custom m-0 relative text-2xl text-primary-500 font-bold lg:before:content-[''] lg:before:block md:before:absolute lg:before:absolute xl:before:absolute before:h-full before:w-1 before:bg-primary-500 before:left-0">
-            <span className="xl:ps-2 lg:ps-2 md:ps-2">Últimos libros agregados</span>
+            <span className="xl:ps-2 lg:ps-2 md:ps-2">
+              Últimos libros agregados
+            </span>
           </h1>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-4">
@@ -558,7 +560,7 @@ export default function Home() {
               setIsViewBook(open);
             }}
           >
-            <DialogContent className="bg-bgColorRight w-[90dvw] min-w-[90dvw] max-w-[90dvw] h-[90dvh] flex flex-col justify-center">
+            <DialogContent className="bg-bgColorRight w-[90dvw] min-w-[90dvw] max-w-[90dvw] h-auto max-h-[90dvh] flex flex-col justify-center">
               <DialogHeader>
                 <DialogDescription>
                   <FlipBook

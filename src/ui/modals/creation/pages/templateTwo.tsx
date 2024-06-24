@@ -104,8 +104,6 @@ const Template2: React.FC<{
   };
 
   useEffect(() => {
-    console.log("Component del listening: ", currentComponentRef.current);
-    console.log("Component del template: ", componentRef.current);
     if (
       transcript.length > 0 &&
       componentRef.current === currentComponentRef.current

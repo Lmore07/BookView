@@ -148,7 +148,6 @@ const FlipBook: React.FC<FlipBookProps> = ({
   };
 
   const handleKeyDown = (event: KeyboardEvent) => {
-    console.log(event.key);
     if (event.key === "ArrowLeft") {
       handlePrevPageRef.current();
     } else if (event.key === "ArrowRight") {
@@ -180,7 +179,6 @@ const FlipBook: React.FC<FlipBookProps> = ({
     // Si hay más de 10 páginas, añadir puntos suspensivos en el medio
     if (totalPages > 8) {
       const middleIndex = Math.floor(totalPages / 2);
-      console.log(middleIndex);
       marksPages.push({ value: middleIndex, label: "..." });
     }
 
@@ -311,7 +309,6 @@ const FlipBook: React.FC<FlipBookProps> = ({
       <div className="justify-center mx-10 flex gap-3 font-custom items-end">
         <Slider
           onChange={(event, value: any) => {
-            console.log(value[0]);
             setCurrentPage(value[0]);
           }}
           value={[sliderValue]}

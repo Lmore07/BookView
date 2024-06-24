@@ -84,9 +84,6 @@ const Template4: React.FC<{
     }
   }, [transcript]);
 
-  useEffect(() => {
-    console.log("Temp content", contentVoice);
-  }, [contentVoice]);
 
   useEffect(() => {
     if (

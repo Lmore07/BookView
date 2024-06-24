@@ -131,7 +131,6 @@ export default function Home() {
   };
 
   const stopSpeech = () => {
-    console.log(source);
     if (source.current) {
       source.current.stop();
       audioContext.current?.close();

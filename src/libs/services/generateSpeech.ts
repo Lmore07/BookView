@@ -9,13 +9,15 @@ export async function generateSpeech(text: string) {
     },
     model_id: "eleven_multilingual_v2",
   };
-  const options = {
+  const options: RequestInit = {
     method: "POST",
     headers: {
       "xi-api-key": `${process.env.E_LABS_API_KEY}`,
       "Content-Type": "application/json",
     },
     body: JSON.stringify(body),
+    cache: "force-cache",
+    keepalive: true,
   };
   const response = await fetch(
     `https://api.elevenlabs.io/v1/text-to-speech/${process.env.E_LABS_VOICE}`,

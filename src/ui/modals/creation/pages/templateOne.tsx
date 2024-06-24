@@ -25,8 +25,6 @@ const Template1: React.FC<{
   const componentRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    console.log("Component del listening: ", currentComponentRef.current);
-    console.log("Component del template: ", componentRef.current);
     if (
       transcript.length > 0 &&
       componentRef.current === currentComponentRef.current
@@ -81,7 +79,6 @@ const Template1: React.FC<{
 
   useEffect(() => {
     if (audioBlob) {
-      console.log("AudioBlob: ", audioBlob);
       onContentChange(contentVoice, imageBlob, audioBlob, videoBlob);
     } else {
       onContentChange(contentVoice, imageBlob, null, videoBlob);
@@ -186,7 +183,6 @@ const Template1: React.FC<{
             currentComponentRef.current = componentRef.current;
           }}
           onEditorChange={(newContent) => {
-            console.log("new content:", newContent);
             if (newContent.length == 0) {
               setContentVoiceTemp(newContent);
             }
@@ -252,7 +248,6 @@ const Template1: React.FC<{
           ) : (
             <AudioUpload
               onAudioSelected={(file: any) => {
-                console.log("LLegando archivo: ", file);
                 setAudioBlob(file);
               }}
             ></AudioUpload>

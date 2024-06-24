@@ -67,8 +67,6 @@ export const DELETE = apiMiddleware(async (request: NextRequest) => {
     },
   });
 
-  console.log(userFavoriteFolder);
-
   if (userFavoriteFolder) {
     await prisma.favorite_Books.deleteMany({
       where: {

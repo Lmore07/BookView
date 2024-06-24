@@ -144,7 +144,6 @@ const PageContent: React.FC<PageProps> = ({ page, coverInfo }) => {
   };
 
   useEffect(() => {
-    console.log("Cambio de page, deteniendo audio...", isPlayingAudio);
     if (isPlayingAudio) {
       stopSpeech();
     }

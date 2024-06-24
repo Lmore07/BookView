@@ -342,7 +342,6 @@ export default function Favorite({
             isViewed={book.isViewed}
             isFavorite={book.isFavorite}
             onFavoriteClick={() => {
-              console.log("Favorite");
               setSelectedBook(book);
               setIsRemoveBook(true);
             }}

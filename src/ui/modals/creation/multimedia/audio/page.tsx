@@ -6,6 +6,7 @@ const AudioUpload: React.FC<{ onAudioSelected: any }> = ({
 }) => {
   const [showOptions, setShowOptions] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
+  const [isNotAudio, setIsNotAudio] = useState(false);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
 
@@ -43,15 +44,17 @@ const AudioUpload: React.FC<{ onAudioSelected: any }> = ({
           audioChunksRef.current.push(event.data);
         };
         mediaRecorderRef.current.onstop = () => {
+          if (isNotAudio) {
+            const audioBlob = new Blob(audioChunksRef.current, {
+              type: "audio/wav",
+            });
+            onAudioSelected(audioBlob);
+          } else {
+            onAudioSelected(null);
+          }
           console.log("Termino de grabar");
-          const audioBlob = new Blob(audioChunksRef.current, {
-            type: "audio/wav",
-          });
-          console.log("AudioBlob generado: ", audioBlob);
-          onAudioSelected(audioBlob);
         };
         mediaRecorderRef.current.start();
-        console.log("Empezo a grabar");
         setIsRecording(true);
       } catch (error) {
         console.error("Error accessing the microphone", error);
@@ -144,7 +147,7 @@ const AudioUpload: React.FC<{ onAudioSelected: any }> = ({
         >
           <div className="absolute inset-0 bg-black bg-opacity-25 backdrop-blur-sm"></div>
           <div className="relative z-10 flex flex-col bg-bgColorRight p-5 rounded-full">
-            <div className="flex flex-row">
+            <div className="flex flex-row items-center justify-center">
               <div
                 className={`h-8 w-4 bg-primary rounded-full mx-2 ${"animate-wave-1"}`}
               ></div>
@@ -158,7 +161,18 @@ const AudioUpload: React.FC<{ onAudioSelected: any }> = ({
                 className={`h-8 w-4 bg-primary rounded-full mx-2 ${"animate-wave-4"}`}
               ></div>
             </div>
-            <div className="flex items-center justify-center mt-3">
+            <div className="flex items-center justify-center mt-3 gap-2">
+              <ButtonOutlined
+                onClick={() => {
+                  setIsNotAudio(true);
+                  handleRecordAudio();
+                }}
+                className={
+                  "border-red-600 text-red-600 hover:text-white hover:bg-red-600"
+                }
+              >
+                Cancelar
+              </ButtonOutlined>
               <ButtonOutlined
                 onClick={() => {
                   handleRecordAudio();
@@ -167,7 +181,7 @@ const AudioUpload: React.FC<{ onAudioSelected: any }> = ({
                   "border-primary text-primary hover:text-white hover:bg-primary"
                 }
               >
-                Cancelar
+                Aceptar
               </ButtonOutlined>
             </div>
           </div>

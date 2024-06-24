@@ -29,6 +29,7 @@ import { Pagination, Stack, Tooltip } from "@mui/material";
 import { add, format } from "date-fns";
 import { useRouter } from "next/navigation";
 import { useContext, useEffect, useRef, useState } from "react";
+import ConfirmActiveOrDesactive from "@/ui/modals/admin/users/confirm";
 export default function CreatorBooksPage() {
   const router = useRouter();
   const [openHelp, setOpenHelp] = useState(false);
@@ -49,6 +50,8 @@ export default function CreatorBooksPage() {
   const componentRef = useRef<HTMLDivElement>(null);
   const { addBreadcrumbManyItems, removeAllBreadcrumbItems } =
     useContext(BreadcrumbContext);
+  const [selectedId, setSelectedId] = useState(0);
+  const [isOpenDesactive, setIsOpenDesactive] = useState(false);
 
   const headers = [
     { key: "bookName", name: "Nombre del libro" },
@@ -188,6 +191,11 @@ export default function CreatorBooksPage() {
       audioContext.current?.close();
       setIsPlaying(false);
     }
+  };
+
+  const handleDesactiveBook = (item: any) => {
+    setSelectedId(item.idBook);
+    setIsOpenDesactive(true);
   };
 
   return (
@@ -331,6 +339,10 @@ export default function CreatorBooksPage() {
             data={tableData}
             showEdit
             showView
+            showDelete
+            onDeleteClick={async (item: any) => {
+              handleDesactiveBook(item);
+            }}
             onEditClick={(item: any) => {
               router.push(`/creator/books/edition/${item.idBook}`);
             }}
@@ -417,6 +429,34 @@ export default function CreatorBooksPage() {
                       idBook: selectedBook!.idBook,
                     }}
                   />
+                </DialogDescription>
+              </DialogHeader>
+            </DialogContent>
+          </Dialog>
+        )}
+      </div>
+      <div>
+        {isOpenDesactive && (
+          <Dialog
+            open={isOpenDesactive}
+            onOpenChange={(open: boolean) => {
+              setIsOpenDesactive(open);
+            }}
+          >
+            <DialogContent className="bg-bgColorRight">
+              <DialogHeader>
+                <DialogDescription>
+                  <ConfirmActiveOrDesactive
+                    action={"desactive"}
+                    entity="el libro"
+                    route="books"
+                    status={false}
+                    idItem={selectedId}
+                    onFinish={() => {
+                      setIsOpenDesactive(false);
+                      getBooks();
+                    }}
+                  ></ConfirmActiveOrDesactive>
                 </DialogDescription>
               </DialogHeader>
             </DialogContent>

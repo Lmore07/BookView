@@ -46,7 +46,7 @@ export default function BooksAdmin() {
   const source = useRef<AudioBufferSourceNode | null>(null);
   const { handleShowToast } = useContext(ToastContext)!;
   const { setIsLoading } = useContext(LoadingContext)!;
-  const [usersData, setUsersData] = useState<any>([]);
+  const [booksData, setbooksData] = useState<any>([]);
   const [action, setAction] = useState<any>();
   const [statusActiveorDesactive, setStatusActiveorDesactive] = useState<any>();
   const [page, setPage] = useState(1);
@@ -184,7 +184,7 @@ export default function BooksAdmin() {
         });
         setTotalPages(data.pagination?.totalPages ?? 0);
         setPage(data.pagination?.currentPage ?? 0);
-        setUsersData(tableData);
+        setbooksData(tableData);
       }
     } catch (error) {
       handleShowToast("Ocurrió un error al obtener los datos", ToastType.ERROR);
@@ -213,14 +213,14 @@ export default function BooksAdmin() {
     }
   };
 
-  const handleActiveUser = (item: any) => {
+  const handleActiveBook = (item: any) => {
     setSelectedId(item.idBook);
     setAction("active");
     setStatusActiveorDesactive(true);
     setIsOpenActiveOrDesactive(true);
   };
 
-  const handleDesactiveUser = (item: any) => {
+  const handleDesactiveBook = (item: any) => {
     setSelectedId(item.idBook);
     setAction("desactive");
     setStatusActiveorDesactive(false);
@@ -393,7 +393,7 @@ export default function BooksAdmin() {
           </DropdownMenu>
         </div>
         <Table
-          data={usersData}
+          data={booksData}
           headers={headersBooks}
           showActions
           showActivate
@@ -403,10 +403,10 @@ export default function BooksAdmin() {
             openBook(item);
           }}
           onActivateClick={(item: any) => {
-            handleActiveUser(item);
+            handleActiveBook(item);
           }}
           onDeleteClick={(item: any) => {
-            handleDesactiveUser(item);
+            handleDesactiveBook(item);
           }}
         />
       </div>

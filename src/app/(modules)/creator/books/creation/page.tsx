@@ -1,11 +1,6 @@
 "use client";
 
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-} from "@/ui/shadcn/ui/dialog";
+import { BreadcrumbContext } from "@/libs/contexts/breadcrumbContext";
 import { LoadingContext } from "@/libs/contexts/loadingContext";
 import { ToastContext } from "@/libs/contexts/toastContext";
 import { BooksAll, PageCreate } from "@/libs/interfaces/books.interface";
@@ -13,23 +8,28 @@ import { CategoriesAll } from "@/libs/interfaces/categories.interface";
 import { ResponseData } from "@/libs/interfaces/response.interface";
 import { ToastType } from "@/libs/interfaces/toast.interface";
 import {
+  creationBookBreadCrumb,
+  HomeCreatorBreadCrumb,
+  myBooksBreadCrumb,
+} from "@/libs/utils/itemsBreadCrumbCreator";
+import {
   validateCorrectDate,
   validateNotEmpty,
 } from "@/libs/validations/validations";
-import { useRouter } from "next/navigation";
 import Button from "@/ui/components/buttons/ButtonFill";
 import ButtonOutlined from "@/ui/components/buttons/ButtonOutlined";
 import Input from "@/ui/components/inputs/input";
 import BookEditor from "@/ui/modals/creation/page";
 import FlipBook from "@/ui/modals/viewBook/flipBook";
-import Image from "next/image";
-import { useContext, useEffect, useRef, useState } from "react";
-import { BreadcrumbContext } from "@/libs/contexts/breadcrumbContext";
 import {
-  creationBookBreadCrumb,
-  HomeCreatorBreadCrumb,
-  myBooksBreadCrumb,
-} from "@/libs/utils/itemsBreadCrumbCreator";
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+} from "@/ui/shadcn/ui/dialog";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { useContext, useEffect, useState } from "react";
 
 export default function Stepper() {
   const [currentStep, setCurrentStep] = useState(0);
@@ -774,7 +774,9 @@ export default function Stepper() {
                         audio: null,
                         numberPage: 0,
                         template: "Cover",
-                        content: `El titulo del libro es: ${selectedBook?.bookName}`,
+                        content: `El titulo del libro es: ${
+                          stepOne.bookName
+                        } sus autores son: ${stepOne.authors.join(", ")}`,
                         image: selectedBook?.coverPhoto,
                       },
                       ...prevPages,

@@ -296,8 +296,6 @@ export default function BookEdit({
         };
       }
     }
-
-    // Si todas las verificaciones pasan, el cuerpo es válido
     return { isValid: true };
   }
 
@@ -306,7 +304,6 @@ export default function BookEdit({
       handleNext();
     }
     if (currentStep == 3) {
-      setIsLoading(true);
       let body = {
         stepOne: stepOne,
         categoriesIds: filterCategories,
@@ -317,6 +314,7 @@ export default function BookEdit({
         console.error(validationResult.message);
         handleShowToast(validationResult.message ?? "Error", ToastType.ERROR);
       } else {
+        setIsLoading(true);
         const formData = new FormData();
         formData.append("illustrator", body.stepOne.illustrator);
         formData.append("editorial", body.stepOne.editorial);
@@ -796,7 +794,9 @@ export default function BookEdit({
                         audio: null,
                         numberPage: 0,
                         template: "Cover",
-                        content: `El titulo del libro es: ${selectedBook?.bookName}`,
+                        content: `El titulo del libro es: ${
+                          stepOne.bookName
+                        } sus autores son: ${stepOne.authors.join(", ")}`,
                         image: selectedBook?.coverPhoto,
                       },
                       ...prevPages,

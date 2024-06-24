@@ -28,6 +28,7 @@ import ModalParent from "@/ui/modals/modal";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useContext, useEffect, useRef, useState } from "react";
+import Cookie from "js-cookie";
 
 export default function ProfileCreator() {
   const { setIsLoading } = useContext(LoadingContext)!;
@@ -232,7 +233,10 @@ export default function ProfileCreator() {
       body: formData,
     });
     if (response.ok) {
+      const res = await response.json();
       handleShowToast("Perfil actualizado correctamente", ToastType.SUCCESS);
+      Cookie.set("profile", res.data.profilePicture);
+      router.replace('/creator')
     } else {
       handleShowToast("Error al actualizar el perfil", ToastType.ERROR);
     }

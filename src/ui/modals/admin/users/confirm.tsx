@@ -34,7 +34,7 @@ const ConfirmActiveOrDesactive: React.FC<{
       }
     } catch (error) {
       handleShowToast(
-        `Ocurrió un error al actualizar el ${entity}`,
+        `Ocurrió un error al actualizar ${entity}`,
         ToastType.ERROR
       );
     } finally {

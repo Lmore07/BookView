@@ -153,7 +153,7 @@ const PageContent: React.FC<PageProps> = ({ page, coverInfo }) => {
   useEffect(() => {
     if (open) {
       const wordsCount = textGenerated.split(" ").length + 1;
-      const timeToClose = ((wordsCount * 60) / 200) * 1000;
+      const timeToClose = ((wordsCount * 60) / 100) * 1000;
       const timer = setTimeout(() => {
         setOpen(false);
       }, timeToClose);

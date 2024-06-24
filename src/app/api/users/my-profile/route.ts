@@ -54,6 +54,8 @@ export const PUT = apiMiddleware(async (request: NextRequest) => {
   } = {};
   Object.assign(data, Object.fromEntries(formData.entries()));
 
+  var profilePicture;
+
   await prisma.$transaction(async (prisma) => {
     const user = await prisma.users.update({
       data: {
@@ -69,8 +71,11 @@ export const PUT = apiMiddleware(async (request: NextRequest) => {
             idPerson: true,
           },
         },
+        profilePicture: true,
       },
     });
+
+    profilePicture = user.profilePicture;
 
     await prisma.persons.update({
       data: {
@@ -85,7 +90,10 @@ export const PUT = apiMiddleware(async (request: NextRequest) => {
   });
 
   return NextResponse.json(
-    { message: "Usuario actualizado con éxito" },
+    {
+      message: "Usuario actualizado con éxito",
+      data: { profilePicture: profilePicture },
+    },
     { status: 200 }
   );
 });

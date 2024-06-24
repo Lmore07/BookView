@@ -1,10 +1,4 @@
 "use client";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/ui/shadcn/ui/tooltip";
 import { BreadcrumbContext } from "@/libs/contexts/breadcrumbContext";
 import { LoadingContext } from "@/libs/contexts/loadingContext";
 import { VoiceRecorderContext } from "@/libs/contexts/speechToTextContext";
@@ -16,19 +10,28 @@ import { callFunction } from "@/libs/services/callFunction";
 import { generateSpeech } from "@/libs/services/generateSpeech";
 import { commandsProfile } from "@/libs/texts/commands/reader/homeReader";
 import { profileMessage } from "@/libs/texts/messages/reader/homeReader";
-import { HomeBreadCrumb, profileBreadCrumb } from "@/libs/utils/itemsBreadCrumbReader";
+import {
+  HomeBreadCrumb,
+  profileBreadCrumb,
+} from "@/libs/utils/itemsBreadCrumbReader";
 import Button from "@/ui/components/buttons/ButtonFill";
 import ButtonOutlined from "@/ui/components/buttons/ButtonOutlined";
 import Input from "@/ui/components/inputs/input";
 import Help from "@/ui/modals/help/help";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/ui/shadcn/ui/tooltip";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useContext, useEffect, useRef, useState } from "react";
+import Cookie from "js-cookie";
 
 export default function ProfileReader() {
   const { setIsLoading } = useContext(LoadingContext)!;
   const { handleShowToast } = useContext(ToastContext)!;
-  const [openHelp, setOpenHelp] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const audioContext = useRef<AudioContext | null>(null);
   const source = useRef<AudioBufferSourceNode | null>(null);
@@ -224,7 +227,10 @@ export default function ProfileReader() {
       body: formData,
     });
     if (response.ok) {
+      const res = await response.json();
       handleShowToast("Perfil actualizado correctamente", ToastType.SUCCESS);
+      Cookie.set("profile", res.data.profilePicture);
+      router.replace("/reader");
     } else {
       handleShowToast("Error al actualizar el perfil", ToastType.ERROR);
     }

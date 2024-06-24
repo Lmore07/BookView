@@ -3,12 +3,11 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/ui/shadcn/ui/avatar";
 import { Sheet, SheetContent, SheetTrigger } from "@/ui/shadcn/ui/sheet";
 import Cookie from "js-cookie";
+import Image from "next/image";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import logoImg from "../../../../public/imgs/icon.svg";
-import userImg from "../../../../public/imgs/user.svg";
-import Image from "next/image";
 
 interface SidebarProps {
   optionsRoutes: {
@@ -23,7 +22,6 @@ interface SidebarProps {
 const Sidebar: React.FC<SidebarProps> = ({ optionsRoutes, children }) => {
   const [selectedOption, setSelectedOption] = useState("Inicio");
   const pathName = usePathname();
-  const router = useRouter();
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {

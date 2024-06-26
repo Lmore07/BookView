@@ -1,7 +1,8 @@
 import {
+  FunctionCallingMode,
   FunctionDeclaration,
   FunctionDeclarationSchemaType,
-  GoogleGenerativeAI
+  GoogleGenerativeAI,
 } from "@google/generative-ai";
 
 export async function callFunction(
@@ -9,7 +10,7 @@ export async function callFunction(
 ): Promise<{ name: string; args: any }> {
   const genAI = new GoogleGenerativeAI(`${process.env.API_KEY_GEMINI}`);
   const model = genAI.getGenerativeModel({
-    model: "gemini-1.0-pro",
+    model: "gemini-1.5-flash",
     tools: [
       {
         functionDeclarations: [
@@ -30,6 +31,11 @@ export async function callFunction(
         ],
       },
     ],
+    toolConfig: {
+      functionCallingConfig: {
+        mode: FunctionCallingMode.AUTO,
+      },
+    },
   });
 
   const prompt = `${text}`;

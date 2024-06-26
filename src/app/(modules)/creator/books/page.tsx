@@ -357,9 +357,14 @@ export default function CreatorBooksPage() {
                 if (data.error) {
                   handleShowToast(data.message!, ToastType.ERROR);
                 } else {
+                  console.log("Item: ", item);
                   setSelectedBook(item);
                   setPagesBook(data.data);
-                  setIsViewBook(true);
+                  //setIsViewBook(true);
+                  const dialog = document.getElementById(
+                    "viewBook"
+                  ) as HTMLDialogElement;
+                  dialog.showModal();
                 }
               } catch (error) {
                 console.log("Error al cargar el libro a leer", error);
@@ -414,27 +419,42 @@ export default function CreatorBooksPage() {
               setIsViewBook(open);
             }}
           >
-            <DialogContent className="bg-bgColorRight w-[90dvw] min-w-[90dvw] max-w-[90dvw] h-[auto] max-h-[90dvh] flex flex-col justify-center">
+            <DialogContent className="bg-bgColorRight w-full max-w-[95vw] md:max-w-[90vw] lg:max-w-[80vw] h-[auto] max-h-[90dvh] flex flex-col p-2 md:p-4">
               <DialogHeader>
-                <DialogDescription>
-                  <FlipBook
-                    pages={pagesBook!}
-                    startPage={0}
-                    isViewed={true}
-                    coverInfo={{
-                      authors: selectedBook?.authors ?? [],
-                      bookName: selectedBook!.bookName,
-                      coverPhoto: selectedBook!.coverPhoto!,
-                      publicationDate: selectedBook!.publicationDate,
-                      idBook: selectedBook!.idBook,
-                    }}
-                  />
-                </DialogDescription>
+                <DialogDescription></DialogDescription>
               </DialogHeader>
             </DialogContent>
           </Dialog>
         )}
       </div>
+      <dialog id="viewBook" className="modal ">
+        <div className="modal-box bg-bgColorRight w-[90vw] max-w-[90vw] h-[auto] max-h-[90dvh] flex flex-col p-1 md:p-4">
+          <form method="dialog">
+            <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
+              ✕
+            </button>
+          </form>
+          {(pagesBook?.length || 0) > 0 && (
+            <div
+              key={selectedBook?.idBook}
+              className="w-full h-full overflow-auto"
+            >
+              <FlipBook
+                pages={pagesBook!}
+                startPage={0}
+                isViewed={true}
+                coverInfo={{
+                  authors: selectedBook?.authors ?? [],
+                  bookName: selectedBook!.bookName,
+                  coverPhoto: selectedBook!.coverPhoto!,
+                  publicationDate: selectedBook!.publicationDate,
+                  idBook: selectedBook!.idBook,
+                }}
+              />
+            </div>
+          )}
+        </div>
+      </dialog>
       <div>
         {isOpenDesactive && (
           <Dialog

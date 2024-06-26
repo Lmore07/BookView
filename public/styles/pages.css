@@ -1,13 +1,15 @@
 .pages {
-    width: auto; /* Ajusta el ancho según tus necesidades */
-    max-height: 70dvh;
+    width: 100%;
+    max-height: 100%;
     height: auto;
   }
   
   .page {
     backface-visibility: hidden;
-    width: 70dvh;
+    width: 100%;
     height: auto;
+    max-width: 100%;
+    margin: 0 auto;
   }
   
   .cover {
@@ -19,9 +21,7 @@
     text-align: center;
   }
   
-  .no-cover {
-    z-index: 1;
-  }
+  /* Responsive adjustments */
 
   /*ANIMACIONES DE LA PAGINA CUANDO CAMBIA*/
 

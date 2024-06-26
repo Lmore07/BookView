@@ -164,20 +164,20 @@ const PageContent: React.FC<PageProps> = ({ page, coverInfo }) => {
   }, [open]);
 
   return (
-    <div className="bg-bgColorDark rounded-lg shadow-md  flex flex-col items-center justify-center">
-      <Divider className="py-1">
+    <div className="bg-bgColorDark rounded-lg shadow-md mt-1 flex flex-col items-center justify-center">
+      <Divider className="py-2 w-full">
         {page.numberPage == 0 ? null : (
           <Chip
-            className="font-semibold"
+            className="font-semibold text-xs sm:text-sm"
             label={`Página N° ${page.numberPage}`}
-            size="medium"
+            size="small"
             sx={{ color: "var(--text--RegisterLabel)" }}
           />
         )}
       </Divider>
-      <div className="px-4 pb-1 w-full pt-2 font-custom">
+      <div className="px-1 w-full pt-2 font-custom">
         {page.template === "Cover" && (
-          <div className="overflow-y-auto min-h-[10dvh] max-h-[60dvh]">
+          <div className="overflow-y-auto">
             <div
               className="flex flex-col items-center"
               onMouseUp={handleTextSelection}
@@ -185,7 +185,7 @@ const PageContent: React.FC<PageProps> = ({ page, coverInfo }) => {
               <h1 className="text-3xl responsiveText m-0 font-bold">
                 {coverInfo?.bookName}
               </h1>
-              <div className="text-lg  font-light pb-5">
+              <div className="text-sm sm:text-lg font-light pb-3 sm:pb-5 text-center">
                 Autores: {coverInfo?.authors.join(", ")}
               </div>
               <Image
@@ -194,12 +194,12 @@ const PageContent: React.FC<PageProps> = ({ page, coverInfo }) => {
                     ? URL.createObjectURL(coverInfo!.coverPhoto as Blob)
                     : coverInfo!.coverPhoto
                 }
-                className="max-w-64 max-h-auto"
+                className="max-w-48 sm:max-w-64 h-auto"
                 alt="Portada del libro"
                 width={500}
                 height={500}
               />
-              <div className="text-sm  font-light pt-5">
+              <div className="text-xs sm:text-sm font-light pt-3 sm:pt-5">
                 Publicado: {coverInfo?.publicationDate.substring(0, 10)}
               </div>
             </div>
@@ -207,9 +207,9 @@ const PageContent: React.FC<PageProps> = ({ page, coverInfo }) => {
         )}
         {page.template === "Template1" && (
           <div
-            className={`${
-              isPlayingVideo ? "grid-cols-2" : "grid-cols-1"
-            } grid overflow-hidden`}
+            className={`grid ${
+              isPlayingVideo ? "grid-cols-1 sm:grid:cols-1" : "grid-cols-1"
+            } gap-4 overflow-hidden`}
           >
             <div>
               <div className="flex items-center  justify-center mb-2">
@@ -230,7 +230,7 @@ const PageContent: React.FC<PageProps> = ({ page, coverInfo }) => {
                           : page.image
                       }
                       alt="Imagen"
-                      className="max-h-40 max-w-64"
+                      className="max-h-32 sm:max-h-40 w-auto"
                       onClick={() => {
                         const dialog = document.getElementById(
                           "imagePreview"
@@ -536,7 +536,7 @@ const PageContent: React.FC<PageProps> = ({ page, coverInfo }) => {
           >
             <div
               onMouseUp={handleTextSelection}
-              className="break-words col-span-3 max-w-none min-h-[10dvh] max-h-[50dvh] overflow-y-auto"
+              className="break-words col-span-3 max-w-none min-h-10 max-h-64 overflow-y-auto"
               dangerouslySetInnerHTML={{
                 __html: page.content.replace(
                   /<ul>/g,

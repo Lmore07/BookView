@@ -330,6 +330,7 @@ export default function CreatorPage() {
           showActions
           showStats
           onStatsClick={(book: any) => {
+            console.log(book);
             setSelectedId(book.idBook);
             setOpenStats(true);
           }}
@@ -337,7 +338,7 @@ export default function CreatorPage() {
       </div>
       {openStats && (
         <div className="w-full ">
-          <LineChart id={selectedId}></LineChart>
+          <LineChart key={selectedId} id={selectedId}></LineChart>
         </div>
       )}
       <div>

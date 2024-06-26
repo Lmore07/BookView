@@ -193,11 +193,8 @@ const FlipBook: React.FC<FlipBookProps> = ({
   }, [pages]);
 
   return (
-    <div
-      className="flex w-full h-full py-1 flex-col font-custom"
-      ref={componentRef}
-    >
-      <div className="flex items-center justify-end gap-2 mr-14">
+    <div className="w-full h-full font-custom flex flex-col" ref={componentRef}>
+      <div className="flex items-center justify-end gap-2 mb-2 mr-14">
         <Tooltip arrow title={"Dictar"} placement="top">
           <span
             className="cursor-pointer"
@@ -244,14 +241,11 @@ const FlipBook: React.FC<FlipBookProps> = ({
           </span>
         </Tooltip>
       </div>
-      <div
-        className="flex items-center w-full justify-center mb-3"
-        ref={bookRef}
-      >
+      <div className="flex items-center justify-center mb-3 px-2" ref={bookRef}>
         {currentPage != 0 && (
-          <div className="mr-5 sm:mr-2 md:mr-2">
+          <div className="mr-2">
             <button
-              className="bg-gray-300 p-2 rounded-full focus:outline-none"
+              className="bg-gray-300 p-1 md:p-2 rounded-full focus:outline-none"
               onClick={handlePrevPage}
               disabled={currentPage == 0}
             >
@@ -282,9 +276,9 @@ const FlipBook: React.FC<FlipBookProps> = ({
           </div>
         </div>
         {currentPage != pages.length - 1 && (
-          <div className="ml-5 sm:ml-2 md:ml-2">
+          <div className="ml-2">
             <button
-              className="bg-gray-300 p-2 rounded-full focus:outline-none"
+              className="bg-gray-300 p-1 md:p-2 rounded-full focus:outline-none"
               onClick={handleNextPage}
               disabled={currentPage === pages.length - 1}
             >
@@ -306,7 +300,7 @@ const FlipBook: React.FC<FlipBookProps> = ({
           </div>
         )}
       </div>
-      <div className="justify-center mx-10 flex gap-3 font-custom items-end">
+      <div className="justify-center mx-10 sm:mx-10 md:mx-10 flex gap-3 font-custom items-end">
         <Slider
           onChange={(event, value: any) => {
             setCurrentPage(value[0]);

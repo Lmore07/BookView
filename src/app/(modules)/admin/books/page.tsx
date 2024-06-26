@@ -237,7 +237,10 @@ export default function BooksAdmin() {
       } else {
         setSelectedBook(book);
         setPages(data.data);
-        setIsOpenBook(true);
+        const dialog = document.getElementById(
+          "viewBook"
+        ) as HTMLDialogElement;
+        dialog.showModal();
       }
     } catch (error) {
       console.log("Error al cargar el libro a leer", error);
@@ -494,35 +497,34 @@ export default function BooksAdmin() {
           </Dialog>
         )}
       </div>
-      <div>
-        {isOpenBook && (
-          <Dialog
-            open={isOpenBook}
-            onOpenChange={(open: boolean) => {
-              setIsOpenBook(open);
-            }}
-          >
-            <DialogContent className="bg-bgColorRight w-[90dvw] min-w-[90dvw] max-w-[90dvw] h-[auto] max-h-[90dvh] flex flex-col justify-center">
-              <DialogHeader>
-                <DialogDescription>
-                  <FlipBook
-                    pages={pages!}
-                    startPage={0}
-                    isViewed={true}
-                    coverInfo={{
-                      authors: selectedBook?.authors ?? [],
-                      bookName: selectedBook!.bookName,
-                      coverPhoto: selectedBook!.coverPhoto!,
-                      publicationDate: selectedBook!.publicationDate,
-                      idBook: selectedBook!.idBook,
-                    }}
-                  />
-                </DialogDescription>
-              </DialogHeader>
-            </DialogContent>
-          </Dialog>
-        )}
-      </div>
+      <dialog id="viewBook" className="modal ">
+        <div className="modal-box bg-bgColorRight w-[90vw] max-w-[90vw] h-[auto] max-h-[90dvh] flex flex-col p-1 md:p-4">
+          <form method="dialog">
+            <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
+              ✕
+            </button>
+          </form>
+          {(pages?.length || 0) > 0 && (
+            <div
+              key={selectedBook?.idBook}
+              className="w-full h-full overflow-auto"
+            >
+              <FlipBook
+                pages={pages!}
+                startPage={0}
+                isViewed={true}
+                coverInfo={{
+                  authors: selectedBook?.authors ?? [],
+                  bookName: selectedBook!.bookName,
+                  coverPhoto: selectedBook!.coverPhoto!,
+                  publicationDate: selectedBook!.publicationDate,
+                  idBook: selectedBook!.idBook,
+                }}
+              />
+            </div>
+          )}
+        </div>
+      </dialog> 
     </>
   );
 }

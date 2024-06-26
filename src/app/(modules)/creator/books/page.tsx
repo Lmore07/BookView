@@ -360,7 +360,6 @@ export default function CreatorBooksPage() {
                   console.log("Item: ", item);
                   setSelectedBook(item);
                   setPagesBook(data.data);
-                  //setIsViewBook(true);
                   const dialog = document.getElementById(
                     "viewBook"
                   ) as HTMLDialogElement;
@@ -412,20 +411,6 @@ export default function CreatorBooksPage() {
             </Stack>
           </div>
         </div>
-        {isViewBook && (
-          <Dialog
-            open={isViewBook}
-            onOpenChange={(open: boolean) => {
-              setIsViewBook(open);
-            }}
-          >
-            <DialogContent className="bg-bgColorRight w-full max-w-[95vw] md:max-w-[90vw] lg:max-w-[80vw] h-[auto] max-h-[90dvh] flex flex-col p-2 md:p-4">
-              <DialogHeader>
-                <DialogDescription></DialogDescription>
-              </DialogHeader>
-            </DialogContent>
-          </Dialog>
-        )}
       </div>
       <dialog id="viewBook" className="modal ">
         <div className="modal-box bg-bgColorRight w-[90vw] max-w-[90vw] h-[auto] max-h-[90dvh] flex flex-col p-1 md:p-4">

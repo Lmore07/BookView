@@ -801,7 +801,10 @@ export default function BookEdit({
                       },
                       ...prevPages,
                     ]);
-                    setPrevisualize(true);
+                    const dialog = document.getElementById(
+                      "viewBook"
+                    ) as HTMLDialogElement;
+                    dialog.showModal();
                   }}
                   className="w-full flex text-sm items-center justify-center font-custom font-normal py-1 rounded-lg bg-bgButtonPrevFill text-textButtonPrevFill px-3 hover:text-textButtonPrevFillHover hover:bg-bgButtonPrevFillHover"
                 >
@@ -853,35 +856,34 @@ export default function BookEdit({
                 </button>
               </div>
             )}
-            <div>
-              {previsualize && (
-                <Dialog
-                  open={previsualize}
-                  onOpenChange={(open: boolean) => {
-                    setPrevisualize(open);
-                  }}
-                >
-                  <DialogContent className="bg-bgColorRight w-[90dvw] min-w-[90dvw] max-w-[90dvw] h-[auto] max-h-[90dvh] flex flex-col justify-center">
-                    <DialogHeader>
-                      <DialogDescription>
-                        <FlipBook
-                          pages={pagesToPrev}
-                          startPage={0}
-                          isViewed={true}
-                          coverInfo={{
-                            authors: stepOne?.authors ?? [],
-                            bookName: stepOne!.bookName,
-                            coverPhoto: stepOne!.bookImage!,
-                            publicationDate: stepOne!.publicationDate,
-                            idBook: 0,
-                          }}
-                        />
-                      </DialogDescription>
-                    </DialogHeader>
-                  </DialogContent>
-                </Dialog>
-              )}
-            </div>
+            <dialog id="viewBook" className="modal ">
+              <div className="modal-box bg-bgColorRight w-[90vw] max-w-[90vw] h-[auto] max-h-[90dvh] flex flex-col p-1 md:p-4">
+                <form method="dialog">
+                  <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
+                    ✕
+                  </button>
+                </form>
+                {(pagesToPrev?.length || 0) > 0 && (
+                  <div
+                    key={selectedBook?.idBook}
+                    className="w-full h-full overflow-auto"
+                  >
+                    <FlipBook
+                      pages={pagesToPrev}
+                      startPage={0}
+                      isViewed={true}
+                      coverInfo={{
+                        authors: selectedBook?.authors ?? [],
+                        bookName: selectedBook!.bookName,
+                        coverPhoto: selectedBook!.coverPhoto!,
+                        publicationDate: selectedBook!.publicationDate,
+                        idBook: selectedBook!.idBook,
+                      }}
+                    />
+                  </div>
+                )}
+              </div>
+            </dialog>
           </div>
         )}
       </div>

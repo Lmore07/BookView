@@ -1,4 +1,8 @@
-const { GoogleGenerativeAI } = require("@google/generative-ai");
+import {
+  FunctionDeclaration,
+  FunctionDeclarationSchemaType,
+  GoogleGenerativeAI
+} from "@google/generative-ai";
 
 export async function callFunction(
   text: string
@@ -6,64 +10,74 @@ export async function callFunction(
   const genAI = new GoogleGenerativeAI(`${process.env.API_KEY_GEMINI}`);
   const model = genAI.getGenerativeModel({
     model: "gemini-1.0-pro",
-    tools: {
-      functionDeclarations: [
-        selectCategories,
-        removeCategories,
-        setInputText,
-        sortBooks,
-        selectBookByName,
-        changePage,
-        selectFolderByName,
-        viewLastData,
-        filterByStatusOrRole,
-        removeFilter,
-        newCategory,
-        viewBooks,
-        addNewBook,
-        viewStatistics,
-      ],
-    },
+    tools: [
+      {
+        functionDeclarations: [
+          changePage,
+          setInputText,
+          viewBooks,
+          addNewBook,
+          viewStatistics,
+          sortBooks,
+          selectBookByName,
+          selectFolderByName,
+          selectCategories,
+          removeCategories,
+          viewLastData,
+          filterByStatusOrRole,
+          removeFilter,
+          newCategory,
+        ],
+      },
+    ],
   });
 
   const prompt = `${text}`;
   const result = await model.generateContent(prompt);
-  const call = result.response.functionCalls()[0];
-  return call;
+  if (result.response.functionCalls() != undefined) {
+    const responseFunctions = result.response.functionCalls();
+    if (responseFunctions) {
+      return responseFunctions[0];
+    } else {
+      throw new Error();
+    }
+  } else {
+    throw new Error();
+  }
 }
 
-const changePage = {
+const changePage: FunctionDeclaration = {
   name: "changePage",
+  description: "Change the page of the table.",
   parameters: {
-    type: "OBJECT",
-    description: "Change the page of the table.",
+    type: FunctionDeclarationSchemaType.OBJECT,
     properties: {
       action: {
-        type: "STRING",
+        type: FunctionDeclarationSchemaType.STRING,
         description:
           "The action to perform. Can be 'next' to go to the next page, 'previous' to go to the previous page, or 'goTo' to go to a specific page.",
       },
       pageNumber: {
-        type: "INTEGER",
+        type: FunctionDeclarationSchemaType.NUMBER,
         description: "The page number to go to. Required if action is 'goTo'.",
       },
     },
   },
 };
 
-const setInputText = {
+const setInputText: FunctionDeclaration = {
   name: "setInputText",
   parameters: {
-    type: "OBJECT",
+    type: FunctionDeclarationSchemaType.OBJECT,
     description: "Set the text of an input.",
     properties: {
       inputName: {
-        type: "STRING",
+        type: FunctionDeclarationSchemaType.STRING,
         description:
           "The name of the input to set the text in.Can be 'names' if it detects a name or several names of people, 'lastNames' if it detects that it a last names, can be 'birthday' if it detects the birthday, can be 'mail' if it detects that it is an email, 'profilePicture' if it detects that it is the profile picture, 'bookName' if it is told to search for a book either by author or by book name.",
       },
       text: {
-        type: "STRING",
+        type: FunctionDeclarationSchemaType.STRING,
         description:
           "The text to set in the input. yyyy-MM-dd if it is a birthday.",
       },
@@ -74,30 +88,32 @@ const setInputText = {
 // CREATOR OF BOOKS
 
 //HOME
-const viewBooks = {
+const viewBooks: FunctionDeclaration = {
   name: "viewBooks",
+  description: "View all the books I have created.",
   parameters: {
-    type: "OBJECT",
-    description: "View all the books I have created.",
+    type: FunctionDeclarationSchemaType.OBJECT,
+    properties: {},
   },
 };
 
-const addNewBook = {
+const addNewBook: FunctionDeclaration = {
   name: "addNewBook",
+  description: "Add a new book.",
   parameters: {
-    type: "OBJECT",
-    description: "Add a new book.",
+    type: FunctionDeclarationSchemaType.OBJECT,
+    properties: {},
   },
 };
 
-const viewStatistics = {
+const viewStatistics: FunctionDeclaration = {
   name: "viewStatistics",
+  description: "View the statistics by book.",
   parameters: {
-    type: "OBJECT",
-    description: "View the statistics by book.",
+    type: FunctionDeclarationSchemaType.OBJECT,
     properties: {
       book: {
-        type: "STRING",
+        type: FunctionDeclarationSchemaType.STRING,
         description: "The book to view the statistics.",
       },
     },
@@ -108,19 +124,19 @@ const viewStatistics = {
 
 //SEARCH BOOK
 
-const sortBooks = {
+const sortBooks: FunctionDeclaration = {
   name: "sortBooks",
+  description: "Sort the books.",
   parameters: {
-    type: "OBJECT",
-    description: "Sort the books.",
+    type: FunctionDeclarationSchemaType.OBJECT,
     properties: {
       sortBy: {
-        type: "STRING",
+        type: FunctionDeclarationSchemaType.STRING,
         description:
           "The field to sort the books by. Can be 'author', 'publicationDate', or 'book'.",
       },
       order: {
-        type: "STRING",
+        type: FunctionDeclarationSchemaType.STRING,
         description:
           "The order to sort the books in. Can be 'asc' for ascending order or 'desc' for descending order.",
       },
@@ -128,14 +144,14 @@ const sortBooks = {
   },
 };
 
-const selectBookByName = {
+const selectBookByName: FunctionDeclaration = {
   name: "selectBookByName",
+  description: "Select a book by its name.",
   parameters: {
-    type: "OBJECT",
-    description: "Select a book by its name.",
+    type: FunctionDeclarationSchemaType.OBJECT,
     properties: {
       bookName: {
-        type: "STRING",
+        type: FunctionDeclarationSchemaType.STRING,
         description: "The name of the book to select.",
       },
     },
@@ -144,14 +160,14 @@ const selectBookByName = {
 
 //FAVORITES
 
-const selectFolderByName = {
+const selectFolderByName: FunctionDeclaration = {
   name: "selectFolderByName",
+  description: "Select a folder by its name.",
   parameters: {
-    type: "OBJECT",
-    description: "Select a folder by its name.",
+    type: FunctionDeclarationSchemaType.OBJECT,
     properties: {
       folderName: {
-        type: "STRING",
+        type: FunctionDeclarationSchemaType.STRING,
         description: "The name of the folder to select.",
       },
     },
@@ -160,34 +176,46 @@ const selectFolderByName = {
 
 //HOME
 
-const selectCategories = {
+const selectCategories: FunctionDeclaration = {
   name: "selectCategories",
+  description: "Select categories to filter the books.",
   parameters: {
-    type: "OBJECT",
-    description: "Select categories to filter the books.",
+    type: FunctionDeclarationSchemaType.OBJECT,
     properties: {
       categories: {
-        type: "ARRAY",
+        type: FunctionDeclarationSchemaType.ARRAY,
         description: "The categories to filter the books.",
         items: {
-          type: "STRING",
+          type: FunctionDeclarationSchemaType.STRING,
+          properties: {
+            category: {
+              type: FunctionDeclarationSchemaType.STRING,
+              description: "The category to filter the books.",
+            },
+          },
         },
       },
     },
   },
 };
 
-const removeCategories = {
+const removeCategories: FunctionDeclaration = {
   name: "removeCategories",
+  description: "Remove categories to filter the books.",
   parameters: {
-    type: "OBJECT",
-    description: "Remove categories to filter the books.",
+    type: FunctionDeclarationSchemaType.OBJECT,
     properties: {
       categories: {
-        type: "ARRAY",
+        type: FunctionDeclarationSchemaType.ARRAY,
         description: "The categories to remove from the books.",
         items: {
-          type: "STRING",
+          type: FunctionDeclarationSchemaType.STRING,
+          properties: {
+            category: {
+              type: FunctionDeclarationSchemaType.STRING,
+              description: "The category to remove from the books.",
+            },
+          },
         },
       },
     },
@@ -197,14 +225,14 @@ const removeCategories = {
 //ADMIN
 
 //HOME
-const viewLastData = {
+const viewLastData: FunctionDeclaration = {
   name: "viewLastData",
+  description: "View the last data.",
   parameters: {
-    type: "OBJECT",
-    description: "View the last data.",
+    type: FunctionDeclarationSchemaType.OBJECT,
     properties: {
       entity: {
-        type: "STRING",
+        type: FunctionDeclarationSchemaType.STRING,
         description: "The entity to view the last data.",
       },
     },
@@ -212,19 +240,19 @@ const viewLastData = {
 };
 
 //USERS
-const filterByStatusOrRole = {
+const filterByStatusOrRole: FunctionDeclaration = {
+  description: "Filter users by status or role.",
   name: "filterByStatusOrRole",
   parameters: {
-    type: "OBJECT",
-    description: "Filter users by status or role.",
+    type: FunctionDeclarationSchemaType.OBJECT,
     properties: {
       status: {
-        type: "STRING",
+        type: FunctionDeclarationSchemaType.STRING,
         description:
           "The status to filter the users. Can be 'true' for actives OR 'false' for inactives.",
       },
       role: {
-        type: "STRING",
+        type: FunctionDeclarationSchemaType.STRING,
         description:
           "The role to filter the users. Can be 'CREATOR' for creator of books OR 'READER' for reader of books.",
       },
@@ -232,19 +260,19 @@ const filterByStatusOrRole = {
   },
 };
 
-const removeFilter = {
+const removeFilter: FunctionDeclaration = {
   name: "removeFilter",
+  description: "Remove the filter.",
   parameters: {
-    type: "OBJECT",
-    description: "Remove the filter.",
+    type: FunctionDeclarationSchemaType.OBJECT,
     properties: {
       filter: {
-        type: "STRING",
+        type: FunctionDeclarationSchemaType.STRING,
         description:
           "The name of the filter to remove. Can be 'status' OR 'role'",
       },
       all: {
-        type: "STRING",
+        type: FunctionDeclarationSchemaType.STRING,
         description: "Remove all filters. Can be 'true' OR 'false'",
       },
     },
@@ -253,10 +281,11 @@ const removeFilter = {
 
 //CATEGORIES
 
-const newCategory = {
+const newCategory: FunctionDeclaration = {
   name: "newCategory",
+  description: "Create a new category.",
   parameters: {
-    type: "OBJECT",
-    description: "Create a new category.",
+    type: FunctionDeclarationSchemaType.OBJECT,
+    properties: {},
   },
 };

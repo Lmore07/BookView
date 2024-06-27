@@ -29,6 +29,12 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useContext, useEffect, useRef, useState } from "react";
 import Cookie from "js-cookie";
+import {
+  validateCorrectDate,
+  validateEmail,
+  validateMaxDate,
+  validateNotEmpty,
+} from "@/libs/validations/validations";
 
 export default function ProfileCreator() {
   const { setIsLoading } = useContext(LoadingContext)!;
@@ -219,7 +225,7 @@ export default function ProfileCreator() {
     input.click();
   };
 
-  const handleClick = async () => {
+  const updateProfile = async () => {
     const formData = new FormData();
     formData.append("mail", userInfo.mail);
     formData.append("names", userInfo.Person.names);
@@ -239,6 +245,53 @@ export default function ProfileCreator() {
       router.replace("/creator");
     } else {
       handleShowToast("Error al actualizar el perfil", ToastType.ERROR);
+    }
+  };
+
+  const validateForm = () => {
+    const validations = [
+      {
+        fieldName: "mail",
+        value: userInfo.mail,
+        validations: [validateNotEmpty, validateEmail],
+      },
+      {
+        fieldName: "Person.names",
+        value: userInfo.Person.names,
+        validations: [validateNotEmpty],
+      },
+      {
+        fieldName: "Person.lastNames",
+        value: userInfo.Person.lastNames,
+        validations: [validateNotEmpty],
+      },
+      {
+        fieldName: "Person.birthday",
+        value: userInfo.Person.birthday,
+        validations: [validateMaxDate, validateCorrectDate],
+      },
+    ];
+
+    const formIsValid = validations.every((field) =>
+      field.validations.every((validation) => !validation(field.value))
+    );
+
+    return formIsValid;
+  };
+
+  const handleClick = async () => {
+    const event = new CustomEvent("validate-form", {
+      bubbles: true,
+      cancelable: true,
+    });
+    window.dispatchEvent(event);
+    if (validateForm()) {
+      await updateProfile();
+    } else {
+      handleShowToast(
+        "Por favor complete correctamente los campos",
+        ToastType.WARNING
+      );
     }
   };
 
@@ -484,6 +537,7 @@ export default function ProfileCreator() {
               </svg>
             }
             onChange={handleChange}
+            validations={[validateNotEmpty]}
           ></Input>
         </div>
         <div className="py-1 grid">
@@ -506,6 +560,7 @@ export default function ProfileCreator() {
               </svg>
             }
             onChange={handleChange}
+            validations={[validateNotEmpty]}
           ></Input>
         </div>
         <div className="py-1 grid">
@@ -527,6 +582,7 @@ export default function ProfileCreator() {
               </svg>
             }
             onChange={handleChange}
+            validations={[validateMaxDate, validateCorrectDate]}
           ></Input>
         </div>
         <div className="py-1 grid">
@@ -549,13 +605,14 @@ export default function ProfileCreator() {
               </svg>
             }
             onChange={handleChange}
+            validations={[validateNotEmpty, validateEmail]}
           ></Input>
         </div>
       </div>
       <div className="flex items-center justify-end mt-4 px-5 gap-3">
         <ButtonOutlined
           onClick={() => {
-            router.prefetch("../reader");
+            router.back();
           }}
           className={
             "border-red-600 text-red-600 hover:text-white hover:bg-red-600"

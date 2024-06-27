@@ -7,7 +7,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React, { useEffect, useState } from "react";
-import logoImg from "../../../../public/imgs/icon.svg";
+import logoImg from "../../../../public/imgs/logo.svg";
 
 interface SidebarProps {
   optionsRoutes: {
@@ -25,9 +25,12 @@ const Sidebar: React.FC<SidebarProps> = ({ optionsRoutes, children }) => {
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
-    handleSelectedOption();
     setIsMounted(true);
   }, []);
+
+  useEffect(() => {
+    handleSelectedOption();
+  }, [pathName]); 
 
   const handleSelectedOption = () => {
     const selectedOption = optionsRoutes.find((option) =>

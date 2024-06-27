@@ -28,6 +28,12 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useContext, useEffect, useRef, useState } from "react";
 import Cookie from "js-cookie";
+import {
+  validateCorrectDate,
+  validateEmail,
+  validateMaxDate,
+  validateNotEmpty,
+} from "@/libs/validations/validations";
 
 export default function ProfileReader() {
   const { setIsLoading } = useContext(LoadingContext)!;
@@ -213,7 +219,54 @@ export default function ProfileReader() {
     input.click();
   };
 
+  const validateForm = () => {
+    const validations = [
+      {
+        fieldName: "mail",
+        value: userInfo.mail,
+        validations: [validateNotEmpty, validateEmail],
+      },
+      {
+        fieldName: "Person.names",
+        value: userInfo.Person.names,
+        validations: [validateNotEmpty],
+      },
+      {
+        fieldName: "Person.lastNames",
+        value: userInfo.Person.lastNames,
+        validations: [validateNotEmpty],
+      },
+      {
+        fieldName: "Person.birthday",
+        value: userInfo.Person.birthday,
+        validations: [validateMaxDate, validateCorrectDate],
+      },
+    ];
+
+    const formIsValid = validations.every((field) =>
+      field.validations.every((validation) => !validation(field.value))
+    );
+
+    return formIsValid;
+  };
+
   const handleClick = async () => {
+    const event = new CustomEvent("validate-form", {
+      bubbles: true,
+      cancelable: true,
+    });
+    window.dispatchEvent(event);
+    if (validateForm()) {
+      await updateProfile();
+    } else {
+      handleShowToast(
+        "Por favor complete correctamente los campos",
+        ToastType.WARNING
+      );
+    }
+  };
+
+  const updateProfile = async () => {
     const formData = new FormData();
     formData.append("mail", userInfo.mail);
     formData.append("names", userInfo.Person.names);
@@ -481,6 +534,7 @@ export default function ProfileReader() {
                 </svg>
               }
               onChange={handleChange}
+              validations={[validateNotEmpty]}
             ></Input>
           </div>
           <div className="py-1">
@@ -503,6 +557,7 @@ export default function ProfileReader() {
                 </svg>
               }
               onChange={handleChange}
+              validations={[validateNotEmpty]}
             ></Input>
           </div>
           <div className="py-1">
@@ -524,6 +579,7 @@ export default function ProfileReader() {
                 </svg>
               }
               onChange={handleChange}
+              validations={[validateMaxDate, validateCorrectDate]}
             ></Input>
           </div>
           <div className="py-1">
@@ -546,6 +602,7 @@ export default function ProfileReader() {
                 </svg>
               }
               onChange={handleChange}
+              validations={[validateNotEmpty, validateEmail]}
             ></Input>
           </div>
         </div>

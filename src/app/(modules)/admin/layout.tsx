@@ -25,7 +25,7 @@ export default function RootCreatorLayout({
     {
       name: "Libros",
       route: "/admin/books",
-      key: "favorites",
+      key: "books",
       icon: (
         <svg
           viewBox="0 0 24 24"

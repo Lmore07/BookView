@@ -66,7 +66,7 @@ const Sidebar: React.FC<SidebarProps> = ({ optionsRoutes, children }) => {
               className="w-64 border-r ms-0 flex flex-col border-gray-200 dark:border-gray-700 bg-bgColorRight"
               side="left"
             >
-              <div className="flex items-center mb-6 ">
+              <div className="flex items-center ms-2 mb-6 ">
                 <Image src={logoImg.src} alt="Imagen" width={40} height={40} />
                 <h2 className="text-lg ms-2 font-custom font-semibold text-gray-800 dark:text-gray-200">
                   BookViewer

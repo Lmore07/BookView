@@ -309,7 +309,10 @@ export default function Favorite({
           <span
             className="cursor-pointer"
             onClick={() => {
-              setOpenHelp(true);
+              const dialog = document.getElementById(
+                "helpModal"
+              ) as HTMLDialogElement;
+              dialog.showModal();
             }}
           >
             <svg
@@ -418,51 +421,19 @@ export default function Favorite({
           )}
         </div>
       </dialog>
-      <div>
-        {openHelp && (
-          <Dialog
-            open={openHelp}
-            onOpenChange={(open: boolean) => {
-              setOpenHelp(open);
-            }}
-          >
-            <DialogContent className="bg-bgColorRight">
-              <DialogHeader>
-                <DialogDescription>
-                  <Help
-                    commands={commandsBooksFavorites}
-                    page="libros favoritos"
-                  ></Help>
-                </DialogDescription>
-              </DialogHeader>
-            </DialogContent>
-          </Dialog>
-        )}
-        {isRemoveBook && (
-          <Dialog
-            open={isRemoveBook}
-            onOpenChange={(open: boolean) => {
-              setIsRemoveBook(open);
-            }}
-          >
-            <DialogContent className="bg-bgColorRight">
-              <DialogHeader>
-                <DialogDescription>
-                  <ConfirmRemoveBook
-                    action={"desactive"}
-                    status={false}
-                    idItem={selectedBook?.idBook!}
-                    onFinish={() => {
-                      setIsRemoveBook(false);
-                      fetchData();
-                    }}
-                  ></ConfirmRemoveBook>
-                </DialogDescription>
-              </DialogHeader>
-            </DialogContent>
-          </Dialog>
-        )}
-      </div>
+      <dialog id="helpModal" className="modal">
+        <div className="modal-box">
+          <form method="dialog">
+            <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
+              ✕
+            </button>
+          </form>
+          <Help
+            commands={commandsBooksFavorites}
+            page="libros favoritos"
+          ></Help>
+        </div>
+      </dialog>
     </div>
   );
 }

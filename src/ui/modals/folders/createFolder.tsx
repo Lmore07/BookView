@@ -94,7 +94,7 @@ const CreateFolder: React.FC<CreateFolderProps> = ({
       <div className="pb-3 ps-3 text-left font-bold text-lg text-primary-500 font-custom">
         + Crear nueva carpeta
       </div>
-      <div className="py-2 gap-4 grid md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-2 md:gap-4 xl:gap-5 sm:gap-4 lg:gap-5 sm:grid-cols-1 px-10">
+      <div className="py-2 gap-4 grid grid-cols-1 md:gap-4 xl:gap-5 sm:gap-4 lg:gap-5 sm:grid-cols-1 px-10">
         <Input
           label="Nombre de carpeta"
           placeholder="Carpeta de matemáticas"

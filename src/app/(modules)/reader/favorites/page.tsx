@@ -290,7 +290,12 @@ export default function Favorites() {
             <TooltipTrigger>
               <span
                 className="cursor-pointer"
-                onClick={() => setOpenHelp(true)}
+                onClick={() => {
+                  const dialog = document.getElementById(
+                    "helpModal"
+                  ) as HTMLDialogElement;
+                  dialog.showModal();
+                }}
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -319,7 +324,10 @@ export default function Favorites() {
         </h1>
         <Button
           onClick={() => {
-            setOpen(true);
+            const dialog = document.getElementById(
+              "createFolder"
+            ) as HTMLDialogElement;
+            dialog.showModal();
           }}
           icon={
             <svg
@@ -386,37 +394,31 @@ export default function Favorites() {
           />
         </Stack>
       </div>
-      {open && (
-        <ModalParent onClose={handleClose}>
+      <dialog id="createFolder" className="modal">
+        <div className="modal-box">
+          <form method="dialog">
+            <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
+              ✕
+            </button>
+          </form>
           <CreateFolder
             onClose={handleClose}
             onFolderCreated={() => {
               fetchData();
             }}
           />
-        </ModalParent>
-      )}
-      <div>
-        {openHelp && (
-          <Dialog
-            open={openHelp}
-            onOpenChange={(open: boolean) => {
-              setOpenHelp(open);
-            }}
-          >
-            <DialogContent className="bg-bgColorRight">
-              <DialogHeader>
-                <DialogDescription>
-                  <Help
-                    commands={commandsFoldersFavorites}
-                    page="carpetas"
-                  ></Help>
-                </DialogDescription>
-              </DialogHeader>
-            </DialogContent>
-          </Dialog>
-        )}
-      </div>
+        </div>
+      </dialog>
+      <dialog id="helpModal" className="modal">
+        <div className="modal-box">
+          <form method="dialog">
+            <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
+              ✕
+            </button>
+          </form>
+          <Help commands={commandsFoldersFavorites} page="carpetas"></Help>
+        </div>
+      </dialog>
     </div>
   );
 }

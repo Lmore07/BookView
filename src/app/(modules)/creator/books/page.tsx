@@ -287,7 +287,10 @@ export default function CreatorBooksPage() {
             <span
               className="cursor-pointer"
               onClick={() => {
-                setOpenHelp(true);
+                const dialog = document.getElementById(
+                  "helpModal"
+                ) as HTMLDialogElement;
+                dialog.showModal();
               }}
             >
               <svg
@@ -468,24 +471,16 @@ export default function CreatorBooksPage() {
           </Dialog>
         )}
       </div>
-      <div>
-        {openHelp && (
-          <Dialog
-            open={openHelp}
-            onOpenChange={(open: boolean) => {
-              setOpenHelp(open);
-            }}
-          >
-            <DialogContent className="bg-bgColorRight">
-              <DialogHeader>
-                <DialogDescription>
-                  <Help commands={commandsBookCreator} page="libros"></Help>
-                </DialogDescription>
-              </DialogHeader>
-            </DialogContent>
-          </Dialog>
-        )}
-      </div>
+      <dialog id="helpModal" className="modal">
+        <div className="modal-box">
+          <form method="dialog">
+            <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
+              ✕
+            </button>
+          </form>
+          <Help commands={commandsBookCreator} page="libros"></Help>
+        </div>
+      </dialog>
     </>
   );
 }

@@ -236,7 +236,7 @@ export default function ProfileCreator() {
       const res = await response.json();
       handleShowToast("Perfil actualizado correctamente", ToastType.SUCCESS);
       Cookie.set("profile", res.data.profilePicture);
-      router.replace('/creator')
+      router.replace("/creator");
     } else {
       handleShowToast("Error al actualizar el perfil", ToastType.ERROR);
     }
@@ -341,7 +341,12 @@ export default function ProfileCreator() {
             <TooltipTrigger>
               <span
                 className="cursor-pointer"
-                onClick={() => setOpenHelp(true)}
+                onClick={() => {
+                  const dialog = document.getElementById(
+                    "helpModal"
+                  ) as HTMLDialogElement;
+                  dialog.showModal();
+                }}
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -560,15 +565,16 @@ export default function ProfileCreator() {
         </ButtonOutlined>
         <Button onClick={handleClick}>Guardar cambios</Button>
       </div>
-      {openHelp && (
-        <ModalParent
-          onClose={() => {
-            setOpenHelp(false);
-          }}
-        >
+      <dialog id="helpModal" className="modal">
+        <div className="modal-box">
+          <form method="dialog">
+            <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
+              ✕
+            </button>
+          </form>
           <Help commands={commandsProfile} page="perfil"></Help>
-        </ModalParent>
-      )}
+        </div>
+      </dialog>
     </div>
   );
 }

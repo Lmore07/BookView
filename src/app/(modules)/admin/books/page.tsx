@@ -237,9 +237,7 @@ export default function BooksAdmin() {
       } else {
         setSelectedBook(book);
         setPages(data.data);
-        const dialog = document.getElementById(
-          "viewBook"
-        ) as HTMLDialogElement;
+        const dialog = document.getElementById("viewBook") as HTMLDialogElement;
         dialog.showModal();
       }
     } catch (error) {
@@ -335,7 +333,15 @@ export default function BooksAdmin() {
             </span>
           </Tooltip>
           <Tooltip arrow title="Ayuda" placement="top">
-            <span className="cursor-pointer" onClick={() => setOpenHelp(true)}>
+            <span
+              className="cursor-pointer"
+              onClick={() => {
+                const dialog = document.getElementById(
+                  "helpModal"
+                ) as HTMLDialogElement;
+                dialog.showModal();
+              }}
+            >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"
@@ -478,25 +484,16 @@ export default function BooksAdmin() {
           </Dialog>
         )}
       </div>
-
-      <div>
-        {openHelp && (
-          <Dialog
-            open={openHelp}
-            onOpenChange={(open: boolean) => {
-              setOpenHelp(open);
-            }}
-          >
-            <DialogContent className="bg-bgColorRight">
-              <DialogHeader>
-                <DialogDescription>
-                  <Help commands={commandsBooksAdmin} page="usuarios"></Help>
-                </DialogDescription>
-              </DialogHeader>
-            </DialogContent>
-          </Dialog>
-        )}
-      </div>
+      <dialog id="helpModal" className="modal">
+        <div className="modal-box">
+          <form method="dialog">
+            <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
+              ✕
+            </button>
+          </form>
+          <Help commands={commandsBooksAdmin} page="usuarios"></Help>
+        </div>
+      </dialog>
       <dialog id="viewBook" className="modal ">
         <div className="modal-box bg-bgColorRight w-[90vw] max-w-[90vw] h-[auto] max-h-[90dvh] flex flex-col p-1 md:p-4">
           <form method="dialog">
@@ -524,7 +521,7 @@ export default function BooksAdmin() {
             </div>
           )}
         </div>
-      </dialog> 
+      </dialog>
     </>
   );
 }

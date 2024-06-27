@@ -246,7 +246,15 @@ export default function AdminPage() {
             </span>
           </Tooltip>
           <Tooltip arrow title="Ayuda" placement="top">
-            <span className="cursor-pointer" onClick={() => setOpenHelp(true)}>
+            <span
+              className="cursor-pointer"
+              onClick={() => {
+                const dialog = document.getElementById(
+                  "helpModal"
+                ) as HTMLDialogElement;
+                dialog.showModal();
+              }}
+            >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"
@@ -346,24 +354,16 @@ export default function AdminPage() {
         </div>
         <Table data={usersData} headers={headersUsers} />
       </div>
-      <div>
-        {openHelp && (
-          <Dialog
-            open={openHelp}
-            onOpenChange={(open: boolean) => {
-              setOpenHelp(open);
-            }}
-          >
-            <DialogContent className="bg-bgColorRight">
-              <DialogHeader>
-                <DialogDescription>
-                  <Help commands={commandsHomeAdmin} page="inicio"></Help>
-                </DialogDescription>
-              </DialogHeader>
-            </DialogContent>
-          </Dialog>
-        )}
-      </div>
+      <dialog id="helpModal" className="modal">
+        <div className="modal-box">
+          <form method="dialog">
+            <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
+              ✕
+            </button>
+          </form>
+          <Help commands={commandsHomeAdmin} page="inicio"></Help>
+        </div>
+      </dialog>
     </>
   );
 }

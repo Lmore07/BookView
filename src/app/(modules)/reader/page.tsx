@@ -92,9 +92,15 @@ export default function Home() {
     try {
       const call = await callFunction(finalTranscript);
       if (call.name === "selectCategories") {
-        addCategoriesToFilter(call.args.categories);
+        const categories = call.args.categories.map(
+          (obj: { category: string }) => obj.category.toLowerCase()
+        );
+        addCategoriesToFilter(categories);
       } else if (call.name == "removeCategories") {
-        removeCategoriesFromFilter(call.args.categories);
+        const categories = call.args.categories.map(
+          (obj: { category: string }) => obj.category.toLowerCase()
+        );
+        removeCategoriesFromFilter(categories);
       } else if (call.name == "setInputText") {
         setSearchTerm(call.args.text);
       } else if (call.name == "selectBookByName") {

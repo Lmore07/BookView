@@ -7,7 +7,7 @@ import {
 export async function generateText(text: string) {
   const genAI = new GoogleGenerativeAI(`${process.env.API_KEY_GEMINI}`);
   const model = genAI.getGenerativeModel({
-    model: "gemini-pro",
+    model: process.env.MODEL_GEMINI ?? "gemini-1.0-pro",
     safetySettings: [
       {
         category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,

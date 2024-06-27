@@ -10,7 +10,7 @@ export async function callFunction(
 ): Promise<{ name: string; args: any }> {
   const genAI = new GoogleGenerativeAI(`${process.env.API_KEY_GEMINI}`);
   const model = genAI.getGenerativeModel({
-    model: "gemini-1.5-flash",
+    model: process.env.MODEL_GEMINI ?? "gemini-1.0-pro",
     tools: [
       {
         functionDeclarations: [
@@ -96,20 +96,12 @@ const setInputText: FunctionDeclaration = {
 //HOME
 const viewBooks: FunctionDeclaration = {
   name: "viewBooks",
-  description: "View all the books I have created.",
-  parameters: {
-    type: FunctionDeclarationSchemaType.OBJECT,
-    properties: {},
-  },
+  description: "View all the books in the app.",
 };
 
 const addNewBook: FunctionDeclaration = {
   name: "addNewBook",
   description: "Add a new book.",
-  parameters: {
-    type: FunctionDeclarationSchemaType.OBJECT,
-    properties: {},
-  },
 };
 
 const viewStatistics: FunctionDeclaration = {
@@ -192,7 +184,7 @@ const selectCategories: FunctionDeclaration = {
         type: FunctionDeclarationSchemaType.ARRAY,
         description: "The categories to filter the books.",
         items: {
-          type: FunctionDeclarationSchemaType.STRING,
+          type: FunctionDeclarationSchemaType.OBJECT,
           properties: {
             category: {
               type: FunctionDeclarationSchemaType.STRING,
@@ -215,7 +207,7 @@ const removeCategories: FunctionDeclaration = {
         type: FunctionDeclarationSchemaType.ARRAY,
         description: "The categories to remove from the books.",
         items: {
-          type: FunctionDeclarationSchemaType.STRING,
+          type: FunctionDeclarationSchemaType.OBJECT,
           properties: {
             category: {
               type: FunctionDeclarationSchemaType.STRING,
@@ -290,8 +282,4 @@ const removeFilter: FunctionDeclaration = {
 const newCategory: FunctionDeclaration = {
   name: "newCategory",
   description: "Create a new category.",
-  parameters: {
-    type: FunctionDeclarationSchemaType.OBJECT,
-    properties: {},
-  },
 };

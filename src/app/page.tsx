@@ -177,7 +177,7 @@ export default function RootPage() {
         >
           <div className="container grid items-center gap-6 px-4 md:px-6 lg:grid-cols-2 lg:gap-10">
             <div className="space-y-2 animate-fadeIn flex flex-col justify-center">
-              <h2 className="text-3xl font-bold tracking-tighter md:text-4xl/tight animate-slideInLeft">
+              <h2 className="text-3xl font-bold tracking-tighter md:text-4xl/tight text-titleLanding animate-slideInLeft">
                 Adoptar el Diseño Universal Para El Aprendizaje
               </h2>
               <div className="max-w-[600px] text-textLanding md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed text-left inline-block dark:text-gray-400 animate-fadeIn">

@@ -39,6 +39,7 @@ const config = {
       },
       colors: {
         bgColorLeft: "var(--bgColorLeft)",
+        titleLanding: "var(--text-TitleLanding)",
         bgHeaderTable: "var(--header-table--background)",
         textHeaderTable: "var(--header-table--text)",
         bgRowsTable: "var(--rows-table--background)",

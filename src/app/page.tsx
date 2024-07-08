@@ -77,10 +77,10 @@ export default function RootPage() {
           <div className="container grid gap-12 px-4 md:px-6 relative z-10">
             <div className="flex flex-col items-center justify-center space-y-4 text-center animate-fadeIn">
               <div className="space-y-2 flex flex-col items-center">
-                <div className="inline-block font-semibold rounded-lg bg-gradient-to-r from-primary-250 to-secondary-250 px-3 py-1 text-sm  ">
+                <div className="inline-block font-semibold rounded-lg text-text-titleLanding bg-gradient-to-r from-primary-250 to-secondary-250 px-3 py-1 text-sm  ">
                   Creación y lectura de libros
                 </div>
-                <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl animate-slideInDown dark:text-black">
+                <h2 className="text-3xl text-text-titleLanding font-bold tracking-tighter sm:text-5xl animate-slideInDown dark:text-black">
                   Da rienda suelta a tu creatividad con el diseño universal
                 </h2>
                 <div className="max-w-[900px] text-center text-textLanding md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-gray-400 animate-fadeIn">
@@ -105,7 +105,7 @@ export default function RootPage() {
                 <div className="flex items-center justify-center bg-primary-500 rounded-full h-12 w-12">
                   <InfoIcon className="h-6 w-6 text-bgColorRight " />
                 </div>
-                <div className="text-xl font-bold">Interfaz intuitiva</div>
+                <div className="text-xl font-bold text-text-titleLanding">Interfaz intuitiva</div>
                 <div className="text-textLanding dark:text-gray-400">
                   Experiencia satisfactoria de creación y lectura de libros para
                   usuarios de todos los niveles.
@@ -115,7 +115,7 @@ export default function RootPage() {
                 <div className="flex items-center justify-center bg-primary-500 rounded-full h-12 w-12">
                   <MusicIcon className="h-6 w-6 text-bgColorRight" />
                 </div>
-                <div className="text-xl font-bold">Integración multimedia</div>
+                <div className="text-xl font-bold text-text-titleLanding">Integración multimedia</div>
                 <div className="text-textLanding dark:text-gray-400">
                   Incorpore una variedad de medios, incluidos texto, imágenes,
                   audio y video, para atender diversos estilos de aprendizaje.
@@ -125,7 +125,7 @@ export default function RootPage() {
                 <div className="flex items-center justify-center bg-primary-500 rounded-full h-12 w-12">
                   <AccessibilityIcon className="h-6 w-6 text-bgColorRight" />
                 </div>
-                <div className="text-xl font-bold text-center">
+                <div className="text-xl font-bold text-center text-text-titleLanding">
                   Funciones de accesibilidad
                 </div>
                 <div className="text-textLanding dark:text-gray-400">
@@ -143,7 +143,7 @@ export default function RootPage() {
         >
           <div className="container flex items-center justify-center gap-4 px-4 md:px-6">
             <div className="space-y-3 animate-fadeIn flex flex-col items-center">
-              <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl animate-slideInDown">
+              <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl text-text-titleLanding animate-slideInDown">
                 Experimente el poder del diseño universal
               </h2>
               <div className="mx-auto max-w-[700px] text-textLanding md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-gray-400 animate-fadeIn">

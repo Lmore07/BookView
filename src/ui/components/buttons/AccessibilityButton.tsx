@@ -127,7 +127,7 @@ export default function AccessibilityButton() {
               <option value="OpenDyslexic">OpenDyslexic</option>
             </select>
           </div>
-          <div>
+          {/* <div>
             <label htmlFor="zoom" className="mr-2 text-textButtonAccesible">
               Modificar tamaño:
             </label>
@@ -153,7 +153,7 @@ export default function AccessibilityButton() {
             >
               +
             </button>
-          </div>
+          </div> */}
         </div>
       )}
     </div>

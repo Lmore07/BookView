@@ -1,9 +1,6 @@
 "use client";
 import ButtonOutlined from "@/ui/components/buttons/ButtonOutlined";
 import React, { createContext, useEffect, useRef, useState } from "react";
-import {
-  useSpeechRecognition,
-} from "react-speech-recognition";
 import "./styles.css";
 
 export interface VoiceRecorderContextValue {
@@ -22,8 +19,6 @@ export const VoiceRecorderProvider = ({
 }: {
   children: React.ReactNode;
 }) => {
-  const { resetTranscript, listening } =
-    useSpeechRecognition();
   const [isListening, setIsListening] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
   const [transcript, setTranscript] = useState("");
@@ -33,17 +28,11 @@ export const VoiceRecorderProvider = ({
   const audioChunksRef = useRef<Blob[]>([]);
 
   const startListening = () => {
-    /*SpeechRecognition.startListening({
-      language: "es-EC",
-      continuous: isContinuos,
-      interimResults: true,
-    });*/
     handleRecordAudio();
   };
 
   const handleRecordAudio = async () => {
     try {
-      console.log("Accessing the microphone");
       const stream = await navigator.mediaDevices.getUserMedia({
         audio: true,
       });
@@ -53,7 +42,6 @@ export const VoiceRecorderProvider = ({
         audioChunksRef.current.push(event.data);
       };
       mediaRecorderRef.current.onstop = async () => {
-        console.log("Stop recording");
         const audioBlob = new Blob(audioChunksRef.current, {
           type: "audio/wav",
         });
@@ -67,29 +55,26 @@ export const VoiceRecorderProvider = ({
           });
           const data = await res.json();
           setFinalTranscript(data.data[0].text);
+          setIsAnimating(false);
         } catch (error) {
           console.error("Error al procesar el audio", error);
         }
       };
       mediaRecorderRef.current.start();
+      setIsAnimating(true);
     } catch (error) {
       console.error("Error accessing the microphone", error);
     }
-
   };
 
   useEffect(() => {
-    if (!listening) {
-      setIsListening(false);
-      setIsAnimating(false);
-    }
-  }, [listening]);
-
-  useEffect(() => {
+    const dialog = document.getElementById("speech") as HTMLDialogElement;
     if (isListening) {
       startListening();
+      dialog.showModal();
     } else {
       stopListening();
+      dialog.close();
     }
   }, [isListening]);
 
@@ -107,28 +92,37 @@ export const VoiceRecorderProvider = ({
         continuos: true,
       }}
     >
-      {isListening && (
-        <div
-          className={`fixed flex flex-col z-[100] top-0 left-0 w-full h-full items-center justify-center`}
-        >
-          <div className="absolute inset-0 bg-black bg-opacity-25 backdrop-blur-sm"></div>
-          <div className="relative z-10 flex flex-col bg-bgColorRight p-5 rounded-full">
+      <dialog id="speech" className="modal ">
+        <div className="modal-box">
+          <button
+            onClick={() => {
+              setIsListening(false);
+            }}
+            className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
+          >
+            ✕
+          </button>
+          <div className="flex flex-col items-center bg-bgColorRight p-2">
             <div className="flex flex-row">
               <div
-                className={`h-8 w-4 bg-primary rounded-full mx-2 ${isAnimating ? "animate-wave-1" : ""
-                  }`}
+                className={`h-8 w-4 bg-primary rounded-full mx-2 ${
+                  isAnimating ? "animate-wave-1" : ""
+                }`}
               ></div>
               <div
-                className={`h-8 w-4 bg-primary rounded-full mx-2 ${isAnimating ? "animate-wave-2" : ""
-                  }`}
+                className={`h-8 w-4 bg-primary rounded-full mx-2 ${
+                  isAnimating ? "animate-wave-2" : ""
+                }`}
               ></div>
               <div
-                className={`h-8 w-4 bg-primary rounded-full mx-2 ${isAnimating ? "animate-wave-3" : ""
-                  }`}
+                className={`h-8 w-4 bg-primary rounded-full mx-2 ${
+                  isAnimating ? "animate-wave-3" : ""
+                }`}
               ></div>
               <div
-                className={`h-8 w-4 bg-primary rounded-full mx-2 ${isAnimating ? "animate-wave-4" : ""
-                  }`}
+                className={`h-8 w-4 bg-primary rounded-full mx-2 ${
+                  isAnimating ? "animate-wave-4" : ""
+                }`}
               ></div>
             </div>
             <div className="flex items-center justify-center mt-3">
@@ -145,7 +139,7 @@ export const VoiceRecorderProvider = ({
             </div>
           </div>
         </div>
-      )}
+      </dialog>
       {children}
     </VoiceRecorderContext.Provider>
   );

@@ -17,15 +17,15 @@ export const POST = apiMiddleware(async (request: NextRequest) => {
     );
   }
 
-  let tempDir=fs.mkdtempSync('/tmp');
-  console.log(tempDir);
+  //let tempDir=fs.mkdtempSync('/tmp');
+  //console.log(tempDir);
 
   try {
     const fileExtension = path.extname(audioFile.name);
     const bytes = await audioFile.arrayBuffer();
     const buffer = Buffer.from(bytes);
     const uuid = uuidv4();
-    const filePath = path.join(tempDir, `${uuid}${fileExtension}`);
+    const filePath = `/tmp/${uuid}${fileExtension}`;
     fs.writeFileSync(filePath, buffer);
 
     try {

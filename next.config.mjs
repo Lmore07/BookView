@@ -34,6 +34,7 @@ const nextConfig = {
   },
   experimental: {
     missingSuspenseWithCSRBailout: false,
+    nftTracing: true 
   },
   output: "standalone",
 };

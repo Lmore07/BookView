@@ -1,7 +1,7 @@
 "use client";
 import ButtonOutlined from "@/ui/components/buttons/ButtonOutlined";
 import React, { createContext, useEffect, useRef, useState } from "react";
-import SpeechRecognition, {
+import {
   useSpeechRecognition,
 } from "react-speech-recognition";
 import "./styles.css";
@@ -22,26 +22,61 @@ export const VoiceRecorderProvider = ({
 }: {
   children: React.ReactNode;
 }) => {
-  const { resetTranscript, listening, transcript, finalTranscript } =
+  const { resetTranscript, listening } =
     useSpeechRecognition();
   const [isListening, setIsListening] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
-  const [isContinuos, setIsContinuos] = useState(false);
+  const [transcript, setTranscript] = useState("");
+  const [finalTranscript, setFinalTranscript] = useState("");
   const currentComponentRef = useRef<HTMLDivElement | null>(null);
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const audioChunksRef = useRef<Blob[]>([]);
 
   const startListening = () => {
-    SpeechRecognition.startListening({
+    /*SpeechRecognition.startListening({
       language: "es-EC",
       continuous: isContinuos,
       interimResults: true,
-    });
+    });*/
+    handleRecordAudio();
   };
 
-  useEffect(() => {
-    if (transcript.length > 0) {
-      setIsAnimating(true);
+  const handleRecordAudio = async () => {
+    try {
+      console.log("Accessing the microphone");
+      const stream = await navigator.mediaDevices.getUserMedia({
+        audio: true,
+      });
+      mediaRecorderRef.current = new MediaRecorder(stream);
+      audioChunksRef.current = [];
+      mediaRecorderRef.current.ondataavailable = (event) => {
+        audioChunksRef.current.push(event.data);
+      };
+      mediaRecorderRef.current.onstop = async () => {
+        console.log("Stop recording");
+        const audioBlob = new Blob(audioChunksRef.current, {
+          type: "audio/wav",
+        });
+
+        try {
+          const formData = new FormData();
+          formData.append("audio", audioBlob);
+          const res = await fetch("../api/gemini", {
+            method: "POST",
+            body: formData,
+          });
+          const data = await res.json();
+          setFinalTranscript(data.data[0].text);
+        } catch (error) {
+          console.error("Error al procesar el audio", error);
+        }
+      };
+      mediaRecorderRef.current.start();
+    } catch (error) {
+      console.error("Error accessing the microphone", error);
     }
-  }, [transcript]);
+
+  };
 
   useEffect(() => {
     if (!listening) {
@@ -59,8 +94,7 @@ export const VoiceRecorderProvider = ({
   }, [isListening]);
 
   const stopListening = () => {
-    SpeechRecognition.stopListening();
-    resetTranscript();
+    mediaRecorderRef.current?.stop();
   };
 
   return (
@@ -81,24 +115,20 @@ export const VoiceRecorderProvider = ({
           <div className="relative z-10 flex flex-col bg-bgColorRight p-5 rounded-full">
             <div className="flex flex-row">
               <div
-                className={`h-8 w-4 bg-primary rounded-full mx-2 ${
-                  isAnimating ? "animate-wave-1" : ""
-                }`}
+                className={`h-8 w-4 bg-primary rounded-full mx-2 ${isAnimating ? "animate-wave-1" : ""
+                  }`}
               ></div>
               <div
-                className={`h-8 w-4 bg-primary rounded-full mx-2 ${
-                  isAnimating ? "animate-wave-2" : ""
-                }`}
+                className={`h-8 w-4 bg-primary rounded-full mx-2 ${isAnimating ? "animate-wave-2" : ""
+                  }`}
               ></div>
               <div
-                className={`h-8 w-4 bg-primary rounded-full mx-2 ${
-                  isAnimating ? "animate-wave-3" : ""
-                }`}
+                className={`h-8 w-4 bg-primary rounded-full mx-2 ${isAnimating ? "animate-wave-3" : ""
+                  }`}
               ></div>
               <div
-                className={`h-8 w-4 bg-primary rounded-full mx-2 ${
-                  isAnimating ? "animate-wave-4" : ""
-                }`}
+                className={`h-8 w-4 bg-primary rounded-full mx-2 ${isAnimating ? "animate-wave-4" : ""
+                  }`}
               ></div>
             </div>
             <div className="flex items-center justify-center mt-3">

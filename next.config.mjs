@@ -26,7 +26,7 @@ const nextConfig = {
     E_LABS_API_KEY: process.env.E_LABS_API_KEY || "vacio",
     E_LABS_VOICE: process.env.E_LABS_VOICE || "vacio",
     API_KEY_GEMINI: process.env.API_KEY_GEMINI || "vacio",
-    MODEL_GEMINI: process.env.MODEL_GEMINI || "gemini-pro",
+    MODEL_GEMINI: process.env.MODEL_GEMINI || "gemini-1.5-flash",
     ADMIN_MAIL: process.env.ADMIN_MAIL || "vacio",
     ADMIN_PASSWORD: process.env.ADMIN_PASSWORD || "vacio",
     ADMIN_NAME: process.env.ADMIN_NAME || "vacio",

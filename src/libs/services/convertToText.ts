@@ -4,6 +4,7 @@ import {
   HarmCategory,
 } from "@google/generative-ai";
 import { GoogleAIFileManager } from "@google/generative-ai/files";
+import { Readable } from "stream";
 
 export async function convertToText(
   name: string,
@@ -54,10 +55,12 @@ export async function convertToText(
 export async function uploadToGemini(
   path: string,
   mimeType: string,
-  name: string
+  name: string,
 ) {
   const fileManager = new GoogleAIFileManager(`${process.env.API_KEY_GEMINI}`);
   console.log("File manager", await fileManager.listFiles());
+
+
   const uploadResult = await fileManager.uploadFile(path, {
     mimeType,
     displayName: "audio",

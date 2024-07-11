@@ -4,7 +4,6 @@ import {
   HarmCategory,
 } from "@google/generative-ai";
 import { GoogleAIFileManager } from "@google/generative-ai/files";
-import { Readable } from "stream";
 
 export async function convertToText(
   name: string,
@@ -46,7 +45,7 @@ export async function convertToText(
       },
     },
     {
-      text: "Quiero que transcribas el audio a texto en formato de oracion, respetando puntuaciones, signos y caracteres especiales.",
+      text: "Quiero que transcribas el audio a texto en formato de oración, respetando puntuaciones, signos y caracteres especiales. Debes ser capaz de reconocer números, caracteres especiales como (@, $, %, &, +, -, *, /, ., #), si detectas correos electrónicos transcribe todo en minúscula y unido, es decir cualquier cosa dicha por un humano debes saber interpretarla como si fueras tu también un humano. Evita colocar saltos de linea, hazlo todo en una misma linea",
     },
   ]);
   return result.response.text();
@@ -55,11 +54,10 @@ export async function convertToText(
 export async function uploadToGemini(
   path: string,
   mimeType: string,
-  name: string,
+  name: string
 ) {
   const fileManager = new GoogleAIFileManager(`${process.env.API_KEY_GEMINI}`);
   console.log("File manager", await fileManager.listFiles());
-
 
   const uploadResult = await fileManager.uploadFile(path, {
     mimeType,

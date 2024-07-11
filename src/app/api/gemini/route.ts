@@ -3,7 +3,6 @@ import { convertToText } from "@/libs/services/convertToText";
 import fs from "fs";
 import { NextRequest, NextResponse } from "next/server";
 import path from "path";
-import { Readable } from "stream";
 import { v4 as uuidv4 } from "uuid";
 
 export const POST = apiMiddleware(async (request: NextRequest) => {
@@ -17,9 +16,6 @@ export const POST = apiMiddleware(async (request: NextRequest) => {
     );
   }
 
-  //let tempDir=fs.mkdtempSync('/tmp');
-  //console.log(tempDir);
-
   try {
     const fileExtension = path.extname(audioFile.name);
     const bytes = await audioFile.arrayBuffer();
@@ -28,14 +24,7 @@ export const POST = apiMiddleware(async (request: NextRequest) => {
     const filePath = `/tmp/${uuid}${fileExtension}`;
     fs.writeFileSync(filePath, buffer);
 
-    try {
-      text = await convertToText(uuid, filePath, audioFile.type);
-    } finally {
-      fs.unlink(filePath, (err) => {
-        if (err) throw err;
-        console.log("path was deleted");
-      });
-    }
+    text = await convertToText(uuid, filePath, audioFile.type);
 
     return NextResponse.json(
       { message: "Success", data: [{ text }] },

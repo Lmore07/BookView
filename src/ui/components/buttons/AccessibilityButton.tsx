@@ -18,9 +18,17 @@ export default function AccessibilityButton() {
       (document.body.style as any).zoom = newZoom.toString();
       setZoom(localZoom);
     }
+
+    const systemPrefersDark = window.matchMedia(
+      "(prefers-color-scheme: dark)"
+    ).matches;
+
     if (localTheme) {
       setTheme(localTheme);
+    } else {
+      setTheme(systemPrefersDark ? "dark" : localTheme ?? "light");
     }
+
     if (localFont) {
       document.documentElement.style.setProperty(
         "--font-family",
@@ -28,6 +36,16 @@ export default function AccessibilityButton() {
       );
       setFont(localFont);
     }
+
+    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+    const handleSystemThemeChange = (e: MediaQueryListEvent) => {
+      setTheme(e.matches ? "dark" : "light");
+    };
+    mediaQuery.addEventListener("change", handleSystemThemeChange);
+
+    return () => {
+      mediaQuery.removeEventListener("change", handleSystemThemeChange);
+    };
   }, []);
 
   const handleThemeChange = (event: any) => {

@@ -6,6 +6,7 @@ import "./styles.css";
 export interface VoiceRecorderContextValue {
   finalTranscript: string;
   transcript: string;
+  setFinalTranscript : React.Dispatch<React.SetStateAction<string>>;
   setIsListening: React.Dispatch<React.SetStateAction<boolean>>;
   currentComponentRef: React.MutableRefObject<HTMLDivElement | null>;
   continuos?: boolean;
@@ -45,11 +46,10 @@ export const VoiceRecorderProvider = ({
         const audioBlob = new Blob(audioChunksRef.current, {
           type: "audio/wav",
         });
-
         try {
           const formData = new FormData();
           formData.append("audio", audioBlob);
-          const res = await fetch("../api/gemini", {
+          const res = await fetch("../../api/gemini", {
             method: "POST",
             body: formData,
           });
@@ -67,6 +67,13 @@ export const VoiceRecorderProvider = ({
     }
   };
 
+  const stopListening = () => {
+    if (mediaRecorderRef.current && mediaRecorderRef.current.state !== "inactive") {
+      mediaRecorderRef.current.stop();
+      mediaRecorderRef.current.stream.getTracks().forEach((track) => track.stop());
+    }
+  };
+
   useEffect(() => {
     const dialog = document.getElementById("speech") as HTMLDialogElement;
     if (isListening) {
@@ -78,21 +85,18 @@ export const VoiceRecorderProvider = ({
     }
   }, [isListening]);
 
-  const stopListening = () => {
-    mediaRecorderRef.current?.stop();
-  };
-
   return (
     <VoiceRecorderContext.Provider
       value={{
         setIsListening,
+        setFinalTranscript,
         finalTranscript,
         transcript,
         currentComponentRef,
         continuos: true,
       }}
     >
-      <dialog id="speech" className="modal ">
+      <dialog id="speech" className="modal">
         <div className="modal-box">
           <button
             onClick={() => {

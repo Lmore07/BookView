@@ -5,7 +5,7 @@ require("dotenv").config({
     process.env.NODE_ENV == "development" ? "./.env.development" : "./.env"
   }`,
 });
-/** @type {import('next').NextConfig} */
+
 const nextConfig = {
   images: {
     remotePatterns: [
@@ -33,8 +33,7 @@ const nextConfig = {
     ADMIN_LASTNAME: process.env.ADMIN_LASTNAME || "vacio",
   },
   experimental: {
-    missingSuspenseWithCSRBailout: false,
-    
+    missingSuspenseWithCSRBailout: false
   },
 };
 

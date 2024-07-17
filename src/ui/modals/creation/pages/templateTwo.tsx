@@ -17,11 +17,10 @@ const Template2: React.FC<{
   const [imageBlob, setImageBlob] = useState<File | null | string>(null);
   const [audioBlob, setAudioBlob] = useState<Blob | null | string>(null);
   const [videoBlob, setVideoBlob] = useState<Blob | string | null>(null);
-  const { setIsListening, finalTranscript, transcript, currentComponentRef } =
+  const { setIsListening, finalTranscript, currentComponentRef } =
     useContext(VoiceRecorderContext)!;
   const componentRef = useRef<HTMLDivElement>(null);
   const [contentVoice, setContentVoice] = useState(content);
-  const [contentVoiceTemp, setContentVoiceTemp] = useState(contentVoice);
 
   const handleImageUpload = () => {
     const input = document.createElement("input");
@@ -103,21 +102,13 @@ const Template2: React.FC<{
     return matches ? matches[5] : null;
   };
 
-  useEffect(() => {
-    if (
-      transcript.length > 0 &&
-      componentRef.current === currentComponentRef.current
-    ) {
-      setContentVoice(contentVoiceTemp + "\n" + transcript);
-    }
-  }, [transcript]);
 
   useEffect(() => {
     if (
       finalTranscript.length > 0 &&
       componentRef.current === currentComponentRef.current
     ) {
-      setContentVoiceTemp(contentVoice);
+      setContentVoice(finalTranscript);
     }
   }, [finalTranscript]);
 
@@ -183,7 +174,7 @@ const Template2: React.FC<{
           }}
           onEditorChange={(newContent) => {
             if (newContent.length == 0) {
-              setContentVoiceTemp('');
+              setContentVoice('');
             }
             setContentVoice(newContent);
             onContentChange(contentVoice, imageBlob, audioBlob, videoBlob);

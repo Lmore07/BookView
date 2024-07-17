@@ -15,7 +15,7 @@ const Template4: React.FC<{
 }> = ({ content, onContentChange, audio, video }) => {
   const [audioBlob, setAudioBlob] = useState<Blob | null | string>(null);
   const [videoBlob, setVideoBlob] = useState<Blob | string | null>(null);
-  const { setIsListening, finalTranscript, transcript, currentComponentRef } =
+  const { setIsListening, finalTranscript, currentComponentRef } =
     useContext(VoiceRecorderContext)!;
   const componentRef = useRef<HTMLDivElement>(null);
   const [contentVoice, setContentVoice] = useState(content);
@@ -75,22 +75,13 @@ const Template4: React.FC<{
     return matches ? matches[5] : null;
   };
 
-  useEffect(() => {
-    if (
-      transcript.length > 0 &&
-      componentRef.current === currentComponentRef.current
-    ) {
-      setContentVoice(contentTemp + "\n" + transcript);
-    }
-  }, [transcript]);
-
 
   useEffect(() => {
     if (
       finalTranscript.length > 0 &&
       componentRef.current === currentComponentRef.current
     ) {
-      contentTemp = contentVoice;
+      contentTemp = finalTranscript;
     }
   }, [finalTranscript]);
 

@@ -1,8 +1,5 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import SpeechRecognition, {
-  useSpeechRecognition,
-} from "react-speech-recognition";
 
 declare global {
   interface Window {
@@ -61,6 +58,12 @@ const Input = ({
   const handleBlur = () => {
     setTouched(true);
   };
+
+  //ON INIT
+  useEffect(() => {}, []);
+
+  //DETECTAR CAMBIOS
+  useEffect(() => {}, [touched]);
 
   const validationErrors = touched
     ? validations

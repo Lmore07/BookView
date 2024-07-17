@@ -18,27 +18,17 @@ const Template1: React.FC<{
   const [imageBlob, setImageBlob] = useState<File | null | string>(null);
   const [audioBlob, setAudioBlob] = useState<Blob | null | string>(null);
   const [videoBlob, setVideoBlob] = useState<Blob | string | null>(null);
-  const { setIsListening, finalTranscript, transcript, currentComponentRef } =
+  const { setIsListening, finalTranscript, currentComponentRef } =
     useContext(VoiceRecorderContext)!;
   const [contentVoice, setContentVoice] = useState(content);
-  const [contentVoiceTemp, setContentVoiceTemp] = useState(contentVoice);
   const componentRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (
-      transcript.length > 0 &&
-      componentRef.current === currentComponentRef.current
-    ) {
-      setContentVoice(contentVoiceTemp + "\n" + transcript);
-    }
-  }, [transcript]);
 
   useEffect(() => {
     if (
       finalTranscript.length > 0 &&
       componentRef.current === currentComponentRef.current
     ) {
-      setContentVoiceTemp(contentVoice);
+      setContentVoice(finalTranscript);
     }
   }, [finalTranscript]);
 
@@ -184,7 +174,7 @@ const Template1: React.FC<{
           }}
           onEditorChange={(newContent) => {
             if (newContent.length == 0) {
-              setContentVoiceTemp(newContent);
+              setContentVoice(newContent);
             }
             setContentVoice(newContent);
             onContentChange(contentVoice, imageBlob, audioBlob, videoBlob);

@@ -29,11 +29,13 @@ export default function Login() {
       email: "",
       password: "",
     },
+    shouldFocusError: true,
+    mode: "all"
   });
-
   async function onSubmit(values: z.infer<typeof loginSchema>) {
     try {
       setIsLoading(true);
+      console.log(values);
       const res = await fetch("../api/security/login", {
         cache: "no-store",
         method: "POST",

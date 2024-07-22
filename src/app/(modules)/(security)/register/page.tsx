@@ -30,6 +30,8 @@ export default function Register() {
       names: "",
       lastNames: "",
     },
+    shouldFocusError: true,
+    mode: "all",
   });
 
   async function onSubmit(values: z.infer<typeof registerSchema>) {

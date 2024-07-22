@@ -47,14 +47,6 @@ const SelectNUI = ({
           <Select onValueChange={field.onChange} defaultValue={field.value}>
             <FormControl className="w-full">
               <SelectTrigger
-                onBlur={() => {
-                  field.onBlur();
-                  form.trigger(name);
-                }}
-                onChange={(e) => {
-                  field.onChange(e);
-                  form.trigger(name);
-                }}
                 error={fieldState.error}
                 isTouched={fieldState.isTouched}
                 className={`w-full font-custom bg-bgInputText px-3 py-2 border-0 text-sm font-normal hover:placeholder:text-secondary-400 text-secondary-400 rounded-md outline-none hover:text-secondary-400 hover:border hover:border-black ${

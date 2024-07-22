@@ -57,14 +57,7 @@ const InputNUI = ({
               }`}
               placeholder={placeholder}
               {...field}
-              onBlur={() => {
-                field.onBlur();
-                form.trigger(name);
-              }}
-              onChange={(e) => {
-                field.onChange(e);
-                form.trigger(name);
-              }}
+              
             />
           </FormControl>
           <FormMessage />

@@ -4,7 +4,7 @@ import React, { ReactNode } from "react";
 interface ButtonProps {
   children: ReactNode;
   icon?: ReactNode | null;
-  onClick: () => void;
+  onClick?: () => void;
   className?: string | null;
   type?: "button" | "reset" | "submit";
 }

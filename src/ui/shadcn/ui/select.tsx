@@ -1,36 +1,88 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import * as SelectPrimitive from "@radix-ui/react-select"
-import { Check, ChevronDown, ChevronUp } from "lucide-react"
+import * as React from "react";
+import * as SelectPrimitive from "@radix-ui/react-select";
+import { Check, ChevronDown, ChevronUp } from "lucide-react";
 
-import { cn } from "@/libs/utils/utils"
+import { cn } from "@/libs/utils/utils";
+import { FieldError } from "react-hook-form";
 
-const Select = SelectPrimitive.Root
+const Select = SelectPrimitive.Root;
 
-const SelectGroup = SelectPrimitive.Group
+const SelectGroup = SelectPrimitive.Group;
 
-const SelectValue = SelectPrimitive.Value
+const SelectValue = SelectPrimitive.Value;
+
+type SelectTriggerProps = React.ComponentPropsWithoutRef<
+  typeof SelectPrimitive.Trigger
+> & {
+  icon?: React.ReactNode;
+  error?: FieldError;
+  isTouched?: boolean;
+};
 
 const SelectTrigger = React.forwardRef<
   React.ElementRef<typeof SelectPrimitive.Trigger>,
-  React.ComponentPropsWithoutRef<typeof SelectPrimitive.Trigger>
->(({ className, children, ...props }, ref) => (
-  <SelectPrimitive.Trigger
-    ref={ref}
-    className={cn(
-      "flex h-10 w-full items-center justify-between rounded-md border border-input bg-primary-500 px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1",
-      className
+  SelectTriggerProps
+>(({ className, icon, error, isTouched, children, ...props }, ref) => (
+  <div className="relative flex items-center">
+    <SelectPrimitive.Trigger
+      ref={ref}
+      className={cn(
+        "flex w-full items-center justify-between rounded-md bg-black px-3 py-2 text-sm font-normal",
+        className
+      )}
+      {...props}
+    >
+      {children}
+      <SelectPrimitive.Icon asChild>
+        <ChevronDown className="h-4 w-4 opacity-50" />
+      </SelectPrimitive.Icon>
+    </SelectPrimitive.Trigger>
+    {error && (
+      <div className="inset-y-0 flex items-center pl-2 pointer-events-none">
+        <svg
+          viewBox="0 0 24 24"
+          fill="currentColor"
+          className="w-5 h-5 text-red-900"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
+          <g
+            id="SVGRepo_tracerCarrier"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          ></g>
+          <g id="SVGRepo_iconCarrier">
+            {" "}
+            <path
+              fillRule="evenodd"
+              clipRule="evenodd"
+              d="M22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22C17.5228 22 22 17.5228 22 12ZM12 6.25C12.4142 6.25 12.75 6.58579 12.75 7V13C12.75 13.4142 12.4142 13.75 12 13.75C11.5858 13.75 11.25 13.4142 11.25 13V7C11.25 6.58579 11.5858 6.25 12 6.25ZM12 17C12.5523 17 13 16.5523 13 16C13 15.4477 12.5523 15 12 15C11.4477 15 11 15.4477 11 16C11 16.5523 11.4477 17 12 17Z"
+            ></path>{" "}
+          </g>
+        </svg>
+      </div>
     )}
-    {...props}
-  >
-    {children}
-    <SelectPrimitive.Icon asChild>
-      <ChevronDown className="h-4 w-4 opacity-50" />
-    </SelectPrimitive.Icon>
-  </SelectPrimitive.Trigger>
-))
-SelectTrigger.displayName = SelectPrimitive.Trigger.displayName
+    {error == undefined && isTouched && (
+      <div className="inset-y-0 flex pl-2 items-center pointer-events-none">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="currentColor"
+          className="w-5 h-5 text-green-600"
+        >
+          <path
+            fillRule="evenodd"
+            d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm13.36-1.814a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z"
+            clipRule="evenodd"
+          />
+        </svg>
+      </div>
+    )}
+  </div>
+));
+SelectTrigger.displayName = SelectPrimitive.Trigger.displayName;
 
 const SelectScrollUpButton = React.forwardRef<
   React.ElementRef<typeof SelectPrimitive.ScrollUpButton>,
@@ -46,8 +98,8 @@ const SelectScrollUpButton = React.forwardRef<
   >
     <ChevronUp className="h-4 w-4" />
   </SelectPrimitive.ScrollUpButton>
-))
-SelectScrollUpButton.displayName = SelectPrimitive.ScrollUpButton.displayName
+));
+SelectScrollUpButton.displayName = SelectPrimitive.ScrollUpButton.displayName;
 
 const SelectScrollDownButton = React.forwardRef<
   React.ElementRef<typeof SelectPrimitive.ScrollDownButton>,
@@ -63,9 +115,9 @@ const SelectScrollDownButton = React.forwardRef<
   >
     <ChevronDown className="h-4 w-4" />
   </SelectPrimitive.ScrollDownButton>
-))
+));
 SelectScrollDownButton.displayName =
-  SelectPrimitive.ScrollDownButton.displayName
+  SelectPrimitive.ScrollDownButton.displayName;
 
 const SelectContent = React.forwardRef<
   React.ElementRef<typeof SelectPrimitive.Content>,
@@ -96,8 +148,8 @@ const SelectContent = React.forwardRef<
       <SelectScrollDownButton />
     </SelectPrimitive.Content>
   </SelectPrimitive.Portal>
-))
-SelectContent.displayName = SelectPrimitive.Content.displayName
+));
+SelectContent.displayName = SelectPrimitive.Content.displayName;
 
 const SelectLabel = React.forwardRef<
   React.ElementRef<typeof SelectPrimitive.Label>,
@@ -108,8 +160,8 @@ const SelectLabel = React.forwardRef<
     className={cn("py-1.5 pl-8 pr-2 text-sm font-semibold", className)}
     {...props}
   />
-))
-SelectLabel.displayName = SelectPrimitive.Label.displayName
+));
+SelectLabel.displayName = SelectPrimitive.Label.displayName;
 
 const SelectItem = React.forwardRef<
   React.ElementRef<typeof SelectPrimitive.Item>,
@@ -131,8 +183,8 @@ const SelectItem = React.forwardRef<
 
     <SelectPrimitive.ItemText>{children}</SelectPrimitive.ItemText>
   </SelectPrimitive.Item>
-))
-SelectItem.displayName = SelectPrimitive.Item.displayName
+));
+SelectItem.displayName = SelectPrimitive.Item.displayName;
 
 const SelectSeparator = React.forwardRef<
   React.ElementRef<typeof SelectPrimitive.Separator>,
@@ -143,8 +195,8 @@ const SelectSeparator = React.forwardRef<
     className={cn("-mx-1 my-1 h-px bg-muted", className)}
     {...props}
   />
-))
-SelectSeparator.displayName = SelectPrimitive.Separator.displayName
+));
+SelectSeparator.displayName = SelectPrimitive.Separator.displayName;
 
 export {
   Select,
@@ -157,4 +209,4 @@ export {
   SelectSeparator,
   SelectScrollUpButton,
   SelectScrollDownButton,
-}
+};

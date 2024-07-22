@@ -41,15 +41,11 @@ export default function Register() {
         body: JSON.stringify(values),
       });
       const response = await res.json();
-      console.log("response", response);
-      if (res.ok) {
-        console.log("response.ok", res.ok);
-        if (response.statusCode == 200) {
-          handleShowToast(response.message, ToastType.SUCCESS);
-          router.replace("/login");
-        } else {
-          handleShowToast(response.error, ToastType.ERROR);
-        }
+      if (response.statusCode == 200) {
+        handleShowToast(response.message, ToastType.SUCCESS);
+        router.replace("/login");
+      } else {
+        handleShowToast(response.error, ToastType.ERROR);
       }
     } catch (error) {
       handleShowToast(

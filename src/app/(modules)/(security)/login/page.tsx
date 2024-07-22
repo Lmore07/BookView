@@ -33,6 +33,7 @@ export default function Login() {
 
   async function onSubmit(values: z.infer<typeof loginSchema>) {
     try {
+      setIsLoading(true);
       const res = await fetch("../api/security/login", {
         cache: "no-store",
         method: "POST",
@@ -105,7 +106,7 @@ export default function Login() {
                       form={form}
                       label="Correo electrónico"
                       name="email"
-                      placeholder="asd"
+                      placeholder="Ingrese su correo electrónico"
                       type="email"
                       maxLength={50}
                       icon={
@@ -137,7 +138,7 @@ export default function Login() {
                       form={form}
                       label="Contraseña"
                       name="password"
-                      placeholder="*******"
+                      placeholder="Ingrese la contraseña"
                       type="password"
                       maxLength={20}
                       icon={

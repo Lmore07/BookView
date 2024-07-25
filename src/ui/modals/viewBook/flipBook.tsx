@@ -313,6 +313,22 @@ const FlipBook: React.FC<FlipBookProps> = ({
           max={pages.length - 1}
           min={0}
           step={1}
+          sx={{
+            color: "green",
+            "& .MuiSlider-thumb": {
+              backgroundColor: "var(--MuiSlider-thumb-background)",
+            },
+            "& .MuiSlider-rail": {
+              backgroundColor: "var(--MuiSlider-rail-background)",
+            },
+            "& .MuiSlider-markLabel": {
+              color: "var(--MuiSlider-markLabel-color)",
+            },
+            "& .MuiSlider-markLabelActive": {
+              color: "var(--MuiSlider-markLabelActive-color)",
+              fontStyle: "bold",
+            },
+          }}
         />
       </div>
       <dialog id="helpModal" className="modal">

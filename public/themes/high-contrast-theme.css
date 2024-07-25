@@ -18,6 +18,12 @@
   --label--inputText:#424856;
   --bg--InputTextColor: rgb(239, 248, 241);
 
+          /* SliderBook */
+          --MuiSlider-thumb-background: #1b7505;
+          --MuiSlider-rail-background: lightgreen;
+          --MuiSlider-markLabel-color: rgb(83, 83, 83);
+          --MuiSlider-markLabelActive-color: #1b7505;
+          
   /* Focus Input */
   --focus--ColorInput:rgba(189,193,202,1);
   --focus--BgInput: #fff;

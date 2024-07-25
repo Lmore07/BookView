@@ -8,6 +8,12 @@
    --bgColorDark: rgb(240, 239, 239);
    --bgColorRight: white;
 
+           /* SliderBook */
+           --MuiSlider-thumb-background: #1b7505;
+           --MuiSlider-rail-background: lightgreen;
+           --MuiSlider-markLabel-color: rgb(83, 83, 83);
+           --MuiSlider-markLabelActive-color: #1b7505;
+           
    /* Accessible Button */
    --bg--ButtonAccesible: #1b7505;
    --text--ButtonAccesible: #ffffff;

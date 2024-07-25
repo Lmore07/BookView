@@ -846,7 +846,7 @@ export default function Stepper() {
                 {(pagesToPrev?.length || 0) > 0 && (
                   <div
                     key={selectedBook?.idBook}
-                    className="w-full h-full overflow-auto"
+                    className="w-full h-full overflow-auto mt-6"
                   >
                     <FlipBook
                       pages={pagesToPrev}

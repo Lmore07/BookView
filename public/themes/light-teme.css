@@ -52,7 +52,6 @@
         --text-SideBar-NS: rgba(86,93,109,1);
     
         /* COLORS PAGINATION */
-    
         --text-no-select: #9095a1;
         --bg-no-select: #fff;
         --hover-text-not-select: #6f7787;
@@ -71,7 +70,13 @@
         --header-table--text: #fff;
         --rows-table--background: #fff;
         --rows-table--text: #6f7787;
-    
+
+        /* SliderBook */
+        --MuiSlider-thumb-background: #1b7505;
+        --MuiSlider-rail-background: lightgreen;
+        --MuiSlider-markLabel-color: rgb(83, 83, 83);
+        --MuiSlider-markLabelActive-color: #1b7505;
+
         --primary--100: #eefee9;
         --primary--150: #cafcbe;
         --primary--200: #a7fa92;

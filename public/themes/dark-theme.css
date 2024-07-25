@@ -67,6 +67,12 @@
         --header-table--text: #fff;
         --rows-table--background: #2b362b;
         --rows-table--text: #fff;
+
+        /* SliderBook */
+        --MuiSlider-thumb-background: #fff;
+        --MuiSlider-rail-background: rgb(229, 255, 229);
+        --MuiSlider-markLabel-color: rgb(205, 205, 205);
+        --MuiSlider-markLabelActive-color: #fff;
     
         --primary--100: #97c597;
         --primary--150: #1a391a;

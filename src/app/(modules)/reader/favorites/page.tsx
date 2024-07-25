@@ -324,10 +324,7 @@ export default function Favorites() {
         </h1>
         <Button
           onClick={() => {
-            const dialog = document.getElementById(
-              "createFolder"
-            ) as HTMLDialogElement;
-            dialog.showModal();
+            setOpen(true);
           }}
           icon={
             <svg
@@ -394,21 +391,17 @@ export default function Favorites() {
           />
         </Stack>
       </div>
-      <dialog id="createFolder" className="modal">
-        <div className="modal-box">
-          <form method="dialog">
-            <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
-              ✕
-            </button>
-          </form>
+      {open && (
+        <ModalParent onClose={handleClose}>
           <CreateFolder
             onClose={handleClose}
             onFolderCreated={() => {
               fetchData();
             }}
           />
-        </div>
-      </dialog>
+        </ModalParent>
+      )}
+
       <dialog id="helpModal" className="modal">
         <div className="modal-box">
           <form method="dialog">

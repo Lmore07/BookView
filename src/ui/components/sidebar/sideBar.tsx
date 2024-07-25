@@ -49,7 +49,7 @@ const Sidebar: React.FC<SidebarProps> = ({ optionsRoutes, children }) => {
 
   return (
     <>
-      <header className="h-[10dvh] bg-bgColorRight font-custom shadow-lg dark:border-gray-700 px-6 py-4 flex items-center justify-between fixed top-0 left-0 right-0 z-50">
+      <header className="h-[10dvh] bg-bgColorRight font-custom shadow-lg dark:border-gray-700 px-6 py-4 flex items-center justify-between fixed top-0 left-0 right-0 z-[48]">
         <div className="flex items-center">
           <Image src={logoImg.src} alt="Imagen" width={40} height={40} />
           <h2 className="text-lg pl-3 font-semibold text-gray-800 dark:text-gray-200">

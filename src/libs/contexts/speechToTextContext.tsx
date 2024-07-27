@@ -1,12 +1,14 @@
 "use client";
 import ButtonOutlined from "@/ui/components/buttons/ButtonOutlined";
 import React, { createContext, useEffect, useRef, useState } from "react";
+import SpeechRecognition, {
+  useSpeechRecognition,
+} from "react-speech-recognition";
 import "./styles.css";
 
 export interface VoiceRecorderContextValue {
   finalTranscript: string;
   transcript: string;
-  setFinalTranscript : React.Dispatch<React.SetStateAction<string>>;
   setIsListening: React.Dispatch<React.SetStateAction<boolean>>;
   currentComponentRef: React.MutableRefObject<HTMLDivElement | null>;
   continuos?: boolean;
@@ -20,93 +22,64 @@ export const VoiceRecorderProvider = ({
 }: {
   children: React.ReactNode;
 }) => {
+  const { resetTranscript, listening, transcript, finalTranscript } =
+    useSpeechRecognition();
   const [isListening, setIsListening] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
-  const [transcript, setTranscript] = useState("");
-  const [finalTranscript, setFinalTranscript] = useState("");
+  const [isContinuos, setIsContinuos] = useState(false);
   const currentComponentRef = useRef<HTMLDivElement | null>(null);
-  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
-  const audioChunksRef = useRef<Blob[]>([]);
 
   const startListening = () => {
-    handleRecordAudio();
-  };
-
-  const handleRecordAudio = async () => {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({
-        audio: true,
-      });
-      mediaRecorderRef.current = new MediaRecorder(stream);
-      audioChunksRef.current = [];
-      mediaRecorderRef.current.ondataavailable = (event) => {
-        audioChunksRef.current.push(event.data);
-      };
-      mediaRecorderRef.current.onstop = async () => {
-        const audioBlob = new Blob(audioChunksRef.current, {
-          type: "audio/wav",
-        });
-        try {
-          const formData = new FormData();
-          formData.append("audio", audioBlob);
-          const res = await fetch("../../api/gemini", {
-            method: "POST",
-            body: formData,
-          });
-          const data = await res.json();
-          setFinalTranscript(data.data[0].text);
-          setIsAnimating(false);
-        } catch (error) {
-          console.error("Error al procesar el audio", error);
-        }
-      };
-      mediaRecorderRef.current.start();
-      setIsAnimating(true);
-    } catch (error) {
-      console.error("Error accessing the microphone", error);
-    }
-  };
-
-  const stopListening = () => {
-    if (mediaRecorderRef.current && mediaRecorderRef.current.state !== "inactive") {
-      mediaRecorderRef.current.stop();
-      mediaRecorderRef.current.stream.getTracks().forEach((track) => track.stop());
-    }
+    SpeechRecognition.startListening({
+      language: "es-EC",
+      continuous: isContinuos,
+      interimResults: true,
+    });
   };
 
   useEffect(() => {
-    const dialog = document.getElementById("speech") as HTMLDialogElement;
+    if (transcript.length > 0) {
+      setIsAnimating(true);
+    }
+    console.log("Transcript: ", transcript);
+  }, [transcript]);
+
+  useEffect(() => {
+    if (!listening) {
+      setIsListening(false);
+      setIsAnimating(false);
+    }
+  }, [listening]);
+
+  useEffect(() => {
     if (isListening) {
       startListening();
-      dialog.showModal();
     } else {
       stopListening();
-      dialog.close();
     }
   }, [isListening]);
+
+  const stopListening = () => {
+    SpeechRecognition.stopListening();
+    resetTranscript();
+  };
 
   return (
     <VoiceRecorderContext.Provider
       value={{
         setIsListening,
-        setFinalTranscript,
         finalTranscript,
         transcript,
         currentComponentRef,
-        continuos: true,
+        continuos: false,
       }}
     >
-      <dialog id="speech" className="modal">
-        <div className="modal-box">
-          <button
-            onClick={() => {
-              setIsListening(false);
-            }}
-            className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
-          >
-            ✕
-          </button>
-          <div className="flex flex-col items-center bg-bgColorRight p-2">
+      {isListening && (
+        <div
+          className={`fixed flex flex-col z-[100] top-0 left-0 w-full h-full items-center justify-center`}
+        >
+          <div className="absolute inset-0 bg-black bg-opacity-25 backdrop-blur-sm"></div>
+          <div className="relative z-10 flex flex-col bg-bgColorRight p-5 rounded-full">
             <div className="flex flex-row">
               <div
                 className={`h-8 w-4 bg-primary rounded-full mx-2 ${
@@ -143,7 +116,7 @@ export const VoiceRecorderProvider = ({
             </div>
           </div>
         </div>
-      </dialog>
+      )}
       {children}
     </VoiceRecorderContext.Provider>
   );

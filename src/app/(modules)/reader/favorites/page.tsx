@@ -56,6 +56,7 @@ export default function Favorites() {
     useContext(BreadcrumbContext);
 
   useEffect(() => {
+    console.log("transcript final", finalTranscript);
     if (finalTranscript && finalTranscript != "") {
       functionInterpret();
     }
@@ -83,6 +84,7 @@ export default function Favorites() {
       }
       console.log(call);
     } catch (error) {
+      console.log(error);
       handleShowToast("No se reconoció el comando", ToastType.ERROR);
     }
   };

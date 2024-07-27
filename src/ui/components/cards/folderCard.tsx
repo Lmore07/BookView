@@ -7,12 +7,16 @@ interface FolderCardProps {
   folderName: string;
   imageUrl?: string;
   onClick: () => void;
+  onEditClick: () => void;
+  onDeleteClick: () => void;
 }
 
 const FolderCard: React.FC<FolderCardProps> = ({
   folderName,
   imageUrl,
   onClick,
+  onEditClick,
+  onDeleteClick,
 }) => {
   return (
     <div className="bg-bgColorDark shadow-lg rounded-lg overflow-hidden">
@@ -26,13 +30,13 @@ const FolderCard: React.FC<FolderCardProps> = ({
       </div>
       <div className="p-4">
         <div className="text-gray-800 font-bold">{folderName}</div>
-        <div className="w-full justify-between items-center mt-2">
+        <div className="flex justify-between items-center mt-2 gap-1 w-full">
           <ButtonOutlined
             icon={
               <svg
                 viewBox="0 0 24 24"
                 fill="currentColor"
-                className="w-6 h-6 inline-block mr-2"
+                className="w-6 h-6 inline-block"
                 xmlns="http://www.w3.org/2000/svg"
               >
                 <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
@@ -51,10 +55,80 @@ const FolderCard: React.FC<FolderCardProps> = ({
                 </g>
               </svg>
             }
+            className={
+              "w-full border-textButtonOutlined text-textButtonOutlined hover:text-textButtonOutlinedHover hover:bg-bgButtonOutlinedHover"
+            }
             onClick={onClick}
           >
-            Abrir carpeta
+            Abrir
           </ButtonOutlined>
+          <div className="flex gap-1">
+            <ButtonOutlined
+              icon={
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  className="w-6 h-6 inline-block"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
+                  <g
+                    id="SVGRepo_tracerCarrier"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  ></g>
+                  <g id="SVGRepo_iconCarrier">
+                    <path d="M21.1938 2.80624C22.2687 3.88124 22.2687 5.62415 21.1938 6.69914L20.6982 7.19469C20.5539 7.16345 20.3722 7.11589 20.1651 7.04404C19.6108 6.85172 18.8823 6.48827 18.197 5.803C17.5117 5.11774 17.1483 4.38923 16.956 3.8349C16.8841 3.62781 16.8366 3.44609 16.8053 3.30179L17.3009 2.80624C18.3759 1.73125 20.1188 1.73125 21.1938 2.80624Z"></path>
+                    <path d="M14.5801 13.3128C14.1761 13.7168 13.9741 13.9188 13.7513 14.0926C13.4886 14.2975 13.2043 14.4732 12.9035 14.6166C12.6485 14.7381 12.3775 14.8284 11.8354 15.0091L8.97709 15.9619C8.71035 16.0508 8.41626 15.9814 8.21744 15.7826C8.01862 15.5837 7.9492 15.2897 8.03811 15.0229L8.99089 12.1646C9.17157 11.6225 9.26191 11.3515 9.38344 11.0965C9.52679 10.7957 9.70249 10.5114 9.90743 10.2487C10.0812 10.0259 10.2832 9.82394 10.6872 9.41993L15.6033 4.50385C15.867 5.19804 16.3293 6.05663 17.1363 6.86366C17.9434 7.67069 18.802 8.13296 19.4962 8.39674L14.5801 13.3128Z"></path>
+                    <path d="M12 22C17.5228 22 22 17.5228 22 12C22 10.8082 21.7915 9.66511 21.409 8.60519L15.586 14.4283C15.2347 14.7797 14.9708 15.0437 14.6738 15.2753C14.3252 15.5473 13.948 15.7804 13.5488 15.9706C13.2088 16.1327 12.8546 16.2506 12.3833 16.4076L9.45143 17.3849C8.64568 17.6535 7.75734 17.4438 7.15678 16.8432C6.55621 16.2427 6.34651 15.3543 6.61509 14.5486L7.59236 11.6167C7.74936 11.1453 7.86732 10.7912 8.02935 10.4512C8.21958 10.052 8.45272 9.6748 8.72466 9.32615C8.9563 9.02918 9.22033 8.76527 9.57173 8.41403L15.3948 2.59098C14.3349 2.20849 13.1918 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z"></path>
+                  </g>
+                </svg>
+              }
+              className={
+                "border-orange-600 text-orange-600 hover:text-white hover:border-orange-600 hover:bg-orange-600"
+              }
+              onClick={onEditClick}
+            ></ButtonOutlined>
+            <ButtonOutlined
+              icon={
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  className="w-6 h-6 inline-block"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
+                  <g
+                    id="SVGRepo_tracerCarrier"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  ></g>
+                  <g id="SVGRepo_iconCarrier">
+                    <path d="M3.21049 3.04233C2.74667 3.58092 2.58666 4.26887 2.60662 5.25H21.3937C21.4136 4.26887 21.2536 3.58092 20.7898 3.04233C19.8922 2 18.2724 2 15.033 2H8.96727C5.72784 2 4.10813 2 3.21049 3.04233Z"></path>
+                    <path d="M3.03365 8.89001C2.91212 8.07985 2.80597 7.37214 2.72969 6.75H3.68934L4.93934 8L3.16613 9.77321L3.03365 8.89001Z"></path>
+                    <path d="M3.59911 12.6598L3.94874 14.9906L4.93934 14L3.59911 12.6598Z"></path>
+                    <path d="M4.22543 16.8352L4.23365 16.89C4.30912 17.3932 4.3768 17.8443 4.44411 18.25H6.68934L7.93934 17L6 15.0607L4.22543 16.8352Z"></path>
+                    <path d="M11.3107 18.25H12.6893L13.9393 17L12 15.0607L10.0607 17L11.3107 18.25Z"></path>
+                    <path d="M17.3107 18.25H19.5562C19.6235 17.8443 19.6912 17.3932 19.7666 16.89L19.7748 16.8355L18 15.0607L16.0607 17L17.3107 18.25Z"></path>
+                    <path d="M20.0515 14.9909L20.4012 12.6594L19.0607 14L20.0515 14.9909Z"></path>
+                    <path d="M20.8341 9.77347L20.9667 8.88963C21.0882 8.07989 21.1944 7.37188 21.2706 6.75H20.3107L19.0607 8L20.8341 9.77347Z"></path>
+                    <path d="M15.6893 6.75H14.3107L13.0607 8L15 9.93934L16.9393 8L15.6893 6.75Z"></path>
+                    <path d="M9.68934 6.75H8.31066L7.06066 8L9 9.93934L10.9393 8L9.68934 6.75Z"></path>
+                    <path d="M4.75809 19.75C4.95399 20.4359 5.20948 20.9145 5.62604 21.2732C6.46997 22 7.7024 22 10.1673 22H13.833C16.2979 22 17.5303 22 18.3743 21.2732C18.7908 20.9145 19.0463 20.4359 19.2422 19.75H4.75809Z"></path>
+                    <path d="M4.06066 11L6 9.06066L7.93934 11L6 12.9393L4.06066 11Z"></path>
+                    <path d="M7.06066 14L9 12.0607L10.9393 14L9 15.9393L7.06066 14Z"></path>
+                    <path d="M15 15.9393L13.0607 14L15 12.0607L16.9393 14L15 15.9393Z"></path>
+                    <path d="M12 12.9393L13.9393 11L12 9.06066L10.0607 11L12 12.9393Z"></path>
+                    <path d="M18 12.9393L16.0607 11L18 9.06066L19.9393 11L18 12.9393Z"></path>
+                  </g>
+                </svg>
+              }
+              className={
+                "border-red-700 text-red-700 hover:text-white hover:border-red-600 hover:bg-red-600"
+              }
+              onClick={onDeleteClick}
+            ></ButtonOutlined>
+          </div>
         </div>
       </div>
     </div>

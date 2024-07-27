@@ -4,19 +4,19 @@ import {
   FormField,
   FormItem,
   FormLabel,
-  FormMessage
+  FormMessage,
 } from "@/ui/shadcn/ui/form";
-import { Input } from "@/ui/shadcn/ui/input";
-import React from "react";
+import { Textarea } from "@/ui/shadcn/ui/textarea";
+import React, { useEffect, useRef, useState } from "react";
 import { UseFormReturn } from "react-hook-form";
 
-const InputNUI = ({
+const TextAreaNUI = ({
   label,
   name,
   icon,
   placeholder,
-  maxLength = 10,
-  type,
+  cols,
+  rows,
   form,
   className = "",
 }: {
@@ -24,11 +24,13 @@ const InputNUI = ({
   name: string;
   icon?: React.ReactNode;
   placeholder: string;
+  cols?: number;
+  rows?: number;
   form: UseFormReturn<any>;
-  type: string;
-  maxLength?: number;
   className?: string;
 }) => {
+  const [touched, setTouched] = useState(false);
+
   return (
     <FormField
       control={form.control}
@@ -39,12 +41,11 @@ const InputNUI = ({
             {label}
           </FormLabel>
           <FormControl className="w-full">
-            <Input
+            <Textarea
+              placeholder={placeholder}
               icon={icon}
-              maxLength={maxLength}
-              error={fieldState.error}
-              type={type}
               isValid={fieldState.isTouched}
+              error={fieldState.error}
               isTouched={fieldState.isTouched}
               className={`w-full font-custom bg-bgInputText py-2 border-0 text-sm font-medium placeholder:text-gray-400 hover:placeholder:text-secondary-400 text-secondary-400 rounded-md outline-none hover:text-secondary-400 hover:border hover:border-black ${
                 fieldState.error &&
@@ -54,7 +55,6 @@ const InputNUI = ({
                 fieldState.isTouched &&
                 "border-green-600 border-2 focus:ring-1 focus:ring-green-600 hover:border-green-600 hover:border-2"
               }`}
-              placeholder={placeholder}
               {...field}
             />
           </FormControl>
@@ -65,4 +65,4 @@ const InputNUI = ({
   );
 };
 
-export default InputNUI;
+export default TextAreaNUI;

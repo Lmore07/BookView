@@ -49,6 +49,7 @@ export const PUT = apiMiddleware(
     const category = await prisma.categories.findUnique({
       where: { idCategory: parseInt(params.id) },
     });
+    
     if (!category) {
       return NextResponse.json(
         { error: "No existe la categoría" },

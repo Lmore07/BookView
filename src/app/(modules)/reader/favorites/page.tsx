@@ -36,6 +36,7 @@ import Pagination from "@mui/material/Pagination";
 import Stack from "@mui/material/Stack";
 import { useRouter } from "next/navigation";
 import { useContext, useEffect, useRef, useState } from "react";
+import ConfirmRemoveFolder from "@/ui/modals/folders/confirmRemoveFolder";
 
 export default function Favorites() {
   const router = useRouter();
@@ -43,6 +44,9 @@ export default function Favorites() {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [open, setOpen] = useState(false);
+  const [selectId, setSelectId] = useState(0);
+  const [openEdit, setOpenEdit] = useState(false);
+  const [openDelete, setOpenDelete] = useState(false);
   const [folders, setFolders] = useState<FoldersAll[]>([]);
   const { setIsLoading } = useContext(LoadingContext)!;
   const { handleShowToast } = useContext(ToastContext)!;
@@ -169,6 +173,10 @@ export default function Favorites() {
     setOpen(false);
   };
 
+  const handleEditClose = () => {
+    setOpenEdit(false);
+  };
+
   const fetchData = async () => {
     setIsLoading(true);
     try {
@@ -192,6 +200,10 @@ export default function Favorites() {
   useEffect(() => {
     fetchData();
   }, [page]);
+
+  const handleEditFolder = (id: number) => {};
+
+  const handleDeleteFolder = (id: number) => {};
 
   return (
     <div className="shadow-2xl p-4 rounded-lg">
@@ -353,6 +365,14 @@ export default function Favorites() {
             folderName={folder.folderName}
             imageUrl={folder.urlFolder}
             onClick={() => handleClickFolder(folder.idFolder)}
+            onEditClick={() => {
+              setOpenEdit(true);
+              setSelectId(folder.idFolder);
+            }}
+            onDeleteClick={() => {
+              setOpenDelete(true);
+              setSelectId(folder.idFolder);
+            }}
           />
         ))}
       </div>
@@ -400,8 +420,47 @@ export default function Favorites() {
             onFolderCreated={() => {
               fetchData();
             }}
+            method="POST"
           />
         </ModalParent>
+      )}
+      {openEdit && (
+        <ModalParent onClose={handleEditClose}>
+          <CreateFolder
+            onClose={handleEditClose}
+            onFolderCreated={() => {
+              fetchData();
+            }}
+            id={selectId}
+            values={folders.find((folder) => folder.idFolder === selectId)}
+            method="PUT"
+          />
+        </ModalParent>
+      )}
+
+      {openDelete && (
+        <Dialog
+          open={openDelete}
+          onOpenChange={(open: boolean) => {
+            setOpenDelete(open);
+          }}
+        >
+          <DialogContent className="bg-bgColorRight">
+            <DialogHeader>
+              <DialogDescription>
+                <ConfirmRemoveFolder
+                  action={"desactive"}
+                  status={false}
+                  idItem={selectId}
+                  onFinish={() => {
+                    setOpenDelete(false);
+                    fetchData();
+                  }}
+                ></ConfirmRemoveFolder>
+              </DialogDescription>
+            </DialogHeader>
+          </DialogContent>
+        </Dialog>
       )}
 
       <dialog id="helpModal" className="modal">

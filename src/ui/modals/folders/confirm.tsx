@@ -17,7 +17,7 @@ const ConfirmRemoveBook: React.FC<{
   const handleActiveOrDeactive = async () => {
     try {
       setIsLoading(true);
-      const response = await fetch(`../api/books/favorites/?idBook=${idItem}`, {
+      const response = await fetch(`../../api/books/favorites/?idBook=${idItem}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",

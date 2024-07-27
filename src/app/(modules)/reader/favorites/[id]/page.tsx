@@ -28,6 +28,8 @@ import FlipBook from "@/ui/modals/viewBook/flipBook";
 import { Pagination, Stack, Tooltip } from "@mui/material";
 import { useContext, useEffect, useRef, useState } from "react";
 import ConfirmRemoveBook from "@/ui/modals/folders/confirm";
+import ModalParent from "@/ui/modals/modal";
+import AddToFavorite from "@/ui/modals/folders/addToFavorite";
 
 export default function Favorite({
   params,
@@ -43,6 +45,7 @@ export default function Favorite({
   const [totalPages, setTotalPages] = useState(1);
   const [books, setBooks] = useState<BooksAll[]>([]);
   const [lastPage, setLastPage] = useState(0);
+  const [isFavorite, setIsFavorite] = useState(false);
   const [isViewBook, setIsViewBook] = useState(false);
   const [pagesBook, setPagesBook] = useState<PageI[] | null | undefined>([]);
   const [selectedBook, setSelectedBook] = useState<BooksAll | null>(null);
@@ -434,6 +437,31 @@ export default function Favorite({
           ></Help>
         </div>
       </dialog>
+      {isRemoveBook && (
+        <Dialog
+          open={isRemoveBook}
+          onOpenChange={(open: boolean) => {
+            setIsRemoveBook(open);
+          }}
+        >
+          <DialogContent className="bg-bgColorRight">
+            <DialogHeader>
+              <DialogDescription>
+                <ConfirmRemoveBook
+                  action={"desactive"}
+                  status={false}
+                  idItem={selectedBook?.idBook!}
+                  onFinish={() => {
+                    setIsRemoveBook(false);
+                    setBooks([]);
+                    fetchData();
+                  }}
+                ></ConfirmRemoveBook>
+              </DialogDescription>
+            </DialogHeader>
+          </DialogContent>
+        </Dialog>
+      )}
     </div>
   );
 }

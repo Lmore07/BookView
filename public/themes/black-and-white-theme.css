@@ -14,6 +14,9 @@
            --MuiSlider-markLabel-color: rgb(83, 83, 83);
            --MuiSlider-markLabelActive-color: #1b7505;
            
+                   /*css definition*/
+        --bg--Definition: #1b7505;
+        --text--Definition: #fff;
    /* Accessible Button */
    --bg--ButtonAccesible: #1b7505;
    --text--ButtonAccesible: #ffffff;

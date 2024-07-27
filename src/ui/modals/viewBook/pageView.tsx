@@ -781,7 +781,7 @@ const PageContent: React.FC<PageProps> = ({ page, coverInfo }) => {
       {open && (
         <div
           id="dismiss-alert"
-          className="hs-removing:translate-x-5 my-2 font-custom hs-removing:opacity-0 bottom-1 mx-20 transition duration-300 bg-primary-500 text-sm text-white rounded-lg p-4"
+          className="hs-removing:translate-x-5 my-2 font-custom hs-removing:opacity-0 bottom-1 mx-20 transition duration-300 bg-bgDefinition text-sm text-textDefinition rounded-lg p-4"
           role="alert"
         >
           <div className="flex items-center">

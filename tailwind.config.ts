@@ -44,6 +44,8 @@ const config = {
         bgHeaderTable: "var(--header-table--background)",
         textHeaderTable: "var(--header-table--text)",
         bgRowsTable: "var(--rows-table--background)",
+        bgDefinition: "var(--bg--Definition)",
+        textDefinition: "var(--text--Definition)",
         textRowsTable: "var(--rows-table--text)",
         bgColorDark: "var(--bgColorDark)",
         bgColorRight: "var(--bgColorRight)",
@@ -121,6 +123,6 @@ const config = {
     },
   },
   plugins: [require("tailwindcss-animate"), require("daisyui"), nextui()],
-}
+};
 
 export default config;

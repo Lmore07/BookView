@@ -24,6 +24,10 @@
         --bg--ButonFill: #ffffff;
         --text--ButtonFill: #000;
     
+        /*css definition*/
+        --bg--Definition: #000000;
+        --text--Definition: #ffffff;
+
         /* Button Fill Hover*/
         --bg--ButtonFillHover: #696969;
         --text--ButtonFillHover: #fff;

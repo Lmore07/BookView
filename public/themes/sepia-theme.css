@@ -15,6 +15,9 @@
  --bg--SelectTheme: #ffffff;
  --text--SelectTheme: #000000;
  --text-landing: rgb(107 114 128);
+         /*css definition*/
+         --bg--Definition: #1b7505;
+         --text--Definition: #fff;
  /* Input */
  --label--inputText:#424856;
  --bg--InputTextColor: rgb(239, 248, 241);

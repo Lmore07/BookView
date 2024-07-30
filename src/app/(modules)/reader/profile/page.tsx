@@ -41,7 +41,8 @@ export default function ProfileReader() {
   const [isPlaying, setIsPlaying] = useState(false);
   const audioContext = useRef<AudioContext | null>(null);
   const source = useRef<AudioBufferSourceNode | null>(null);
-  const { setIsListening, finalTranscript } = useContext(VoiceRecorderContext)!;
+  const { setIsListening, finalTranscript, isListening } =
+    useContext(VoiceRecorderContext)!;
   const [loadingVoice, setLoadingVoice] = useState(false);
   const { addBreadcrumbManyItems, removeAllBreadcrumbItems } =
     useContext(BreadcrumbContext);
@@ -360,27 +361,57 @@ export default function ProfileReader() {
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger>
-              <span
-                className="cursor-pointer"
-                onClick={() => {
-                  setIsListening(true);
-                }}
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="w-9 h-9"
-                  viewBox="0 0 16 16"
-                  fill="#c5910d"
+              {isListening ? (
+                <span
+                  className="cursor-pointer"
+                  aria-label="Dictado de comandos"
+                  onClick={() => {
+                    setIsListening(false);
+                  }}
                 >
-                  <path
-                    fillRule="evenodd"
-                    d="M8 1a2 2 0 0 0-2 2v4a2 2 0 1 0 4 0V3a2 2 0 0 0-2-2"
-                  />
-                  <path d="M4.5 7A.75.75 0 0 0 3 7a5.001 5.001 0 0 0 4.25 4.944V13.5h-1.5a.75.75 0 0 0 0 1.5h4.5a.75.75 0 0 0 0-1.5h-1.5v-1.556A5.001 5.001 0 0 0 13 7a.75.75 0 0 0-1.5 0a3.5 3.5 0 1 1-7 0" />
-                </svg>
-              </span>
+                  <svg
+                    viewBox="0 0 16 16"
+                    className="w-9 h-9"
+                    fill="#ff0000"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
+                    <g
+                      id="SVGRepo_tracerCarrier"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    ></g>
+                    <g id="SVGRepo_iconCarrier">
+                      <path d="m 8 0 c -1.660156 0 -3 1.339844 -3 3 v 0.9375 l -3.46875 -3.46875 l -1.0625 1.0625 l 14 14 l 1.0625 -1.0625 l -2.792969 -2.792969 c 0.789063 -1.011719 1.261719 -2.285156 1.261719 -3.664062 v -2.011719 h -1.5 v 2.011719 c 0 0.972656 -0.304688 1.867187 -0.824219 2.601562 l -1.089843 -1.089843 c 0.261718 -0.445313 0.414062 -0.964844 0.414062 -1.523438 v -5 c 0 -1.660156 -1.339844 -3 -3 -3 z m -6 6 v 2.011719 c 0 2.964843 2.164062 5.429687 5 5.90625 v 2.082031 h 2 v -2.082031 c 0.5 -0.085938 0.976562 -0.230469 1.425781 -0.429688 l -1.164062 -1.164062 c -0.398438 0.113281 -0.824219 0.175781 -1.261719 0.175781 c -2.507812 0 -4.5 -1.988281 -4.5 -4.488281 v -1.449219 l -0.5625 -0.5625 z m 3.003906 2.066406 c 0.035156 1.609375 1.320313 2.894532 2.929688 2.929688 z m 0 0"></path>
+                    </g>
+                  </svg>
+                </span>
+              ) : (
+                <span
+                  className="cursor-pointer"
+                  aria-label="Dictado de comandos"
+                  onClick={() => {
+                    setIsListening(true);
+                  }}
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="w-9 h-9"
+                    viewBox="0 0 16 16"
+                    fill="#c5910d"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M8 1a2 2 0 0 0-2 2v4a2 2 0 1 0 4 0V3a2 2 0 0 0-2-2"
+                    />
+                    <path d="M4.5 7A.75.75 0 0 0 3 7a5.001 5.001 0 0 0 4.25 4.944V13.5h-1.5a.75.75 0 0 0 0 1.5h4.5a.75.75 0 0 0 0-1.5h-1.5v-1.556A5.001 5.001 0 0 0 13 7a.75.75 0 0 0-1.5 0a3.5 3.5 0 1 1-7 0" />
+                  </svg>
+                </span>
+              )}
             </TooltipTrigger>
-            <TooltipContent>{"Dictar"}</TooltipContent>
+            <TooltipContent>
+              {isListening ? "Detener" : "Dictar"}
+            </TooltipContent>
           </Tooltip>
         </TooltipProvider>
         <TooltipProvider>

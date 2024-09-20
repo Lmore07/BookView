@@ -10,6 +10,7 @@ import "reflect-metadata";
 import "regenerator-runtime/runtime";
 import "../ui/globals.css";
 import { BreadcrumbProvider } from "@/libs/contexts/breadcrumbContext";
+import EyeTrackingCursor from "@/libs/utils/eyeTracking";
 
 export const metadata: Metadata = {
   title: "BookView",
@@ -28,6 +29,10 @@ export default function RootLayout({
     <html lang="es">
       <head>
         <>
+        <Script
+          src="https://webgazer.cs.brown.edu/webgazer.js"
+          strategy="beforeInteractive"
+        ></Script>
           <Script
             strategy="lazyOnload"
             src={`https://www.googletagmanager.com/gtag/js?id=G-EFDRNJKG97`}
@@ -53,6 +58,7 @@ export default function RootLayout({
                 <ToastProvider>
                   <VoiceRecorderProvider>{children}</VoiceRecorderProvider>
                   <AccessibilityButton />
+                  
                 </ToastProvider>
               </ModalProvider>
             </BreadcrumbProvider>

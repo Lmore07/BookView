@@ -33,7 +33,8 @@ const nextConfig = {
     ADMIN_LASTNAME: process.env.ADMIN_LASTNAME || "vacio",
   },
   experimental: {
-    missingSuspenseWithCSRBailout: false
+    missingSuspenseWithCSRBailout: false,
+    esmExternals: "loose",
   },
 };
 

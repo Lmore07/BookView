@@ -6,22 +6,17 @@ export async function generateImage(text: string): Promise<string> {
   const timestamp = new Date().getTime();
   const filename = `image_${timestamp}.jpeg`;
   const storageRef = ref(storage, `folders/${filename}`);
-  const inputs = {
-    inputs: `Una imagen clara y concisa a color, solo mediante objetos, sin letras o palabras, que represente: "${text}"`,
-  };
+  const prompt = `Una imagen clara y concisa a color, solo mediante objetos, sin letras o palabras, que represente: "${text}", la imagen debe tener un diseño pixelado.`;
   const response = await fetch(
-    "https://api-inference.huggingface.co/models/nerijs/pixel-art-xl",
+    `https://image.pollinations.ai/prompt/${prompt}?nologo=true&private=true`,
     {
-      headers: {
-        Authorization: `Bearer ${process.env.HG_API_KEY}`,
-      },
-      method: "POST",
-      body: JSON.stringify(inputs),
+      method: "GET",
     }
   );
   const result = await response.blob();
   await uploadBytes(storageRef, result);
   const url = await getDownloadURL(storageRef);
+  console.log(`Uploaded image to ${url}`);
   return url;
 }
 

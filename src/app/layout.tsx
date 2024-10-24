@@ -1,3 +1,5 @@
+//"use client";
+
 import { LoadingProvider } from "@/libs/contexts/loadingContext";
 import { ModalProvider } from "@/libs/contexts/modalContext";
 import Providers from "@/libs/contexts/providers";
@@ -10,7 +12,11 @@ import "reflect-metadata";
 import "regenerator-runtime/runtime";
 import "../ui/globals.css";
 import { BreadcrumbProvider } from "@/libs/contexts/breadcrumbContext";
-import EyeTrackingCursor from "@/libs/utils/eyeTracking";
+import dynamic from "next/dynamic";
+const EyeTrackingMediaPipe = dynamic(
+  () => import("@/libs/utils/eyeTrackingMediaPipe"),
+  { ssr: false }
+);
 
 export const metadata: Metadata = {
   title: "BookView",
@@ -29,10 +35,10 @@ export default function RootLayout({
     <html lang="es">
       <head>
         <>
-        <Script
-          src="https://webgazer.cs.brown.edu/webgazer.js"
-          strategy="beforeInteractive"
-        ></Script>
+          <Script
+            src="https://webgazer.cs.brown.edu/webgazer.js"
+            strategy="beforeInteractive"
+          ></Script>
           <Script
             strategy="lazyOnload"
             src={`https://www.googletagmanager.com/gtag/js?id=G-EFDRNJKG97`}
@@ -51,19 +57,20 @@ export default function RootLayout({
         </>
       </head>
       <body>
-        <Providers>
-          <LoadingProvider>
-            <BreadcrumbProvider>
-              <ModalProvider>
-                <ToastProvider>
-                  <VoiceRecorderProvider>{children}</VoiceRecorderProvider>
-                  <AccessibilityButton />
-                  
-                </ToastProvider>
-              </ModalProvider>
-            </BreadcrumbProvider>
-          </LoadingProvider>
-        </Providers>
+        <>
+          <Providers>
+            <LoadingProvider>
+              <BreadcrumbProvider>
+                <ModalProvider>
+                  <ToastProvider>
+                    <VoiceRecorderProvider>{children}</VoiceRecorderProvider>
+                    <AccessibilityButton />
+                  </ToastProvider>
+                </ModalProvider>
+              </BreadcrumbProvider>
+            </LoadingProvider>
+          </Providers>
+        </>
       </body>
     </html>
   );

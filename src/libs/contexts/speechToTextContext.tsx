@@ -4,6 +4,7 @@ import SpeechRecognition, {
   useSpeechRecognition,
 } from "react-speech-recognition";
 import "./styles.css";
+import EyeTrackingMediaPipe from "../utils/eyeTrackingMediaPipe";
 
 export interface VoiceRecorderContextValue {
   finalTranscript: string;
